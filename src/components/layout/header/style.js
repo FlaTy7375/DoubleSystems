@@ -63,9 +63,17 @@ export const StyledHeader = styled.header`
         cursor: pointer;
     }
 
+    .lang-button:hover {
+        background-color: rgba(255, 70, 0, 0.32);
+    }
+
     .active {
         background: linear-gradient(rgba(38, 49, 67, 1), rgba(11, 14, 21, 1));
         color: #fff;
+    }
+
+    .active:hover {
+        background: linear-gradient(rgba(38, 49, 67, 0.8), rgba(11, 14, 21, 0.8));
     }
 
     .message-button {
@@ -81,6 +89,11 @@ export const StyledHeader = styled.header`
         cursor: pointer;
         border-radius: 30px;
         border: none;
+    }
+
+    .message-button:hover {
+        background-color: rgba(255, 70, 0, 1);
+        color: #fff;
     }
 
     .menu-button {

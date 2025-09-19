@@ -22,6 +22,31 @@ export const StyledWebSolutions = styled.section`
         padding-left: 52px;
         padding-bottom: 120px;
         border-radius: 10px 10px 30px 30px;
+        z-index: 1;
+    }
+
+    .solutions-container::before {
+        position: absolute;
+        content: "";
+        width: 406px;
+        height: 680px;
+        background-image: url("/images/left-leaf.svg");
+        background-repeat: no-repeat;
+        top: -10px;
+        left: 0;
+        z-index: -1;
+    }
+
+    .solutions-container::after {
+        position: absolute;
+        content: "";
+        width: 288px;
+        height: 609px;
+        background-image: url("/images/right-leaf.svg");
+        background-repeat: no-repeat;
+        top: 28px;
+        right: 0;
+        z-index: -1;
     }
 
     .container-title {
@@ -69,10 +94,16 @@ export const StyledWebSolutions = styled.section`
         color: #fff;
         background-color: rgba(68, 75, 90, 1);
         border-radius: 30px;
+        border: none;
         width: 400px;
         height: 55px;
         margin-top: 25px;
         cursor: pointer;
+    }
+
+    .container-button:hover {
+        background-color: rgba(255, 70, 0, 1);
+        color: #fff;
     }
 
     .container-image {
