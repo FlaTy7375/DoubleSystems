@@ -1,12 +1,12 @@
 import React from "react";
 import "../styles.css";
+import WebSolutions from "@/components/blocks/web-solutions/websolutions";
 
 export default function Main() {
 
     return (
         <>
-            
-            <h1>Hello from next.js</h1>
+            <WebSolutions></WebSolutions>
         </>
     );
   }
