@@ -1,12 +1,22 @@
 import styled from "styled-components";
 
 export const StyledAboutUs = styled.section`
-position: relative;
+    position: relative;
     display: flex;
     max-width: 1760px;
     margin: 0 auto;
     margin-top: 122px;
     gap: 278px;
+
+    &::before {
+        position: absolute;
+        content: "";
+        width: 318px;
+        height: 3px;
+        background-color: rgba(47, 52, 63, 1);
+        top: 323px;
+        left: 0;
+    }
 
     .about-title {
         position: absolute;
