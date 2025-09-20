@@ -5,6 +5,7 @@ import AboutUs from "@/components/blocks/about-us/about-us";
 import WeCreated from "@/components/blocks/we-created/we-created";
 import Portfolio from "@/components/blocks/portfolio/portfolio";
 import MobileApp from "@/components/blocks/mobile-app/mobile-app";
+import Cases from "@/components/blocks/cases/cases";
 
 export default function Main() {
 
@@ -15,6 +16,7 @@ export default function Main() {
             <WeCreated></WeCreated>
             <Portfolio></Portfolio>
             <MobileApp></MobileApp>
+            <Cases></Cases>
         </>
     );
   }
