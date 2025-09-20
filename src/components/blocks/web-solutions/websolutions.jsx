@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { StyledWebSolutions } from "./style"
 import PhoneAndTablet from '@/assets/images/tablet-and-phone.png'
+import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
 
 export default function WebSolutions() {
     return (
@@ -24,13 +25,7 @@ export default function WebSolutions() {
                 <button className="container-button">Рассказываем о проекте</button>
                 <Image className="container-image" src={PhoneAndTablet} alt='Изображение планшета и телефона' width={912} height={666}></Image>
             </div>
-            <ul className="bread-crumbs">
-                <li className="bread-crumb active"></li>
-                <li className="bread-crumb"></li>
-                <li className="bread-crumb"></li>
-                <li className="bread-crumb"></li>
-                <li className="bread-crumb"></li>
-            </ul>
+            <BreadCrumbs></BreadCrumbs>
         </StyledWebSolutions>
     )
 }

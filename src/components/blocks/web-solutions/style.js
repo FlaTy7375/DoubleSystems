@@ -45,7 +45,7 @@ export const StyledWebSolutions = styled.section`
         background-image: url("/images/right-leaf.svg");
         background-repeat: no-repeat;
         top: 28px;
-        right: 0;
+        right: -3px;
         z-index: -1;
     }
 
@@ -110,23 +110,5 @@ export const StyledWebSolutions = styled.section`
         position: absolute;
         right: 95px;
         bottom: 17px;
-    }
-
-    .bread-crumbs {
-        display: flex;
-        margin: 0 auto;
-        margin-top: 23px;
-        gap: 5px;
-        max-width: 300px;
-    }
-
-    .bread-crumb {
-        width: 56px;
-        height: 5px;
-        background-color: rgba(238, 240, 243, 1);
-    }
-
-    .bread-crumb.active {
-        background-color: rgba(0, 0, 0, 1);
     }
 `

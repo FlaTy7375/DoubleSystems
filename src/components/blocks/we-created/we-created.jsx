@@ -16,10 +16,10 @@ export default function WeCreated() {
                 которые выдерживают высокие нагрузки и радуют пользователей.
             </p>
             <div>
-                <p className="card-adv">—— Разработка сайтов и порталов</p>
-                <p className="card-adv">—— Корпоративные системы</p>
-                <p className="card-adv">—— SaaS-платформы</p>
-                <p className="card-adv">—— E-commerce</p>
+                <p className="card-adv">— Разработка сайтов и порталов</p>
+                <p className="card-adv">— Корпоративные системы</p>
+                <p className="card-adv">— SaaS-платформы</p>
+                <p className="card-adv">— E-commerce</p>
             </div>
             <p className="card-number">/01</p>
             <div className="blue-gradient"></div>
@@ -33,9 +33,9 @@ export default function WeCreated() {
                 iOS и Android, которые удобны, быстры и функциональны.
             </p>
             <div>
-                <p className="card-adv">—— Разработка iOS/Android</p>
-                <p className="card-adv">—— Кроссплатформенные приложения</p>
-                <p className="card-adv">—— Интеграции и API</p>
+                <p className="card-adv">— Разработка iOS/Android</p>
+                <p className="card-adv">— Кроссплатформенные приложения</p>
+                <p className="card-adv">— Интеграции и API</p>
             </div>
             <p className="card-number">/02</p>
             <div className="green-gradient"></div>
@@ -49,8 +49,8 @@ export default function WeCreated() {
                 изображений с помощью нейросетей.
             </p>
             <div>
-                <p className="card-adv">—— Машинное обучениев</p>
-                <p className="card-adv">—— AI-ассистенты (чат-боты, анализ данных)</p>
+                <p className="card-adv">— Машинное обучениев</p>
+                <p className="card-adv">— AI-ассистенты (чат-боты, анализ данных)</p>
                 <p className="card-adv">— AI-обработка фото</p>
             </div>
             <p className="card-number">/03</p>
