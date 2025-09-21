@@ -4,6 +4,7 @@ export const StyledTechnology = styled.section`
     max-width: 1760px;
     margin: 0 auto;
     margin-top: 104px;
+    padding-bottom: 152px;
 
     .technology-wrapper {
         display: flex;
@@ -42,6 +43,7 @@ export const StyledTechnologyList = styled.ul`
     .tech-image {
         filter: grayscale(100%);
         cursor: pointer;
+        transition: 0.5s;
     }
 
     .tech-image:hover {
