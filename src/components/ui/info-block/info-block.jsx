@@ -10,7 +10,9 @@ export default function InfoBlock({Img, data, views, children}) {
             {children}
             <div className="info-wrapper">
                 <p className="info-data">{data}</p>
-                <p className="info-views">{views}</p>
+                <div className="views-container">
+                    <p className="info-views">{views}</p>
+                </div>
             </div>
         </StyledInfoBlock>
     )

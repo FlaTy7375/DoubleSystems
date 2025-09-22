@@ -13,6 +13,17 @@ export const StyledInfoBlock = styled.section`
         color: rgba(38, 49, 67, 1);
     }
 
+    .info-title:hover {
+        text-decoration: underline;
+    }
+
+    .info-description {
+        margin: 12px 0;
+        font-weight: 400;
+        font-size: 16px;
+        letter-spacing: -1px;
+    }
+
     .theme-container {
         display: flex;
         gap: 13px;
@@ -43,14 +54,18 @@ export const StyledInfoBlock = styled.section`
         justify-content: space-between;
         margin-top: 10px;
     }
+    
+    .views-container {
+        position: relative;
+    }
 
-    .info-wrapper::before {
+    .views-container::before {
         position: absolute;
         content: "";
         width: 16px;
         height: 16px;
         background-image: url("./images/eye.svg");
-        right: 22px;
+        left: -20px;
     }
 
     .info-data, .info-views {

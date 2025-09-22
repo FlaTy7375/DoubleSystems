@@ -6,11 +6,12 @@ import HeaderLogo from '@/assets/images/header-logo.svg'
 import SearchLogo from '@/assets/images/svg/search-logo.svg'
 import WhatsAppLogo from '@/assets/images/svg/whatsapp.svg'
 import TgLogo from '@/assets/images/svg/telegram.svg'
+import Link from 'next/link'
 
 export default function Header() {
     return (
     <StyledHeader>
-        <a className='logo-link'><Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56"></Image></a>
+        <Link className='logo-link' href="/"><Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56"></Image></Link>
         <a className='header-phone' href='tel:8 800 543 22 44'>8 800 543 22 44</a>
         <ul className='socials-list'>
             <li className='social-item'><a className='social-link' href='search'><Image src={SearchLogo} alt='Search'></Image></a></li>
@@ -19,10 +20,10 @@ export default function Header() {
         </ul>
         <nav className='header-nav'>
             <a className='nav-link'>Prices</a>
-            <a className='nav-link'>About Us</a>
+            <Link className='nav-link' href="/">About Us</Link>
             <a className='nav-link'>Portfolio</a>
             <a className='nav-link'>Services</a>
-            <a className='nav-link'>Blog</a>
+            <Link className='nav-link' href="/blog">Blog</Link>
             <a className='nav-link'>Contact Us</a>
             <a className='nav-link'>What we do</a>
         </nav>

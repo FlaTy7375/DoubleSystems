@@ -20,7 +20,7 @@ export const StyledFooter = styled.footer`
     .footer-container.dark::after {
         position: absolute;
         content: "";
-        top: -1px;
+        top: 0px;
         width: 100%;
         height: 2px;
         background-color: rgb(18, 18, 18);
@@ -146,7 +146,7 @@ export const StyledFooter = styled.footer`
     }
 
     .accordeon-item::after {
-        display: none;
+        
     }
 
     .form-wrapper {
