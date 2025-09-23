@@ -210,6 +210,7 @@ export const StyledFooter = styled.footer`
         flex-direction: column;
         gap: 35px;
         margin-top: 35px;
+        list-style-type: none;
     }
 
     .field-label {

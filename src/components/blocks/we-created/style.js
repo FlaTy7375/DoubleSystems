@@ -18,5 +18,6 @@ export const StyledWeCreated = styled.section`
         grid-template-columns: 1fr 1fr;
         column-gap: 41px;
         row-gap: 30px;
+        list-style-type: none;
     }
 `

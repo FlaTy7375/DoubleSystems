@@ -18,7 +18,7 @@ export default function News() {
     return(
         <StyledNews>
             <div className="link-container">
-                <Link className="news-link" href="/">DolbySystems &nbsp;</Link>
+                <Link className="news-link" href="/">DoubleSystems &nbsp;</Link>
                 <Link className="news-link" href="/blog">\&nbsp;Блог Новости&nbsp;</Link>
                 <Link className="news-link active" href="/blog">\&nbsp;Студии</Link>
             </div>

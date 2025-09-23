@@ -29,6 +29,7 @@ export const StyledHeader = styled.header`
         display: flex;
         gap: 24px;
         align-items: center;
+        list-style-type: none;
     }
 
     .header-nav {

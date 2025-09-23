@@ -39,6 +39,7 @@ export const StyledTechnologyList = styled.ul`
     column-gap: 106px;
     row-gap: 52px;
     max-width: 1370px;
+    list-style-type: none;
 
     .tech-image {
         filter: grayscale(100%);

@@ -6,6 +6,7 @@ export const StyledBreadCrumbs = styled.ul`
     margin-top: 23px;
     gap: 5px;
     max-width: 300px;
+    list-style-type: none;
 
     .bread-crumb {
         width: 56px;

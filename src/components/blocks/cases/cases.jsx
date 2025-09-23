@@ -7,6 +7,7 @@ import Case2 from "@/assets/images/case2.png"
 import Case3 from "@/assets/images/case3.png"
 import Case4 from "@/assets/images/case4.png"
 import Case5 from "@/assets/images/case5.png"
+import Link from "next/link";
 
 export default function Cases() {
     return(
@@ -19,8 +20,8 @@ export default function Cases() {
                         <p className="info-theme">ПОРТАЛ</p>
                         <p className="info-theme">ЭКОСИСТЕМА ЗДОРОВЬЯ</p>
                     </div>
-                    <h1 className="info-title">Экосистема здоровья, маркетплейс,
-                    приложение «HealthHub»</h1>
+                    <Link className="info-title" href="/cases">Экосистема здоровья, маркетплейс,
+                    приложение «HealthHub»</Link>
                 </InfoBlock>
                 <InfoBlock Img={Case2} data={"17.08.2025 04:48"} views={"85"}>
                     <div className="theme-container">

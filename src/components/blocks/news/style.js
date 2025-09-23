@@ -65,6 +65,7 @@ export const StyledNews = styled.section`
         flex-wrap: wrap;
         gap: 13px;
         margin-bottom: 60px;
+        list-style-type: none;
     }
 
     .theme {

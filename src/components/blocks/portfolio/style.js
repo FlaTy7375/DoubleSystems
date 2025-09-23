@@ -17,6 +17,7 @@ export const StyledPortfolio = styled.section`
         display: flex;
         justify-content: space-between;
         margin-top: 40px;
+        list-style-type: none;
     }
 
     .item-title {
@@ -60,6 +61,7 @@ export const StyledThemes = styled.ul`
     display: flex;
     flex-wrap: wrap;
     gap: 13px;
+    list-style-type: none;
 
     .theme {
         display: flex;
