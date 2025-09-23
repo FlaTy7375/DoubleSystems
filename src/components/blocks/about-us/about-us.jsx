@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { StyledAboutUs } from "./style"
 import Person from "@/assets/images/Alex.png"
+import Link from 'next/link';
 
 export default function AboutUs() {
     return (
@@ -11,7 +12,7 @@ export default function AboutUs() {
             <div className="about-person">
                 <div className="person-container">
                     <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
-                    <button className="write-button">Написать</button>
+                    <Link className="write-button" href="/contacts">Написать</Link>
                 </div>
                 <h3 className="person-name">Егошин Алексей Валерьевич</h3>
                 <p className="person-role">директор Double Systems</p>

@@ -24,14 +24,14 @@ export default function Header() {
             <a className='nav-link'>Portfolio</a>
             <a className='nav-link'>Services</a>
             <Link className='nav-link' href="/blog">Blog</Link>
-            <a className='nav-link'>Contact Us</a>
+            <Link className='nav-link' href="/contacts">Contact Us</Link>
             <a className='nav-link'>What we do</a>
         </nav>
         <div className='lang-container'>
             <button className='active lang-button'>Ru</button>
             <button className='lang-button'>En</button>
         </div>
-        <button className='message-button'>Напишите нам!</button>
+        <Link className='message-button' href="/contacts">Напишите нам!</Link>
         <button className='menu-button'><span className='button-decor'></span></button>
     </StyledHeader>
     )

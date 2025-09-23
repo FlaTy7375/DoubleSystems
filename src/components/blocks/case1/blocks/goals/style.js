@@ -132,6 +132,9 @@ export const StyledGoals = styled.section`
     }
 
     .write-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 131px;
         height: 30px;
         background-color: rgba(255, 70, 0, 1);

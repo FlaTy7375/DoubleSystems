@@ -6,6 +6,7 @@ import ClientLayout from "@/assets/images/client-layout.png"
 import StrategyImage from "@/assets/images/strategy-image.png"
 import Person from "@/assets/images/Alex.png"
 import Iphone from "@/assets/images/iphone-repeat.png"
+import Link from "next/link"
 
 export default function Repeat() {
     return(
@@ -26,7 +27,7 @@ export default function Repeat() {
                 <div className="about-person">
                     <div className="person-container">
                         <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
-                        <button className="write-button">Написать</button>
+                        <Link className="write-button" href="/contacts">Написать</Link>
                     </div>
                     <h3 className="person-name">Егошин Алексей Валерьевич</h3>
                     <p className="person-role">директор Double Systems</p>
