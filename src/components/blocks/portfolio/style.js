@@ -67,7 +67,7 @@ export const StyledThemes = styled.ul`
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 21px;
+        padding: 0 20px;
         font-size: 12px;
         color: rgba(60, 60, 67, 0.6);
         background-color: rgba(241, 245, 249, 1);

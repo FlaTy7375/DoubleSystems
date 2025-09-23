@@ -29,7 +29,8 @@ export const StyledCaseAbout = styled.section`
         line-height: 175%;
     }
 
-    .project-description.decoration {
+    .project-description .decoration {
+        color: rgba(68, 75, 90, 1);
         font-weight: 700;
     }
 
@@ -96,7 +97,7 @@ export const StyledCaseAbout = styled.section`
         color: rgba(68, 75, 90, 1);
     }
 
-    .content-theme.decoration {
+    .content-theme .decoration {
         font-weight: 700;
     }
 

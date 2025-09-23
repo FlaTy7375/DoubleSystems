@@ -4,6 +4,7 @@ export const StyledCase1 = styled.main`
     max-width: 1760px;
     margin: 0 auto;
     margin-top: 30px;
+    margin-bottom: 84px;
 
     .link-container {
         display: flex;

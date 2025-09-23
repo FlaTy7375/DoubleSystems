@@ -4,6 +4,10 @@ import { StyledCase1 } from "./style"
 import Link from "next/link"
 import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs"
 import CaseAbout from "./blocks/about/about"
+import Goals from "./blocks/goals/goals"
+import Buisness from "./blocks/buisness/buisness"
+import Repeat from "./blocks/repeat-section/repeat"
+import Portfolio from "../portfolio/portfolio"
 
 export default function Case1() {
     return(
@@ -32,6 +36,10 @@ export default function Case1() {
                 <BreadCrumbs></BreadCrumbs>
             </div>
             <CaseAbout></CaseAbout>
+            <Goals></Goals>
+            <Buisness></Buisness>
+            <Repeat></Repeat>
+            <Portfolio></Portfolio>
         </StyledCase1>
     )
 }

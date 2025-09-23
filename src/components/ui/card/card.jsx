@@ -12,3 +12,5 @@ export default function Card({className ,children}) {
 // h2 - заголовок карточки
 // .card-description - для описания
 // .card-adv - для красных пунктов
+// .card-number - число
+// для самой карты класс light - если нужна светлая тема

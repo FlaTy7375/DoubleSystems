@@ -49,6 +49,7 @@ export const StyledFooter = styled.footer`
         display: flex;
         flex-direction: column;
         margin-top: 80px;
+        list-style-type: none;
     }
 
     .accordeon-list::before {
@@ -143,10 +144,6 @@ export const StyledFooter = styled.footer`
     .decoration.active::before,
     .decoration.active::after {
         background-color: rgba(240, 81, 63, 1);
-    }
-
-    .accordeon-item::after {
-        
     }
 
     .form-wrapper {
