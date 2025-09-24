@@ -20,4 +20,18 @@ export const StyledWeCreated = styled.section`
         row-gap: 30px;
         list-style-type: none;
     }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 80px;
+
+        .created-title {
+            font-size: 42px;
+            margin-bottom: 35px;
+        }
+
+        .card-list {
+            grid-template-columns: 1fr;
+        }
+    }
 `

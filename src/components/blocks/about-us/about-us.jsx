@@ -20,7 +20,7 @@ export default function AboutUs() {
                 <p className="person-description">Эксперт в области веб-разработки, мобильных решений и искусственного интеллекта</p>
             </div>
             <div className="about-container">
-                <p className="about-description">
+                <p className="about-description small">
                     Double Systems, команда экспертов с более чем 10-летним опытом в
                     разработке цифровых решений. Мы создаем высоконагруженные
                     веб-системы, мобильные приложения, AI-сервисы, видеосвязь и

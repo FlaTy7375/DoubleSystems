@@ -38,4 +38,24 @@ export const StyledCases = styled.section`
         color: rgba(255, 70, 0, 1);
         background-color: rgba(120, 120, 128, 0.12);
     }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 40px;
+
+        .cases-title {
+            font-size: 32px;
+            margin-bottom: 35px;
+        }
+
+        .cases-wrapper {
+            gap: 35px;
+        }
+
+        .cases-button {
+            width: 100%;
+            font-size: 15px;
+            padding: 0 28px;
+        }
+    }
 `

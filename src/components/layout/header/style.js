@@ -132,4 +132,21 @@ export const StyledHeader = styled.header`
         width: 100%;
         background-color: rgba(255, 70, 0, 1);
     }
+
+    @media (max-width: 756px) {
+        padding: 0 36px;
+
+        .header-nav, .header-phone, .lang-container, .social-link.search, .message-button {
+            display: none;
+        }
+
+        .menu-button::before, .menu-button::after, .button-decor {
+            background-color: rgba(47, 52, 63, 1);
+        }
+
+        .socials-list {
+            margin-left: auto;
+            margin-right: 30px;
+        }
+    }
 `

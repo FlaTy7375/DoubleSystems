@@ -97,4 +97,29 @@ export const StyledCard = styled.div`
         filter: blur(100px);
         z-index: 0;
     }
+
+    @media (max-width: 756px) {
+        padding: 27px 12px 80px 19px;
+        width: 100%;
+        height: auto;
+        min-height: 320px;
+        gap: 15px;
+
+        .blue-gradient, .green-gradient, .red-gradient {
+            width: 290px;
+            height: 120px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        .card-description {
+            font-size: 15px;
+        }
+
+        .card-adv {
+            font-size: 16px;
+        }
+    }
 `

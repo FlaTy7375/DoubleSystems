@@ -9,8 +9,8 @@ export default function Technology() {
             <h1 className="technology-title">Технологии</h1>
             <div className="technology-wrapper">
                 <div className="technology-directions">
-                    <p className="technology-direction">Backend</p>
-                    <p className="technology-direction">Frontend</p>
+                    <p className="technology-direction active">Backend:</p>
+                    <p className="technology-direction">Frontend:</p>
                     <p className="technology-direction">AI & Parsing:</p>
                 </div>
                 <TechnologyList></TechnologyList>

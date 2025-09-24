@@ -13,7 +13,7 @@ const largeTechImages = Array.from({ length: 14 }, (_, i) =>
 
 export default function TechnologyList() {
   return (
-    <div>
+    <div className="lists-wrapper">
       <StyledTechnologyList>
         {largeTechImages.map((src, index) => (
           <li key={index} className="tech-element">

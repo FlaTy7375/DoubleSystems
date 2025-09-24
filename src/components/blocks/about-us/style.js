@@ -8,16 +8,6 @@ export const StyledAboutUs = styled.section`
     margin-top: 122px;
     gap: 278px;
 
-    &::before {
-        position: absolute;
-        content: "";
-        width: 318px;
-        height: 3px;
-        background-color: rgba(47, 52, 63, 1);
-        top: 323px;
-        left: 0;
-    }
-
     .about-title {
         position: absolute;
         color: rgba(47, 52, 63, 1);
@@ -28,8 +18,19 @@ export const StyledAboutUs = styled.section`
     }
 
     .about-person {
+        position: relative;
         margin-top: 164px;
         max-width: 324px;
+    }
+
+    .about-person::before {
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 3px;
+        background-color: rgba(47, 52, 63, 1);
+        top: 160px;
+        left: 0;
     }
 
     .person-container {
@@ -92,5 +93,46 @@ export const StyledAboutUs = styled.section`
         line-height: 50px;
         letter-spacing: -1px;
         color: rgba(47, 52, 63, 1);
+    }
+
+    @media (max-width: 756px) {
+        flex-direction: column-reverse;
+        padding: 0 15px;
+        margin-top: 35px;
+        gap: 35px;
+
+
+    .about-title {
+        left: 15px;
+    }
+
+    .about-container {
+        margin-top: 66px;
+        gap: 30px;
+    }
+
+    .about-description {
+        color: rgba(68, 75, 90, 1);
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 165%;
+    }
+
+    .about-description.small {
+        font-weight: 450;
+    }
+
+    .about-person {
+        margin: 0 auto;
+        max-width: 100%;
+    }
+
+    &::before {
+        width: 324px;
+        top: auto;
+        left: 50%;
+        transform: translate(-50%, 0);
+        top: 160px;
+    }
     }
 `

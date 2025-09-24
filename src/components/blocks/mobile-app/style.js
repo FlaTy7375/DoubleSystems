@@ -20,4 +20,21 @@ export const StyledMobileApp = styled.section`
         background-image: url("./images/Mobile-section.jpg");
         background-position: 50% 10%;
     }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 47px;
+
+        .mobile-title {
+            font-size: 24px;
+            letter-spacing: -2px;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 440px;
+            background-size: 200%;
+            border-radius: 30px;
+        }
+    }
 `

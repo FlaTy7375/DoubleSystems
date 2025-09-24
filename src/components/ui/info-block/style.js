@@ -72,4 +72,33 @@ export const StyledInfoBlock = styled.section`
         font-size: 14px;
         color: rgba(68, 75, 90, 0.34);
     }
+
+    @media (max-width: 756px) {
+        max-width: 756px;
+        width: 100%;
+
+        .info-img {
+            width: 100%;
+            height: 360px;
+        }
+
+        .info-title {
+            font-size: 19px;
+        }
+
+        .theme-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .info-theme {
+            padding: 0 11px;
+            height: 22px;
+            font-size: 8px;
+        }
+
+        .info-data, .info-views {
+            font-size: 12px;
+        }
+    }
 `

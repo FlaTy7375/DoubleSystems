@@ -55,6 +55,10 @@ export const StyledPortfolio = styled.section`
     .item-link:hover {
         color: rgba(255, 70, 0, 1);
     }
+
+    @media (max-width: 756px) {
+        display: none;
+    }
 `
 
 export const StyledThemes = styled.ul`
@@ -78,5 +82,9 @@ export const StyledThemes = styled.ul`
 
     .theme:hover {
         color: rgba(255, 70, 0, 1);
+    }
+
+    @media (max-width: 756px) {
+        display: none;
     }
 `

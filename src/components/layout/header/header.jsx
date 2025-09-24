@@ -14,7 +14,7 @@ export default function Header() {
         <Link className='logo-link' href="/"><Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56"></Image></Link>
         <a className='header-phone' href='tel:8 800 543 22 44'>8 800 543 22 44</a>
         <ul className='socials-list'>
-            <li className='social-item'><a className='social-link' href='search'><Image src={SearchLogo} alt='Search'></Image></a></li>
+            <li className='social-item'><a className='social-link search' href='search'><Image src={SearchLogo} alt='Search'></Image></a></li>
             <li className='social-item'><a className='social-link' href='whatsapp'><Image src={WhatsAppLogo} alt='Whats app'></Image></a></li>
             <li className='social-item'><a className='social-link' href='telegram'><Image src={TgLogo} alt='Telegram'></Image></a></li>
         </ul>
