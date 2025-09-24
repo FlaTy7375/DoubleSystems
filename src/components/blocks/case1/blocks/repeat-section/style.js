@@ -223,4 +223,100 @@ export const StyledRepeat = styled.section`
         left: 43px;
         top: 40px;
     }
+
+    @media (max-width: 756px) {
+        margin-top: 0;
+
+        .about-person, .image-iphone, .project-description br, .image-container {
+            display: none;
+        }
+
+        .about-client {
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .client-image.tablet {
+            position: relative;
+            top: auto;
+            left: auto;
+            width: 100%;
+            height: auto;
+        }
+
+        .images-description {
+            font-size: 16px;
+        } 
+
+        .client-title {
+            margin-top: 35px;
+            font-size: 24px;
+        }
+
+        .client-subtitle, .client-description {
+            font-size: 20px;
+            line-height: 165%;
+        }
+
+        .client-image.layout {
+            width: 100%;
+            height: auto;
+            margin-top: 35px;
+        }
+
+        .images-description.layout {
+            margin-top: 15px;
+            margin-bottom: 80px;
+        }
+
+        .goals-wrapper {
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .client-image.layout {
+            width: 100%;
+            height: auto;
+        }
+
+        .container-title {
+            display: block;
+            font-size: 24px;
+            line-height: 135%;
+            max-width: 100%;
+        }
+
+        .container-description {
+            max-width: 100%;
+            font-size: 20px;
+        }
+
+        .strategy-title {
+            font-size: 32px;
+        }
+
+        .strategy-description {
+            font-size: 20px;
+        }
+
+        .process-description {
+            font-size: 20px;
+            line-height: 150%;
+        }
+
+        .text-container {
+            width: 100%;
+        }
+
+        .strategy-image {
+            width: 100%;
+            height: auto;
+        }
+
+        .process-description:not(:last-child) {
+            margin-bottom: 30px;
+        }
+
+
+    }
 `

@@ -39,4 +39,27 @@ export const StyledBuisness = styled.section`
     .card-wrapper .light h2 {
         color: #000;
     }
+
+    @media (max-width: 756px) {
+        margin-top: 40px;
+
+        .buisness-title {
+            font-size: 32px;
+            margin-bottom: 0;
+        }
+
+        .buisness-subtitle {
+            font-size: 30px;
+            margin-top: 10px;
+        }
+
+        .cards-list {
+            grid-template-columns: 1fr;
+            margin-bottom: 0px;
+        }
+
+        .card-wrapper h2 {
+            font-size: 24px;
+        }
+    }
 `

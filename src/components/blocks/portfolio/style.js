@@ -58,6 +58,22 @@ export const StyledPortfolio = styled.section`
 
     @media (max-width: 756px) {
         display: none;
+
+        &.case-portfolio {
+            display: flex;
+            flex-direction: column;
+            margin-top: 40px;
+        }
+
+        .portfolio-title {
+            font-size: 42px;
+            margin-bottom: 0;
+        }
+
+        .portfolio-list {
+            flex-direction: column;
+            gap: 25px;
+        }
     }
 `
 
@@ -86,5 +102,10 @@ export const StyledThemes = styled.ul`
 
     @media (max-width: 756px) {
         display: none;
+
+        .case-portfolio & {
+            display: flex;
+            margin-top: 40px;
+        }
     }
 `

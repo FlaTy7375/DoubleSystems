@@ -30,8 +30,8 @@ export default function News() {
                         <p className="info-theme">НОВОСТИ</p>
                         <p className="info-theme">АКЦИИ</p>
                     </div>
-                    <h1 className="info-title">Экосистема здоровья, маркетплейс,
-                    приложение «HealthHub»</h1>
+                    <Link className="info-title" href="/cases">Экосистема здоровья, маркетплейс,
+                    приложение «HealthHub»</Link>
                     <p className="info-description">Мы разрабатываем кроссплатформенное мобильное приложение,
                     которое станет универсальным инструментом для управления здоровьем, профессионального роста
                     специалистов и развития бизнеса нашего клиента.</p>

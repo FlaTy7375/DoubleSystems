@@ -3,9 +3,9 @@
 import { StyledPortfolio } from "./style";
 import Themes from "./themes";
 
-export default function Portfolio() {
+export default function Portfolio({className}) {
     return(
-        <StyledPortfolio>
+        <StyledPortfolio className={className}>
             <h1 className="portfolio-title">Портфолио</h1>
             <Themes></Themes>
             <ul className="portfolio-list">

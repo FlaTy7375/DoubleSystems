@@ -84,4 +84,35 @@ export const StyledNews = styled.section`
     .theme:hover {
         color: rgba(255, 70, 0, 1);
     }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 16px;
+
+        .news-link {
+            font-size: 13px;
+        }
+
+        .themes-title, .themes-list {
+            display: none;
+        }
+
+        .news-title {
+            margin-bottom: 40px;
+            font-size: 32px;
+            letter-spacing: -2px;
+        }
+
+        .news-wrapper {
+            margin-bottom: 40px;
+        }
+
+        .news-button {
+            margin-bottom: 40px;
+            padding: 0 20px;
+            max-width: 100%;
+            width: 100%;
+            font-size: 14px;
+        }
+    }
 `

@@ -76,7 +76,7 @@ export const StyledCaseAbout = styled.section`
     }
 
     .content-title {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         color: rgba(142, 142, 147, 1);
         letter-spacing: -5%;
@@ -125,12 +125,6 @@ export const StyledCaseAbout = styled.section`
         left: 125px;
     }
 
-    .client-image.phone {
-        position: absolute;
-        top: 88px;
-        right: 124px;
-    }
-
     .images-description {
         font-weight: 500;
         font-size: 15px;
@@ -176,5 +170,95 @@ export const StyledCaseAbout = styled.section`
     .images-description.layout {
         margin-top: 20px;
         margin-bottom: 66px;
+    }
+
+    .client-image.for-mobile {
+        display: none;
+    }
+
+    @media (max-width: 756px) {
+
+        .about-wrapper {
+            flex-direction: column;
+        }
+
+        .project-title {
+            letter-spacing: -5%;
+            margin-bottom: 30px;
+        }
+
+        .project-description {
+            font-size: 20px;
+            line-height: 135%;
+        }
+
+        .project-description br {
+            display: none;
+        }
+
+        .about-title {
+            font-size: 32px;
+            line-height: 135%;
+        }
+
+        .about-description {
+            font-size: 20px;
+            line-height: 165%;
+        }
+
+        .about-content {
+            margin-top: 40px;
+            max-width: 100%;
+        }
+
+        .content-list {
+            max-width: 100%;
+        }
+
+        .about-client {
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .client-image.tablet {
+            position: relative;
+            top: auto;
+            left: auto;
+            width: 100%;
+            height: auto;
+        }
+
+        .images-description {
+            font-size: 16px;
+        }
+
+        .client-image.for-mobile {
+            display: block;
+            width: 80%;
+            height: auto;
+            margin: 0 auto;
+            margin-top: 30px;
+        }   
+
+        .client-title {
+            margin-top: 35px;
+            font-size: 24px;
+        }
+
+        .client-subtitle, .client-description {
+            font-size: 20px;
+            line-height: 165%;
+        }
+
+        .client-image.layout {
+            width: 100%;
+            height: auto;
+            margin-top: 35px;
+        }
+
+        .images-description.layout {
+            margin-top: 15px;
+            margin-bottom: 80px;
+        }
     }
 `

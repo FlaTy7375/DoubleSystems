@@ -110,4 +110,173 @@ export const StyledCase1 = styled.main`
         background-color: rgba(255, 70, 0, 1);
         color: #fff;
     }
+
+    .about-person {
+        margin-top: 40px;
+        width: 456px;
+        padding-right: 124px;
+    }
+
+    .person-container {
+        position: relative;
+        display: flex;
+        gap: 42px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .person-container::before {
+        position: absolute;
+        content: "";
+        width: 318px;
+        height: 3px;
+        background-color: rgba(47, 52, 63, 1);
+        top: 160px;
+        left: 0;
+    }
+
+    .write-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 131px;
+        height: 30px;
+        background-color: rgba(255, 70, 0, 1);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .write-button:hover {
+        background-color: rgba(120, 120, 128, 0.12);
+        color: rgba(255, 70, 0, 1);
+    }
+
+    .person-name {
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .person-role {
+        font-weight: 400;
+        font-size: 16px;
+        margin-bottom: 23px;
+    }
+
+    .person-description {
+        font-weight: 400;
+        font-size: 16px;
+    }
+
+    .person-description:not(:last-child) {
+        margin-bottom: 20px;
+    }
+
+    .stamps-list.for-mobile, .container-title.for-mobile, .container-image, .about-person.for-mobile {
+        display: none;
+    }
+
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 15px;
+        margin-bottom: 60px;
+
+        .cases-link {
+            font-size: 13px;
+        }
+
+        .case-title {
+            font-size: 32px;
+            letter-spacing: -2px;
+            line-height: 125%;
+        }
+
+        .case-container {
+            padding: 20px 10px 52px 12px;
+        }
+
+        .container-title {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -5%;
+        }
+
+        .stamps-list, .container-title {
+            display: none;
+        }
+
+        .stamps-list.for-mobile {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 0;
+            margin-bottom: 9px;
+        }
+
+        .container-title.for-mobile, .container-image {
+            display: block;
+        }
+
+        .container-description {
+            margin-top: 10px;
+            font-size: 20px;
+            line-height: 27px;
+        }
+
+        .case-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            filter: none;
+            height: auto;
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
+        }
+
+        .container-image {
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .container-button {
+            background: linear-gradient(rgba(38, 49, 67, 1), rgba(11, 14, 21, 1));
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .container-button:hover {
+            background: linear-gradient(rgb(61, 73, 93), rgb(52, 62, 87));
+        }
+
+        .case-container::before {
+            position: absolute;
+            content: "";
+            width: 406px;
+            height: 680px;
+            background-image: url("/images/left-leaf.svg");
+            background-repeat: no-repeat;
+            top: -10px;
+            left: 0;
+            z-index: -1;
+        }
+
+        .card-description {
+            font-size: 15px;
+        }
+
+        .about-person.for-mobile {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-right: 0;
+        }
+
+        .person-container::before {
+            width: 100%;
+        }
+    }
 `

@@ -251,4 +251,85 @@ export const StyledGoals = styled.section`
     .process-description:not(:last-child) {
         margin-bottom: 60px;
     }
+
+    @media (max-width: 756px) {
+        .about-person {
+            display: none;
+        }
+
+        .goals-title {
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .goals-description {
+            font-size: 20px;
+            letter-spacing: -1px;
+        }
+
+        .cards-list {
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .client-title {
+            font-size: 24px;
+            margin-bottom: 35px;
+        }
+
+        .client-subtitle, .client-description {
+            font-size: 20px;
+            line-height: 165%;
+        }
+
+        .container-description {
+            font-size: 20px;
+            line-height: 165%;
+            max-width: 100%;
+        }
+
+        .text-container {
+            width: 100%;
+        }
+
+        .goals-wrapper {
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .client-image.layout {
+            width: 100%;
+            height: auto;
+        }
+
+        .container-title {
+            display: block;
+            font-size: 24px;
+            line-height: 135%;
+            max-width: 100%;
+        }
+
+        .strategy-title {
+            font-size: 32px;
+        }
+
+        .strategy-description {
+            font-size: 20px;
+        }
+
+        .process-description {
+            font-size: 20px;
+            line-height: 150%;
+        }
+
+        .strategy-image {
+            width: 100%;
+            height: auto;
+        }
+
+        .process-description:not(:last-child) {
+            margin-bottom: 30px;
+        }
+    }
 `

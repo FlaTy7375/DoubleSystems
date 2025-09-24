@@ -2,8 +2,8 @@
 
 import { StyledCaseAbout } from "./style"
 import Image from "next/image"
-import CaseTablet from "@/assets/images/case-tablet.png"
-import CasePhone from "@/assets/images/case-phone.png"
+import TabletAndPhone from "@/assets/images/tablet-phone-about.png"
+import Phone from "@/assets/images/case-about-mobile.png"
 import ClientImage from "@/assets/images/client-image.png"
 
 export default function CaseAbout() {
@@ -66,10 +66,10 @@ export default function CaseAbout() {
                     <button className="content-button"></button>
                 </div>
                 <div className="about-client">
-                    <Image className="client-image tablet" src={CaseTablet} alt="Изображение планшета" width={860} height={612}></Image>
-                    <Image className="client-image phone" src={CasePhone} alt="Изображение телефона" width={246} height={495}></Image>
+                    <Image className="client-image tablet" src={TabletAndPhone} alt="Изображение планшета и телефона" width={996} height={612}></Image>
                     <p className="images-description">Веб-платформа и мобильное приложение,
                     объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
+                    <Image className="client-image for-mobile" src={Phone} alt="Изображение телефона" width={320} height={653}></Image>
                     <h1 className="client-title">О клиенте и задаче: Преодоление фрагментации рынка HealthTech</h1>
                     <h2 className="client-subtitle">Клиент: Инновационный медицинский холдинг, стремящийся
                     к цифровой трансформации своих услуг и выходу на широкий B2C-рынок.</h2>
