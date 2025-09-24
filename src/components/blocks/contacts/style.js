@@ -170,4 +170,53 @@ export const StyledContactsForm = styled.main`
         letter-spacing: -3px;
         color: rgba(47, 52, 63, 1);
     }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        margin-top: 14px;
+        margin-bottom: 60px;
+
+        .tegs-title {
+            display: none;
+        }
+
+        .cases-link {
+            font-size: 13px;
+        }
+
+        .contacts-title {
+            margin-bottom: 40px;
+            font-size: 32px;
+            letter-spacing: -2px;
+        }
+
+        .contacts-wrapper {
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .contacts-list {
+            width: 100%;
+        }
+
+        .contacts-info {
+            line-height: 153%;
+        }
+
+        .form-title {
+            line-height: 40px;
+        }
+
+        .form-list {
+            margin-top: 10px;
+        }
+
+        .contacts-form {
+            width: 100%;
+        }
+
+        .form-button {
+            margin-top: 36px;
+        }
+    }
 `
