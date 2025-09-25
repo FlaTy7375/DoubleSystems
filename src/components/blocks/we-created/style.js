@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledWeCreated = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 170px;
 
@@ -19,6 +20,16 @@ export const StyledWeCreated = styled.section`
         column-gap: 41px;
         row-gap: 30px;
         list-style-type: none;
+    }
+
+    @media (max-width: 1799px) {
+        margin-top: 80px;
+    }
+
+    @media (max-width: 1279px) {
+        .card-list {
+            grid-template-columns: 1fr;
+        }
     }
 
     @media (max-width: 756px) {

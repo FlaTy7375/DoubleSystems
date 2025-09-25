@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const StyledAboutUs = styled.section`
     position: relative;
     display: flex;
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 122px;
     gap: 278px;
@@ -13,7 +14,7 @@ export const StyledAboutUs = styled.section`
         color: rgba(47, 52, 63, 1);
         font-weight: 700;
         font-size: 24px;
-        left: 0;
+        left: 20px;
         top: 0;
     }
 
@@ -93,6 +94,21 @@ export const StyledAboutUs = styled.section`
         line-height: 50px;
         letter-spacing: -1px;
         color: rgba(47, 52, 63, 1);
+    }
+
+    @media (max-width: 1799px) {
+        gap: 100px;
+    }
+
+    @media (max-width: 1279px) {
+        flex-direction: column;
+        gap: 50px;
+        margin-top: 60px;
+
+        .about-person {
+            margin-top: 80px;
+            max-width: fit-content;
+        }
     }
 
     @media (max-width: 756px) {

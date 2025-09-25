@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledBuisness = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 80px;
 
@@ -40,8 +41,20 @@ export const StyledBuisness = styled.section`
         color: #000;
     }
 
+    @media (max-width: 1799px) {
+        padding: 0;
+    }
+
+    @media (max-width: 1279px) {
+        .cards-list {
+            grid-template-columns: 1fr;
+            margin-bottom: 0;
+        }
+    }
+
     @media (max-width: 756px) {
         margin-top: 40px;
+        padding: 0;
 
         .buisness-title {
             font-size: 32px;

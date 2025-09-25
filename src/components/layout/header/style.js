@@ -133,6 +133,29 @@ export const StyledHeader = styled.header`
         background-color: rgba(255, 70, 0, 1);
     }
 
+    @media (max-width: 1799px) {
+        padding: 0 36px;
+
+        .header-phone, .message-button {
+            display: none;
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .header-nav {
+            display: none;
+        }
+
+        .socials-list {
+            margin-left: 30px;
+        }
+
+        .lang-container {
+            margin-left: auto;
+            margin-right: 30px;
+        }
+    }
+
     @media (max-width: 756px) {
         padding: 0 36px;
 

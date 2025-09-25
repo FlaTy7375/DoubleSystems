@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const StyledNews = styled.section`
     margin: 0 auto;
     margin-top: 30px;
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
 
     .link-container {
         display: flex;
@@ -85,6 +86,19 @@ export const StyledNews = styled.section`
         color: rgba(255, 70, 0, 1);
     }
 
+    @media (max-width: 1799px) {
+        .news-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .news-wrapper {
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        }
+    }
+
     @media (max-width: 756px) {
         padding: 0 15px;
         margin-top: 16px;
@@ -104,6 +118,7 @@ export const StyledNews = styled.section`
         }
 
         .news-wrapper {
+            grid-template-columns: 1fr;
             margin-bottom: 40px;
         }
 

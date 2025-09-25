@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledCases = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 140px;
 
@@ -39,6 +40,22 @@ export const StyledCases = styled.section`
         background-color: rgba(120, 120, 128, 0.12);
     }
 
+    @media (max-width: 1799px) {
+        margin-top: 80px;
+
+        .cases-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .cases-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        }
+    }
+
     @media (max-width: 756px) {
         padding: 0 15px;
         margin-top: 40px;
@@ -49,6 +66,8 @@ export const StyledCases = styled.section`
         }
 
         .cases-wrapper {
+            display: flex;
+            flex-wrap: wrap;
             gap: 35px;
         }
 

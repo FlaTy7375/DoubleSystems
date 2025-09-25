@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledPortfolio = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 92px;
 
@@ -56,6 +57,19 @@ export const StyledPortfolio = styled.section`
         color: rgba(255, 70, 0, 1);
     }
 
+    @media (max-width: 1279px) {
+        &.case-portfolio {
+            margin-top: 50px;
+            padding: 0;
+        }
+
+        .portfolio-list {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+    }
+
     @media (max-width: 756px) {
         display: none;
 
@@ -63,6 +77,7 @@ export const StyledPortfolio = styled.section`
             display: flex;
             flex-direction: column;
             margin-top: 40px;
+            padding: 0;
         }
 
         .portfolio-title {

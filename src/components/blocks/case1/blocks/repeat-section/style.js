@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledRepeat = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 128px;
 
@@ -224,8 +225,55 @@ export const StyledRepeat = styled.section`
         top: 40px;
     }
 
+    @media (max-width: 1799px) {
+        padding: 0;
+
+        .goals-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .client-image.layout, .strategy-image, .image-container {
+            width: 100%;
+            height: auto;
+        }
+
+        .about-person {
+            width: 100%;
+            padding-right: 0;
+        }
+
+        .text-container {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 1279px) { 
+        margin-top: 50px;
+
+        .goals-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .container-title, .container-description, .strategy-description {
+            max-width: none;
+        }
+
+        .image-iphone {
+            position: relative;
+            left: auto;
+            top: auto;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+        }
+    }
+
     @media (max-width: 756px) {
         margin-top: 0;
+        padding: 0;
 
         .about-person, .image-iphone, .project-description br, .image-container {
             display: none;
@@ -270,6 +318,7 @@ export const StyledRepeat = styled.section`
         }
 
         .goals-wrapper {
+            display: flex;
             flex-direction: column;
             gap: 30px;
         }

@@ -98,6 +98,11 @@ export const StyledCard = styled.div`
         z-index: 0;
     }
 
+        @media (max-width: 1799px) { 
+            width: auto;
+            padding-bottom: 20px;
+        }
+
     @media (max-width: 756px) {
         padding: 27px 12px 80px 19px;
         width: 100%;

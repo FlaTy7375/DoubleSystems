@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 export const StyledGoals = styled.section`
     margin: 0 auto;
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
 
     .goals-title {
         font-size: 42px;
@@ -124,7 +125,7 @@ export const StyledGoals = styled.section`
     .person-container::before {
         position: absolute;
         content: "";
-        width: 318px;
+        width: 100%;
         height: 3px;
         background-color: rgba(47, 52, 63, 1);
         top: 160px;
@@ -252,7 +253,61 @@ export const StyledGoals = styled.section`
         margin-bottom: 60px;
     }
 
+    @media (max-width: 1799px) {
+        padding: 0;
+
+        .goals-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .cards-list {
+            margin-bottom: 30px;
+        }
+
+        .client-image.layout {
+            width: 100%;
+            height: auto;
+        }
+
+        .about-person {
+            width: 100%;
+            padding-right: 0;
+        }
+
+        .strategy-image {
+            width: 100%;
+            height: auto;
+        }
+
+        .text-container {
+            width: 100%;
+        }
+
+        .container-title, .container-description, .strategy-description {
+            max-width: none;
+        }
+
+        
+    }
+
+    @media (max-width: 1279px) { 
+        .cards-list {
+            grid-template-columns: 1fr;
+        }
+
+        .goals-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .about-person {
+            width: fit-content;
+        }
+    }
+
     @media (max-width: 756px) {
+        padding: 0;
+
         .about-person {
             display: none;
         }
@@ -294,6 +349,7 @@ export const StyledGoals = styled.section`
         }
 
         .goals-wrapper {
+            display: flex;
             flex-direction: column;
             gap: 30px;
         }

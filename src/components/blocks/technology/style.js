@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledTechnology = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 104px;
     padding-bottom: 152px;
@@ -29,6 +30,10 @@ export const StyledTechnology = styled.section`
     .technology-direction {
         font-size: 24px;
         color: rgba(214, 214, 214, 1);
+    }
+
+    @media (max-width: 1799px) {
+        padding-bottom: 80px;
     }
 
     @media (max-width: 756px) {

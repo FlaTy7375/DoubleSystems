@@ -296,6 +296,41 @@ export const StyledFooter = styled.footer`
         transform: translate(-50%, 0%);
     }
 
+    @media (max-width: 1799px) {
+        .footer-container.dark {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .decor-text {
+            width: 100%;
+            max-width: 1608px;
+            left: auto;
+            transform: none;
+            text-align: center;
+            bottom: -35px;
+            font-size: 150px;
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .form-wrapper {
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .footer-info {
+            margin-top: 0;
+            max-width: none;
+        }
+
+        .decor-text {
+            width: 100%;
+            font-size: 110px;
+            left: 0;
+        }
+    }
+
     @media (max-width: 756px) {
 
         .footer-wrapper {

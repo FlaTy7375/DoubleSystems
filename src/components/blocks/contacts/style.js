@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledContactsForm = styled.main`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 20px;
     margin-bottom: 68px;
@@ -114,7 +115,7 @@ export const StyledContactsForm = styled.main`
         height: 60px;
         border: none;
         border-bottom: 1px solid rgba(37, 37, 37, 1);
-        color: #fff;
+        color: #000;
         background-color: transparent;
         cursor: pointer;
     }
@@ -169,6 +170,27 @@ export const StyledContactsForm = styled.main`
         font-size: 50px;
         letter-spacing: -3px;
         color: rgba(47, 52, 63, 1);
+    }
+
+    @media (max-width: 1799px) {
+        .contacts-wrapper {
+            gap: 40px;
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .contacts-wrapper {
+            flex-direction: column;
+        }
+
+        .contacts-list {
+            width: 100%;
+        }
+
+        .contacts-form {
+            margin-left: 0;
+            width: 100%;
+        }
     }
 
     @media (max-width: 756px) {

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledCase1 = styled.main`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 30px;
     margin-bottom: 84px;
@@ -179,6 +180,48 @@ export const StyledCase1 = styled.main`
         display: none;
     }
 
+    @media (max-width: 1799px) {
+        .case-container {
+            background-size: 180%;
+            border: 2px solid rgb(190, 191, 193);
+        }
+    }
+
+    @media (max-width: 1279px) {
+        .case-container {
+            overflow: hidden;
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
+            border: none;
+            filter: none;
+            padding-right: 40px;
+        }
+
+        .stamps-list {
+            flex-wrap: wrap;
+        }
+
+        .container-image {
+            display: block;
+        }
+
+        .container-image {
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .container-title, .container-description {
+            max-width: none;
+        }
+
+        .container-button {
+            width: 100%;
+            max-width: 780px;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+    }
 
     @media (max-width: 756px) {
         padding: 0 15px;
@@ -196,6 +239,7 @@ export const StyledCase1 = styled.main`
         }
 
         .case-container {
+            border: none;
             padding: 20px 10px 52px 12px;
         }
 
@@ -216,7 +260,7 @@ export const StyledCase1 = styled.main`
             margin-bottom: 9px;
         }
 
-        .container-title.for-mobile, .container-image {
+        .container-title.for-mobile {
             display: block;
         }
 

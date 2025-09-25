@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledMobileApp = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 113px;
 
@@ -19,6 +20,17 @@ export const StyledMobileApp = styled.section`
         height: 706px;
         background-image: url("./images/Mobile-section.jpg");
         background-position: 50% 10%;
+    }
+
+    @media (max-width: 1799px) {
+        .image-container {
+            width: 100%;
+            
+        }
+    }
+
+    @media (max-width: 1279px) {
+        margin-top: 60px;
     }
 
     @media (max-width: 756px) {

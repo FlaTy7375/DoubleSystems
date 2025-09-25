@@ -65,6 +65,7 @@ export default function Goals() {
                 </li>
             </ul>
             <div className="goals-wrapper">
+                <div className="decorate-block"></div>
                 <div className="about-client">
                     <h1 className="client-title">О клиенте и задаче: Преодоление фрагментации рынка HealthTech</h1>
                     <h2 className="client-subtitle">Клиент: Инновационный медицинский холдинг, стремящийся

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StyledInfoBlock = styled.section`
+export const StyledInfoBlock = styled.div`
     max-width: 562px;
 
     .info-img {
@@ -9,8 +9,8 @@ export const StyledInfoBlock = styled.section`
 
     .info-title {
         font-size: 30px;
-        margin-top: 10px;
         color: rgba(38, 49, 67, 1);
+        cursor: pointer;
     }
 
     .info-title:hover {
@@ -28,6 +28,7 @@ export const StyledInfoBlock = styled.section`
         display: flex;
         gap: 13px;
         margin-top: 13px;
+        margin-bottom: 10px;
     }
 
     .info-theme {
@@ -71,6 +72,16 @@ export const StyledInfoBlock = styled.section`
     .info-data, .info-views {
         font-size: 14px;
         color: rgba(68, 75, 90, 0.34);
+    }
+
+    @media (max-width: 1799px) {
+        max-width: none;
+        width: 100%;
+
+        .info-img {
+            width: 100%;
+            object-fit: cover;
+        }
     }
 
     @media (max-width: 756px) {

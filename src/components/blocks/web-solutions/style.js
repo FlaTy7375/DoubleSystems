@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const StyledWebSolutions = styled.section`
-    max-width: 1760px;
+    max-width: 1800px;
+    padding: 0 20px;
     margin: 0 auto;
     margin-top: 132px;
 
@@ -118,6 +119,35 @@ export const StyledWebSolutions = styled.section`
         display: none;
     }
 
+    @media (max-width: 1799px) {
+        margin-top: 80px;
+
+        .container-image {
+            width: 40%;
+            height: auto;
+            left: 50%;
+            top: 20%;
+        }
+
+        .solutions-container {
+            overflow: hidden;
+        }
+
+        .container-description, .container-title.for-pc, .stamps-list.for-pc {
+            max-width: 50%;
+        }
+    }
+
+    @media (max-width: 1490px) {
+        .container-image {
+            display: none;
+        }
+
+        .container-description, .container-title.for-pc, .stamps-list.for-pc {
+            max-width: 90%;
+        }
+    }
+
     @media (max-width: 756px) {
         padding: 0 14px;
         margin-top: 40px;
@@ -170,6 +200,7 @@ export const StyledWebSolutions = styled.section`
         }
 
         .container-image {
+            display: block;
             position: relative;
             width: 90%;
             height: auto;
