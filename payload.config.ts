@@ -15,7 +15,7 @@ const contentBlocks = [
       {
         name: 'text',
         label: 'Текст',
-        type: 'richText',
+        type: 'richText' as const,
         editor: lexicalEditor(),
       },
     ],
@@ -30,14 +30,14 @@ const contentBlocks = [
       {
         name: 'image',
         label: 'Изображение',
-        type: 'upload',
+        type: 'upload' as const,
         relationTo: 'media',
         required: true,
       },
       {
         name: 'caption',
         label: 'Подпись',
-        type: 'text',
+        type: 'text' as const,
       },
     ],
   },
@@ -49,7 +49,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    migrationDir: path.resolve(__dirname, 'migrations'), // Исправлено ранее
+    migrationDir: path.resolve(__dirname, 'migrations'),
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
