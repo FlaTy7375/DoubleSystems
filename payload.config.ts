@@ -49,7 +49,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    migrationDir: path.resolve(__dirname, 'migrations'), // Исправлено: строка с путем
+    migrationDir: path.resolve(__dirname, 'migrations'), // Исправлено ранее
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
@@ -58,10 +58,6 @@ export default buildConfig({
     meta: {
       titleSuffix: ' - Double Systems CMS',
     },
-  },
-
-  upload: {
-    staticDir: path.resolve(__dirname, '../media'),
   },
 
   graphQL: { disable: true },
@@ -135,7 +131,7 @@ export default buildConfig({
       ],
     },
 
-   // 5. БЛОГ
+    // 5. БЛОГ
     {
       slug: 'posts',
       labels: { singular: 'Запись блога', plural: 'Блог' },
@@ -193,7 +189,7 @@ export default buildConfig({
       labels: { singular: 'Вопрос-Ответ', plural: 'FAQ' },
       fields: [
         { name: 'question', label: 'Вопрос', type: 'text', required: true },
-        { name: 'answer', label: 'Ответ', type: 'richText', required: true, editor: lexicalEditor(), },
+        { name: 'answer', label: 'Ответ', type: 'richText', required: true, editor: lexicalEditor() },
         { name: 'order', label: 'Порядок вывода', type: 'number', admin: { position: 'sidebar' } },
       ],
     },
@@ -208,7 +204,13 @@ export default buildConfig({
         { name: 'name', label: 'Имя', type: 'text', required: true },
         { name: 'email', label: 'Email', type: 'email', required: true },
         { name: 'message', label: 'Сообщение', type: 'textarea' },
-        { name: 'status', label: 'Статус заявки', type: 'select', options: ['Новая', 'В работе', 'Закрыта'], defaultValue: 'Новая' },
+        {
+          name: 'status',
+          label: 'Статус заявки',
+          type: 'select',
+          options: ['Новая', 'В работе', 'Закрыта'],
+          defaultValue: 'Новая',
+        },
       ],
     },
   ],
@@ -344,7 +346,7 @@ export default buildConfig({
               name: 'answer',
               label: 'Ответ',
               type: 'richText',
-              editor: lexicalEditor(), 
+              editor: lexicalEditor(),
               required: true,
             },
           ],
@@ -363,13 +365,13 @@ export default buildConfig({
           defaultValue: 'Новости компании',
         },
         {
-            name: 'themesList',
-            label: 'Список тем для фильтрации',
-            type: 'array',
-            minRows: 1,
-            fields: [
-                { name: 'themeName', label: 'Название темы', type: 'text', required: true },
-            ],
+          name: 'themesList',
+          label: 'Список тем для фильтрации',
+          type: 'array',
+          minRows: 1,
+          fields: [
+            { name: 'themeName', label: 'Название темы', type: 'text', required: true },
+          ],
         },
         {
           name: 'posts',
@@ -386,12 +388,12 @@ export default buildConfig({
               relationTo: 'media',
               required: true,
             },
-            { 
-              name: 'date', 
-              label: 'Дата публикации', 
-              type: 'date', 
-              required: true, 
-              admin: { date: { pickerAppearance: 'dayAndTime' } } 
+            {
+              name: 'date',
+              label: 'Дата публикации',
+              type: 'date',
+              required: true,
+              admin: { date: { pickerAppearance: 'dayAndTime' } },
             },
             { name: 'views', label: 'Просмотры', type: 'number', defaultValue: 85 },
             {
@@ -406,57 +408,59 @@ export default buildConfig({
     },
     // Портфолио
     {
-        slug: 'portfolio',
-        label: 'Страница Портфолио',
-        fields: [
-            {
-                name: 'title',
-                label: 'Заголовок страницы (H1)',
-                type: 'text',
-                required: true,
-            },
-            
-            { 
-                name: 'introContent', 
-                label: 'Вступительное описание (Rich Text)', 
-                type: 'richText',
-                editor: lexicalEditor(), 
-            },
-
-            // Список всех проектов (ссылается на коллекцию 'cases')
-            {
-                name: 'projectsList',
-                label: 'Список проектов для отображения',
-                type: 'relationship',
-                relationTo: 'cases', // Связь с существующей коллекцией 'cases'
-                hasMany: true, // Позволяет выбрать несколько проектов
-            },
-
-            // Поле для "Технологический стек" (пример структуры)
-            {
-                name: 'technologyStack',
-                label: 'Технологический стек',
-                type: 'array',
-                fields: [
-                    { name: 'techName', label: 'Название технологии (TC1)', type: 'text' },
-                ],
-            },
-            
-            // Дополнительный Rich Text блок, например, для секции "О нас (опыт, технологии, подход)"
-            { 
-                name: 'aboutSection', 
-                label: 'Секция "О нас/Подход" (Rich Text)', 
-                type: 'richText',
-                editor: lexicalEditor(),
-            },
-        ],
+      slug: 'portfolio',
+      label: 'Страница Портфолио',
+      fields: [
+        {
+          name: 'title',
+          label: 'Заголовок страницы (H1)',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'introContent',
+          label: 'Вступительное описание (Rich Text)',
+          type: 'richText',
+          editor: lexicalEditor(),
+        },
+        // Список всех проектов (ссылается на коллекцию 'cases')
+        {
+          name: 'projectsList',
+          label: 'Список проектов для отображения',
+          type: 'relationship',
+          relationTo: 'cases',
+          hasMany: true,
+        },
+        // Поле для "Технологический стек" (пример структуры)
+        {
+          name: 'technologyStack',
+          label: 'Технологический стек',
+          type: 'array',
+          fields: [
+            { name: 'techName', label: 'Название технологии (TC1)', type: 'text' },
+          ],
+        },
+        // Дополнительный Rich Text блок, например, для секции "О нас (опыт, технологии, подход)"
+        {
+          name: 'aboutSection',
+          label: 'Секция "О нас/Подход" (Rich Text)',
+          type: 'richText',
+          editor: lexicalEditor(),
+        },
+      ],
     },
     // О КОМПАНИИ
     {
       slug: 'about-us',
       label: 'О компании',
       fields: [
-        { name: 'mainContent', label: 'Основное содержание страницы', type: 'richText', required: true, editor: lexicalEditor(), },
+        {
+          name: 'mainContent',
+          label: 'Основное содержание страницы',
+          type: 'richText',
+          required: true,
+          editor: lexicalEditor(),
+        },
       ],
     },
   ],
