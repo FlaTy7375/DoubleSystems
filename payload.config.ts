@@ -50,8 +50,10 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/postgres', // Запасной URI для локальной разработки
       ssl: process.env.NODE_ENV !== 'production' ? { rejectUnauthorized: false } : undefined,
     },
+    
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),
+  
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
   admin: {
