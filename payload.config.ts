@@ -50,9 +50,12 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
+  migrationDir: { // ✅ Исправлено на migrationDir
+    autoRun: false,
+  },
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  secret: process.env.PAYLOAD_SECRET,
+  secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
   admin: {
     user: 'users',
     meta: {
