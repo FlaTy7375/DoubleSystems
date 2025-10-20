@@ -1,7 +1,6 @@
 import path from 'path';
 import { buildConfig } from 'payload';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { slateEditor } from '@payloadcms/richtext-slate';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 
 // --- БЛОКИ ДЛЯ КОНТЕНТА КЕЙСОВ И БЛОГА ---
@@ -50,9 +49,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-  migrationDir: { // ✅ Исправлено на migrationDir
-    autoRun: false,
-  },
+    migrationDir: path.resolve(__dirname, 'migrations'), // Исправлено: строка с путем
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
@@ -216,8 +213,8 @@ export default buildConfig({
     },
   ],
 
-globals: [
-  // Главная
+  globals: [
+    // Главная
     {
       slug: 'home',
       label: 'Главная страница',
