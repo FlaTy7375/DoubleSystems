@@ -50,9 +50,6 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    migration: {
-      autoRun: false,
-    },
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET,
