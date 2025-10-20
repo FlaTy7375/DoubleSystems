@@ -22,6 +22,20 @@ export const StyledNews = styled.section`
         color: rgba(46, 46, 46, 1);
     }
 
+    .all-news {
+        margin-top: 15px;
+        padding: 10px 20px; 
+        background-color: #393939ff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .all-news:hover {
+        background-color: rgba(92, 92, 92, 1);
+    }
+
     .news-wrapper {
         display: flex;
         flex-wrap: wrap;

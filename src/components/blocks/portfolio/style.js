@@ -16,7 +16,7 @@ export const StyledPortfolio = styled.section`
 
     .portfolio-list {
         display: flex;
-        justify-content: space-between;
+        gap: 30px;
         margin-top: 40px;
         list-style-type: none;
     }
@@ -26,6 +26,8 @@ export const StyledPortfolio = styled.section`
         font-size: 24px;
         color: rgba(47, 52, 63, 1);
         margin-bottom: 24px;
+        max-width: 300px;
+        word-wrap: break-word;
     }
 
     .item-container {
@@ -51,6 +53,8 @@ export const StyledPortfolio = styled.section`
         font-size: 18px;
         color: rgba(47, 52, 63, 1);
         cursor: pointer;
+        max-width: 300px;
+        word-wrap: break-word;
     }
 
     .item-link:hover {

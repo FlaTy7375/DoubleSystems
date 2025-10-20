@@ -9,7 +9,8 @@ export const StyledCard = styled.div`
     background: linear-gradient(162deg, rgba(38, 49, 67, 1), rgba(11, 14, 21, 1));
     border-radius: 8px;
     width: 858px;
-    height: 329px;
+    height: auto;
+    min-height: 329px;
     overflow: hidden;
 
     &.light {

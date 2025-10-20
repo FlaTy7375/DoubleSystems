@@ -21,7 +21,7 @@ export default function Header() {
         <nav className='header-nav'>
             <a className='nav-link'>Prices</a>
             <Link className='nav-link' href="/">About Us</Link>
-            <a className='nav-link'>Portfolio</a>
+            <a className='nav-link'  href="/portfolio">Portfolio</a>
             <a className='nav-link'>Services</a>
             <Link className='nav-link' href="/blog">Blog</Link>
             <Link className='nav-link' href="/contacts">Contact Us</Link>

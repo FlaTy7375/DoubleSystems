@@ -10,6 +10,7 @@ export const StyledCases = styled.section`
         margin-bottom: 28px;
         font-size: 50px;
         letter-spacing: -2px;
+        word-wrap: break-word;
     }
 
     .cases-wrapper {

@@ -11,6 +11,8 @@ export const StyledInfoBlock = styled.div`
         font-size: 30px;
         color: rgba(38, 49, 67, 1);
         cursor: pointer;
+        word-wrap: break-word;
+        word-break: break-all;
     }
 
     .info-title:hover {
@@ -22,6 +24,8 @@ export const StyledInfoBlock = styled.div`
         font-weight: 400;
         font-size: 16px;
         letter-spacing: -1px;
+        word-wrap: break-word;
+        word-break: break-all;
     }
 
     .theme-container {

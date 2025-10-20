@@ -7,11 +7,13 @@ export const StyledWebSolutions = styled.section`
     margin-top: 132px;
 
     .solutions-title {
+        max-width: 100%;
         margin-bottom: 57px;
         font-size: 50px;
         font-weight: 700;
         letter-spacing: -3px;
         color: rgba(47, 52, 63, 1);
+        word-wrap: break-word;
     }
 
     .solutions-container {
@@ -56,6 +58,7 @@ export const StyledWebSolutions = styled.section`
         letter-spacing: -3px;
         color: rgba(68, 75, 90, 1);
         max-width: 728px;
+        word-wrap: break-word;
     }
 
     .stamps-list {
@@ -86,6 +89,7 @@ export const StyledWebSolutions = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         max-width: 728px;
+        word-wrap: break-word;
     }
 
     .container-button {
@@ -111,22 +115,51 @@ export const StyledWebSolutions = styled.section`
 
     .container-image {
         position: absolute;
-        right: 95px;
-        bottom: 17px;
+        width: 50%;
+        height: auto;
+        top: 50%; 
+        right: -230px;
+        transform: translate(-50%, -50%);
     }
 
     .stamps-list.for-mobile, .container-title.for-mobile {
         display: none;
     }
 
+    .solutions-container {
+    position: relative; // Для позиционирования кнопок
+  }
+
+  .slider-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+
+    &.prev {
+      left: 10px;
+    }
+
+    &.next {
+      right: 10px;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+
     @media (max-width: 1799px) {
         margin-top: 80px;
 
         .container-image {
-            width: 40%;
-            height: auto;
-            left: 50%;
-            top: 20%;
+
         }
 
         .solutions-container {
@@ -134,7 +167,7 @@ export const StyledWebSolutions = styled.section`
         }
 
         .container-description, .container-title.for-pc, .stamps-list.for-pc {
-            max-width: 50%;
+            max-width: 500px;
         }
     }
 
@@ -201,13 +234,13 @@ export const StyledWebSolutions = styled.section`
 
         .container-image {
             display: block;
-            position: relative;
-            width: 90%;
+            position: unset;
+            transform: none;
+            max-width: 100%;
+            width: auto;
             height: auto;
             margin: 0 auto;
             margin-top: 20px;
-            left: auto;
-            right: auto;
         }
     }
 `

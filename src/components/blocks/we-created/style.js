@@ -12,6 +12,7 @@ export const StyledWeCreated = styled.section`
         font-weight: 600;
         letter-spacing: -2px;
         margin-bottom: 42px;
+        word-wrap: break-word;
     }
 
     .card-list {

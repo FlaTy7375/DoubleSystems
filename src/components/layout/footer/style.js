@@ -82,7 +82,7 @@ export const StyledFooter = styled.footer`
     }
 
     .accordeon-item.active .accordeon-content {
-        max-height: 200px;
+        max-height: none;
         transition: max-height 0.4s ease-in;
     }
 

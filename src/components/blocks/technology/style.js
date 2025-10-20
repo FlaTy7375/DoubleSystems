@@ -17,6 +17,7 @@ export const StyledTechnology = styled.section`
         font-size: 50px;
         letter-spacing: -2px;
         color: rgba(26, 23, 27, 1);
+        word-wrap: break-word;
     }
 
     .technology-directions {

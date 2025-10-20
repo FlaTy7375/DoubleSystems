@@ -16,6 +16,7 @@ export const StyledAboutUs = styled.section`
         font-size: 24px;
         left: 20px;
         top: 0;
+        word-wrap: break-word;
     }
 
     .about-person {
@@ -75,6 +76,7 @@ export const StyledAboutUs = styled.section`
     .person-description {
         font-weight: 400;
         font-size: 16px;
+        word-wrap: break-word;
     }
 
     .person-description:not(:last-child) {
@@ -94,6 +96,7 @@ export const StyledAboutUs = styled.section`
         line-height: 50px;
         letter-spacing: -1px;
         color: rgba(47, 52, 63, 1);
+        word-wrap: break-word;
     }
 
     @media (max-width: 1799px) {
