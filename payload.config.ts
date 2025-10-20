@@ -47,7 +47,8 @@ const contentBlocks = [
 export default buildConfig({
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI,
+      connectionString: process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/postgres', // Запасной URI для локальной разработки
+      ssl: process.env.NODE_ENV !== 'production' ? { rejectUnauthorized: false } : undefined,
     },
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),
