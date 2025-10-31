@@ -123,7 +123,6 @@ export default buildConfig({
           relationTo: 'media',
           required: true,
         },
-        { name: 'views', label: 'Просмотры', type: 'text', admin: { position: 'sidebar' } },
         {
           name: 'content',
           label: 'Содержание / Блоки',

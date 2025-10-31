@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledNews = styled.section`
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 100px;
     max-width: 1800px;
     padding: 0 20px;
 
@@ -115,7 +115,7 @@ export const StyledNews = styled.section`
 
     @media (max-width: 756px) {
         padding: 0 15px;
-        margin-top: 16px;
+        margin-top: 100px;
 
         .news-link {
             font-size: 13px;

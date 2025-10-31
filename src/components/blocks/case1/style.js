@@ -4,7 +4,7 @@ export const StyledCase1 = styled.main`
     max-width: 1800px;
     padding: 0 20px;
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 100px;
     margin-bottom: 84px;
 
     .link-container {
@@ -183,7 +183,6 @@ export const StyledCase1 = styled.main`
     @media (max-width: 1799px) {
         .case-container {
             background-size: 180%;
-            border: 2px solid rgb(190, 191, 193);
         }
     }
 
@@ -225,7 +224,7 @@ export const StyledCase1 = styled.main`
 
     @media (max-width: 756px) {
         padding: 0 15px;
-        margin-top: 15px;
+        margin-top: 100px;
         margin-bottom: 60px;
 
         .cases-link {

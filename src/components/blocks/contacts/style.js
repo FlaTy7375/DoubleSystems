@@ -4,7 +4,7 @@ export const StyledContactsForm = styled.main`
     max-width: 1800px;
     padding: 0 20px;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 100px;
     margin-bottom: 68px;
 
     .link-container {
@@ -195,7 +195,7 @@ export const StyledContactsForm = styled.main`
 
     @media (max-width: 756px) {
         padding: 0 15px;
-        margin-top: 14px;
+        margin-top: 100px;
         margin-bottom: 60px;
 
         .tegs-title {

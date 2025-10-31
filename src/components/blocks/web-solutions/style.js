@@ -156,7 +156,7 @@ export const StyledWebSolutions = styled.section`
   }
 
     @media (max-width: 1799px) {
-        margin-top: 80px;
+        margin-top: 100px;
 
         .container-image {
 
@@ -183,7 +183,7 @@ export const StyledWebSolutions = styled.section`
 
     @media (max-width: 756px) {
         padding: 0 14px;
-        margin-top: 40px;
+        margin-top: 100px;
 
         .stamps-list.for-pc, .container-title.for-pc, .solutions-container::after {
             display: none;

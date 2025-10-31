@@ -1,15 +1,18 @@
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`
+    position: fixed;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 90px;
-    max-width: 1920px;
+    width: 100%;
     margin: 0 auto;
     height: 86px;
     background-color: #fff;
     color: #000;
+    z-index: 100;
 
     .logo-link {
         cursor: pointer;
