@@ -7,6 +7,8 @@ export const StyledCase1 = styled.main`
     margin-top: 100px;
     margin-bottom: 84px;
 
+    
+
     .link-container {
         display: flex;
         margin-bottom: 10px;
@@ -44,7 +46,7 @@ export const StyledCase1 = styled.main`
         display: flex;
         flex-direction: column;
         background-color: rgba(241, 245, 249, 1);
-        background-image: url("./images/Mobile-section.jpg");
+        background-image: url("/images/Mobile-section.jpg");
         filter: brightness(1.1);
         background-size: 140%;
         background-position: 0% 40%;
@@ -126,16 +128,6 @@ export const StyledCase1 = styled.main`
         margin-bottom: 10px;
     }
 
-    .person-container::before {
-        position: absolute;
-        content: "";
-        width: 318px;
-        height: 3px;
-        background-color: rgba(47, 52, 63, 1);
-        top: 160px;
-        left: 0;
-    }
-
     .write-button {
         display: flex;
         align-items: center;
@@ -157,19 +149,39 @@ export const StyledCase1 = styled.main`
     }
 
     .person-name {
+        position: relative;
         font-weight: 700;
         font-size: 16px;
+        word-wrap: break-word;
+        word-break: break-all;
+        margin-bottom: 10px;
+    }
+
+    .person-name::after {
+        position: absolute;
+        content: "";
+        width: 318px;
+        height: 3px;
+        background-color: rgba(47, 52, 63, 1);
+        bottom: -5px;
+        left: 0;
     }
 
     .person-role {
         font-weight: 400;
         font-size: 16px;
         margin-bottom: 23px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .person-description {
         font-weight: 400;
         font-size: 16px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .person-description:not(:last-child) {
@@ -219,6 +231,20 @@ export const StyledCase1 = styled.main`
             max-width: 780px;
             margin: 0 auto;
             margin-top: 30px;
+        }
+
+        .about-person {
+            width: 100%;
+        }
+
+        .person-name::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 3px;
+            background-color: rgba(47, 52, 63, 1);
+            bottom: -5px;
+            left: 0;
         }
     }
 
@@ -315,6 +341,10 @@ export const StyledCase1 = styled.main`
             display: flex;
             flex-direction: column;
             width: 100%;
+            padding-right: 0;
+        }
+
+        .about-person {
             padding-right: 0;
         }
 

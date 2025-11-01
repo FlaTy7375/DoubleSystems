@@ -64,7 +64,8 @@ export const StyledRepeat = styled.section`
     }
 
     .goals-wrapper {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
         gap: 40px;
     }
 

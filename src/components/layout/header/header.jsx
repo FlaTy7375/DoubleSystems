@@ -19,13 +19,13 @@ export default function Header() {
             <li className='social-item'><a className='social-link' href='telegram'><Image src={TgLogo} alt='Telegram'></Image></a></li>
         </ul>
         <nav className='header-nav'>
-            <a className='nav-link'>Prices</a>
-            <Link className='nav-link' href="/">About Us</Link>
+            <a className='nav-link' href="/prices">Prices</a>
+            <Link className='nav-link' href="/about-us">About Us</Link>
             <a className='nav-link'  href="/portfolio">Portfolio</a>
-            <a className='nav-link'>Services</a>
+            <a className='nav-link' href="/services">Services</a>
             <Link className='nav-link' href="/blog">Blog</Link>
             <Link className='nav-link' href="/contacts">Contact Us</Link>
-            <a className='nav-link'>What we do</a>
+            <a className='nav-link' href="/what-we-do">What we do</a>
         </nav>
         <div className='lang-container'>
             <button className='active lang-button'>Ru</button>

@@ -1,3 +1,4 @@
+// components/cases/blocks/goals/goals.jsx
 "use client"
 
 import { StyledGoals } from "./style"
@@ -64,37 +65,9 @@ export default function Goals() {
                     </Card>
                 </li>
             </ul>
-            <div className="goals-wrapper">
-                <div className="decorate-block"></div>
-                <div className="about-client">
-                    <h1 className="client-title">О клиенте и задаче: Преодоление фрагментации рынка HealthTech</h1>
-                    <h2 className="client-subtitle">Клиент: Инновационный медицинский холдинг, стремящийся
-                    к цифровой трансформации своих услуг и выходу на широкий B2C-рынок.</h2>
-                    <p className="client-description">Проблема: Современный пользователь сталкивается
-                    с фрагментированным опытом управления здоровьем. Для консультации с врачом он использует
-                    один сервис, для отслеживания тренировок — другой, для заказа анализов — третий. Это неудобно,
-                    данные теряются, а общая картина здоровья остается размытой. Для врачей также отсутствует
-                    единый инструмент для работы с пациентами, обучения и анализа своей практики.</p>
-                </div>
-                </div>
-            <div className="goals-wrapper">
-                <div className="about-person">
-                    <div className="person-container">
-                        <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
-                        <Link className="write-button" href="/contacts">Написать</Link>
-                    </div>
-                    <h3 className="person-name">Егошин Алексей Валерьевич</h3>
-                    <p className="person-role">директор Double Systems</p>
-                    <p className="person-description">Кандидат технических наук, доцент кафедры информатики и системного программирования</p>
-                    <p className="person-description">Эксперт в области веб-разработки, мобильных решений и искусственного интеллекта</p>
-                </div>
-                <div>
-                    <Image className="client-image layout" src={ClientLayout} alt="Изображение макета" width={1257} height={672}></Image>
-                    <p className="images-description client">Веб-платформа и мобильное приложение,
-                    объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
-                </div>
-            </div>
-            <div className="goals-wrapper">
+            
+            {/* Секция стратегических решений с якорем */}
+            <div className="goals-wrapper" id="strategy">
                 <div className="text-container">
                     <h2 className="container-title">Стратегическое решение: От разрозненных сервисов к All-in-One платформе</h2>
                     <p className="container-description">
@@ -118,14 +91,39 @@ export default function Goals() {
                     <Image className="strategy-image" src={StrategyImage} alt="Изображение макета" width={1244} height={759}></Image>
                     <p className="images-description strategy">Веб-платформа и мобильное приложение,
                     объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
-                    <h2 className="strategy-subtitle">Процесс реализации</h2>
-                    <p className="process-description">HealthHub — это не просто еще одно приложение для здоровья. Это проектируемая цифровая экосистема,
-                    которая объединит пациентов, врачей и поставщиков медицинских товаров в едином,
-                    интуитивно понятном пространстве. Мы разрабатываем кроссплатформенное мобильное приложение,
-                    которое станет универсальным инструментом для управления здоровьем, профессионального роста
-                    специалистов и развития бизнеса нашего клиента.</p>
-                    <p className="process-description">Проект призван превратить сложную идею «все о здоровье в одном месте» в успешный
-                    коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями.</p>
+                    
+                    {/* Секция процесса реализации с якорем */}
+                    <div id="process">
+                        <h2 className="strategy-subtitle">Процесс реализации</h2>
+                        <p className="process-description">HealthHub — это не просто еще одно приложение для здоровья. Это проектируемая цифровая экосистема,
+                        которая объединит пациентов, врачей и поставщиков медицинских товаров в едином,
+                        интуитивно понятном пространстве. Мы разрабатываем кроссплатформенное мобильное приложение,
+                        которое станет универсальным инструментом для управления здоровьем, профессионального роста
+                        специалистов и развития бизнеса нашего клиента.</p>
+                        <p className="process-description">Проект призван превратить сложную идею «все о здоровье в одном месте» в успешный
+                        коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями.</p>
+                    </div>
+                </div>
+            </div>
+            
+            {/* Секция выводов с якорем */}
+            <div id="conclusion">
+                <div className="goals-wrapper">
+                    <div className="about-person">
+                        <div className="person-container">
+                            <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
+                            <Link className="write-button" href="/contacts">Написать</Link>
+                        </div>
+                        <h3 className="person-name">Егошин Алексей Валерьевич</h3>
+                        <p className="person-role">директор Double Systems</p>
+                        <p className="person-description">Кандидат технических наук, доцент кафедры информатики и системного программирования</p>
+                        <p className="person-description">Эксперт в области веб-разработки, мобильных решений и искусственного интеллекта</p>
+                    </div>
+                    <div>
+                        <Image className="client-image layout" src={ClientLayout} alt="Изображение макета" width={1257} height={672}></Image>
+                        <p className="images-description client">Веб-платформа и мобильное приложение,
+                        объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
+                    </div>
                 </div>
             </div>
         </StyledGoals>

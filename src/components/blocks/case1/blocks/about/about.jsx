@@ -5,8 +5,15 @@ import Image from "next/image"
 import TabletAndPhone from "@/assets/images/tablet-phone-about.png"
 import Phone from "@/assets/images/case-about-mobile.png"
 import ClientImage from "@/assets/images/client-image.png"
+import { useState } from "react"
 
-export default function CaseAbout() {
+export default function CaseAbout({ onAnchorClick }) {
+    const [isContentExpanded, setIsContentExpanded] = useState(false);
+
+    const toggleContent = () => {
+        setIsContentExpanded(!isContentExpanded);
+    };
+
     return(
         <StyledCaseAbout>
             <div className="about-wrapper">
@@ -29,43 +36,85 @@ export default function CaseAbout() {
                 </div>
             </div>
             <div className="about-wrapper">
+                <div></div>
                 <div className="about-content">
                     <h2 className="content-title">Содержание:</h2>
-                    <ol className="content-list">
-                        <li className="content-element">
-                            <p className="content-theme"><span className="decoration">
-                            Кейс: HealthHub — создание единой экосистемы здоровья</span></p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            О клиенте и задаче: Преодоление фрагментации рынка HealthTech</p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            Цели проекта и прогнозируемые показатели</p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            Стратегическое решение: От разрозненных сервисов к All-in-One платформе</p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            Процесс реализации:<br></br>5.1. Дизайн-концепция: мотивация и доверие<br></br>
-                            5.2. Архитектура и разработка: ставка на производительность и гибкость<br></br>
-                            5.3. Ключевой функционал как точки роста</p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            Бизнес-потенциал и перспективы роста</p>
-                        </li>
-                        <li className="content-element">
-                            <p className="content-theme">
-                            Выводы: Что обеспечит успех проектасистемы здоровья</p>
-                        </li>
-                    </ol>
-                    <button className="content-button"></button>
+                    
+                    {/* Контейнер для списка с возможностью скрытия */}
+                    <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
+                        <ol className="content-list">
+                            {/* Первый пункт всегда видим */}
+                            <li className="content-element first-visible">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('hero')}
+                                >
+                                    <span className="decoration">
+                                    Кейс: HealthHub — создание единой экосистемы здоровья</span>
+                                </button>
+                            </li>
+                            
+                            {/* Остальные пункты скрываются/показываются */}
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('about-project')}
+                                >
+                                    О проекте
+                                </button>
+                            </li>
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('client')}
+                                >
+                                    О клиенте и задаче: Преодоление фрагментации рынка HealthTech
+                                </button>
+                            </li>
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('goals')}
+                                >
+                                    Цели проекта и прогнозируемые показатели
+                                </button>
+                            </li>
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('strategy')}
+                                >
+                                    Стратегическое решение: От разрозненных сервисов к All-in-One платформе
+                                </button>
+                            </li>
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('business')}
+                                >
+                                    Бизнес-потенциал и перспективы роста
+                                </button>
+                            </li>
+                            <li className="content-element">
+                                <button 
+                                    className="content-theme anchor-link"
+                                    onClick={() => onAnchorClick('conclusion')}
+                                >
+                                    Выводы: Что обеспечит успех проекта
+                                </button>
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    {/* Кнопка для скрытия/раскрытия */}
+                    <button 
+                        className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
+                        onClick={toggleContent}
+                    >
+                        
+                    </button>
                 </div>
-                <div className="about-client">
+                <div className="about-client" id="client">
                     <Image className="client-image tablet" src={TabletAndPhone} alt="Изображение планшета и телефона" width={996} height={612}></Image>
                     <p className="images-description">Веб-платформа и мобильное приложение,
                     объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
@@ -76,7 +125,7 @@ export default function CaseAbout() {
                     <p className="client-description">Проблема: Современный пользователь сталкивается
                     с фрагментированным опытом управления здоровьем. Для консультации с врачом он использует
                     один сервис, для отслеживания тренировок — другой, для заказа анализов — третий. Это неудобно,
-                    данные теряются, а общая картина здоровья остается размытой. Для врачей также отсутствует
+                    данных теряются, а общая картина здоровья остается размытой. Для врачей также отсутствует
                     единый инструмент для работы с пациентами, обучения и анализа своей практики.</p>
                     <Image className="client-image layout" src={ClientImage} alt="Изображение макета" width={1244} height={663}></Image>
                     <p className="images-description layout">Веб-платформа и мобильное приложение,

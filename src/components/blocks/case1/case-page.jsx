@@ -6,23 +6,32 @@ import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs"
 import CaseAbout from "./blocks/about/about"
 import Goals from "./blocks/goals/goals"
 import Buisness from "./blocks/buisness/buisness"
-import Repeat from "./blocks/repeat-section/repeat"
 import Portfolio from "../portfolio/portfolio"
 import Image from "next/image"
 import TabletAndPhone from "@/assets/images/tablet-and-phone.png"
 import Person from "@/assets/images/Alex.png"
 
-export default function Case1() {
+export default function StaticCase1() {
+    // Функция для плавной прокрутки к якорю
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return(
         <StyledCase1>
             <div className="link-container">
                 <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
                 <Link className="cases-link" href="/cases">\&nbsp;Кейсы&nbsp;</Link>
-                <Link className="cases-link active" href="/cases">\&nbsp;Экосистема здоровья</Link>
+                <Link className="cases-link active" href="/cases/case1">\&nbsp;Экосистема здоровья</Link>
             </div>
             <div className="case-wrapper">
                 <h1 className="case-title">Кейс: HealthHub — проектирование и разработка единой экосистемы здоровья</h1>
-                <div className="case-container">
+                
+                {/* Hero Section с BreadCrumbs сразу после */}
+                <div id="hero" className="case-container">
                     <ul className="stamps-list for-mobile">
                         <li className="stamp">ПРИЛОЖЕНИЕ</li>
                         <li className="stamp">ПОРТАЛ</li>
@@ -46,22 +55,39 @@ export default function Case1() {
                     <button className="container-button">Рассказываем о проекте</button>
                 </div>
                 <BreadCrumbs></BreadCrumbs>
-            </div>
-            <CaseAbout></CaseAbout>
-            <Goals></Goals>
-            <Buisness></Buisness>
-            <Repeat></Repeat>
-            <Portfolio className="case-portfolio"></Portfolio>
-            <div className="about-person for-mobile">
-                <div className="person-container">
-                    <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
-                    <Link className="write-button" href="/contacts">Написать</Link>
+                
+                {/* Остальные секции с правильными ID */}
+                <div id="about-project">
+                    <CaseAbout onAnchorClick={scrollToSection} />
                 </div>
-                <h3 className="person-name">Егошин Алексей Валерьевич</h3>
-                <p className="person-role">директор Double Systems</p>
-                <p className="person-description">Кандидат технических наук, доцент кафедры информатики и системного программирования</p>
-                <p className="person-description">Эксперт в области веб-разработки, мобильных решений и искусственного интеллекта</p>
+                
+                <div id="goals">
+                    <Goals />
+                </div>
+
+                <div id="strategy">
+                    <Goals 
+                        strategyTitle="Наша стратегия базируется на трех китах:"
+                        processTitle="Процесс реализации"
+                        processDescription="HealthHub — это не просто еще одно приложение для здоровья. Это проектируемая цифровая экосистема, которая объединит пациентов, врачей и поставщиков медицинских товаров в едином, интуитивно понятном пространстве. Мы разрабатываем кроссплатформенное мобильное приложение, которое станет универсальным инструментом для управления здоровьем, профессионального роста специалистов и развития бизнеса нашего клиента. Проект призван превратить сложную идею «все о здоровье в одном месте» в успешный коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями."
+                        imageDescription="Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий."
+                    />
+                </div>
+                
+                <div id="business">
+                    <Buisness />
+                </div>
+
+                <div id="conclusion">
+                    <Goals 
+                        showAuthor={true}
+                        imageDescription="Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий."
+                    />
+                </div>
             </div>
+            
+            {/* Секция портфолио */}
+            <Portfolio className="case-portfolio"></Portfolio>
         </StyledCase1>
     )
 }

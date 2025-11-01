@@ -1,18 +1,109 @@
 import styled from "styled-components";
 
 export const StyledCaseAbout = styled.section`
+    position: relative;
     max-width: 1800px;
     padding: 0 20px;
     margin: 0 auto;
     margin-top: 45px;
 
-    .about-wrapper {
+    .content-container {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    }
+
+    .content-container.collapsed {
+    max-height: 60px; // Высота только для первого пункта
+    }
+
+    .content-container.expanded {
+    max-height: 1000px; // Достаточно большая высота для показа всех пунктов
+    }
+
+    .content-element {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    }
+
+    .content-container.collapsed .content-element:not(.first-visible) {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    }
+
+    .content-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-position: 50%;
+    transform: rotate(180deg);
+    background-repeat: no-repeat;
+    margin-top: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    }
+
+    .content-button.expanded {
+    transform: rotate(0deg);
+    }
+
+    .anchor-link {
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        padding: 0;
+        font: inherit;
+        width: 100%;
+        color: inherit;
+    }
+
+    .anchor-link:hover .decoration {
+        text-decoration: underline;
+    }
+
+    .decoration {
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .content-list {
+        list-style: decimal;
+        padding-left: 20px;
+    }
+
+    .content-element {
+        margin-bottom: 5px;
         display: flex;
+        align-items: flex-start; /* Выравнивание по верху */
+        position: relative;
+        counter-increment: list-counter;
+    }
+
+    .content-element::before {
+        content: counter(list-counter) ".";
+        position: absolute;
+        left: -1.5em;
+        top: 5px; /* Цифра всегда вверху */
+        font-weight: bold;
+        font-size: 18px;
+        color: rgba(68, 75, 90, 1);
+        min-width: 2em;
+    }
+
+    .about-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
         gap: 40px;
     }
 
     .about-project {
         max-width: 456px;
+        min-width: 400px;
     }
 
     .project-title {
@@ -20,6 +111,9 @@ export const StyledCaseAbout = styled.section`
         font-size: 24px;
         color: rgba(47, 52, 63, 1);
         margin-bottom: 70px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .project-description {
@@ -28,6 +122,9 @@ export const StyledCaseAbout = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         line-height: 175%;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .project-description .decoration {
@@ -41,6 +138,7 @@ export const StyledCaseAbout = styled.section`
 
     .about-case {
         max-width: 1245px;
+        width: 100%;
     }
 
     .about-title {
@@ -48,6 +146,10 @@ export const StyledCaseAbout = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         margin-bottom: 30px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        
     }
 
     .about-description {
@@ -56,6 +158,9 @@ export const StyledCaseAbout = styled.section`
         line-height: 50px;
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
     }
 
     .about-description:not(:last-child) {
@@ -67,7 +172,9 @@ export const StyledCaseAbout = styled.section`
     }
 
     .about-content {
-        position: relative;
+        position: fixed;
+        z-index: 100;
+        top: 30px;
         max-width: 456px;
         height: fit-content;
         border-radius: 30px;
@@ -82,7 +189,7 @@ export const StyledCaseAbout = styled.section`
         color: rgba(142, 142, 147, 1);
         letter-spacing: -5%;
         margin-bottom: 4px;
-        margin-left: 20px;
+        margin-left: 40px;
     }
 
     .content-list {
@@ -106,7 +213,7 @@ export const StyledCaseAbout = styled.section`
         position: absolute;
         width: 18px;
         height: 9px;
-        background-image: url("./images/content-icon.svg");
+        background-image: url("/images/content-icon.svg");
         border: none;
         background-color: transparent;
         top: 58px;
@@ -137,6 +244,9 @@ export const StyledCaseAbout = styled.section`
         font-style: italic;
         color: rgba(142, 142, 147, 1);
         max-width: 728px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .client-title {
@@ -144,6 +254,9 @@ export const StyledCaseAbout = styled.section`
         font-size: 42px;
         letter-spacing: -1px;
         color: #000;
+        word-wrap: break-word;
+        hyphens: auto;
+        word-break: break-all;
     }
 
     .client-subtitle {
@@ -153,6 +266,9 @@ export const StyledCaseAbout = styled.section`
         letter-spacing: -1px;
         line-height: 50px;
         color: rgba(68, 75, 90, 1);
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .client-description {
@@ -162,6 +278,9 @@ export const StyledCaseAbout = styled.section`
         line-height: 50px;
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .client-image.layout {
@@ -182,7 +301,6 @@ export const StyledCaseAbout = styled.section`
 
         .about-wrapper {
             display: grid;
-            grid-template-columns: 1fr 2.3fr;
         }
 
         .about-client {
@@ -195,9 +313,10 @@ export const StyledCaseAbout = styled.section`
 
         .client-image.tablet {
             position: relative;
-            width: 80%;
             height: auto;
+            width: 100%;
             margin-bottom: 20px;
+            left: 0;
         }
 
         .client-image.layout {

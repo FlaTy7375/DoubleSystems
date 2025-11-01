@@ -104,7 +104,8 @@ export const StyledGoals = styled.section`
     }
 
     .goals-wrapper {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
         gap: 40px;
     }
 
@@ -184,6 +185,9 @@ export const StyledGoals = styled.section`
         margin-bottom: 34px;
         color: #000;
         max-width: 398px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .container-description {
@@ -194,6 +198,9 @@ export const StyledGoals = styled.section`
         color: #000;
         margin: 0;
         max-width: 432px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .strategy-container {
@@ -205,6 +212,9 @@ export const StyledGoals = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         margin-bottom: 35px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .strategy-description {
@@ -215,6 +225,9 @@ export const StyledGoals = styled.section`
         color: rgba(68, 75, 90, 1);
         margin-bottom: 35px;
         max-width: 860px;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
     }
 
     .strategy-description .decoration {
