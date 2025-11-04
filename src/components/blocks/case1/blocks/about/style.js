@@ -33,24 +33,6 @@ export const StyledCaseAbout = styled.section`
     padding: 0;
     }
 
-    .content-button {
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    background-position: 50%;
-    transform: rotate(180deg);
-    background-repeat: no-repeat;
-    margin-top: 10px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    width: 100%;
-    text-align: center;
-    }
-
-    .content-button.expanded {
-    transform: rotate(0deg);
-    }
-
     .anchor-link {
         background: none;
         border: none;
@@ -68,7 +50,7 @@ export const StyledCaseAbout = styled.section`
 
     .decoration {
         word-wrap: break-word;
-        word-break: break-all;
+        hyphens: auto;
     }
 
     .content-list {
@@ -112,7 +94,6 @@ export const StyledCaseAbout = styled.section`
         color: rgba(47, 52, 63, 1);
         margin-bottom: 70px;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -123,7 +104,6 @@ export const StyledCaseAbout = styled.section`
         color: rgba(68, 75, 90, 1);
         line-height: 175%;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -149,7 +129,6 @@ export const StyledCaseAbout = styled.section`
         overflow-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
-        
     }
 
     .about-description {
@@ -167,14 +146,18 @@ export const StyledCaseAbout = styled.section`
         margin-bottom: 44px;
     }
 
-    .about-content, .about-client {
+    .about-content {
         margin-top: 146px;
+    }
+
+    .about-client {
+        margin-top: 60px;
     }
 
     .about-content {
         position: fixed;
         z-index: 100;
-        top: 30px;
+        bottom: 30px;
         max-width: 456px;
         height: fit-content;
         border-radius: 30px;
@@ -214,11 +197,18 @@ export const StyledCaseAbout = styled.section`
         width: 18px;
         height: 9px;
         background-image: url("/images/content-icon.svg");
+        background-repeat: no-repeat;
+        background-position: 50%;
+        transition: all 0.3s ease;
         border: none;
         background-color: transparent;
         top: 58px;
         right: 30px;
         cursor: pointer;
+    }
+
+    .content-button.expanded {
+        transform: rotate(180deg);
     }
 
     .about-client {
@@ -256,7 +246,6 @@ export const StyledCaseAbout = styled.section`
         color: #000;
         word-wrap: break-word;
         hyphens: auto;
-        word-break: break-all;
     }
 
     .client-subtitle {
@@ -267,7 +256,6 @@ export const StyledCaseAbout = styled.section`
         line-height: 50px;
         color: rgba(68, 75, 90, 1);
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -279,7 +267,6 @@ export const StyledCaseAbout = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 

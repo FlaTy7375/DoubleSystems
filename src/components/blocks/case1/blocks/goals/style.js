@@ -4,6 +4,7 @@ export const StyledGoals = styled.section`
     margin: 0 auto;
     max-width: 1800px;
     padding: 0 20px;
+    margin-top: 40px;
 
     .goals-title {
         font-size: 42px;
@@ -22,6 +23,7 @@ export const StyledGoals = styled.section`
     .cards-list {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        align-items: stretch;
         column-gap: 41px;
         row-gap: 42px;
         list-style-type: none;
@@ -123,16 +125,6 @@ export const StyledGoals = styled.section`
         margin-bottom: 10px;
     }
 
-    .person-container::before {
-        position: absolute;
-        content: "";
-        width: 100%;
-        height: 3px;
-        background-color: rgba(47, 52, 63, 1);
-        top: 160px;
-        left: 0;
-    }
-
     .write-button {
         display: flex;
         align-items: center;
@@ -186,7 +178,6 @@ export const StyledGoals = styled.section`
         color: #000;
         max-width: 398px;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -199,7 +190,6 @@ export const StyledGoals = styled.section`
         margin: 0;
         max-width: 432px;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -213,7 +203,6 @@ export const StyledGoals = styled.section`
         color: rgba(68, 75, 90, 1);
         margin-bottom: 35px;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 
@@ -226,7 +215,6 @@ export const StyledGoals = styled.section`
         margin-bottom: 35px;
         max-width: 860px;
         word-wrap: break-word;
-        word-break: break-all;
         hyphens: auto;
     }
 

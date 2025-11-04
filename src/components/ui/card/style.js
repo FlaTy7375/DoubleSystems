@@ -8,10 +8,11 @@ export const StyledCard = styled.div`
     gap: 23px;
     background: linear-gradient(162deg, rgba(38, 49, 67, 1), rgba(11, 14, 21, 1));
     border-radius: 8px;
-    width: 858px;
-    height: auto;
+    max-width: 858px;
+    height: 100%;
     min-height: 329px;
     overflow: hidden;
+    padding-bottom: 90px;
 
     &.light {
         background: rgba(241, 245, 249, 1);
@@ -101,11 +102,12 @@ export const StyledCard = styled.div`
 
         @media (max-width: 1799px) { 
             width: auto;
-            padding-bottom: 20px;
+            padding-bottom: 90px;
+            padding-right: 80px;
         }
 
     @media (max-width: 756px) {
-        padding: 27px 12px 80px 19px;
+        padding: 27px 12px 90px 19px;
         width: 100%;
         height: auto;
         min-height: 320px;

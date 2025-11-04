@@ -8,18 +8,13 @@ import Card from "@/components/ui/card/card";
 import { useState } from "react";
 
 // Импорты стилей
-import { StyledCase1 } from "./style";
+import { StyledCase1, StyledHeroSection } from "./style";
 import { StyledCaseAbout } from "./blocks/about/style";
 import { StyledGoals } from "./blocks/goals/style";
 import { StyledBuisness } from "./blocks/buisness/style";
 
 // Компонент для блока about с функционалом скрытия
 const AboutSection = ({ section, index, blockId, onAnchorClick }) => {
-  const [isContentExpanded, setIsContentExpanded] = useState(false);
-
-  const toggleContent = () => {
-    setIsContentExpanded(!isContentExpanded);
-  };
 
   return (
     <StyledCaseAbout key={index} id={blockId}>
@@ -35,65 +30,6 @@ const AboutSection = ({ section, index, blockId, onAnchorClick }) => {
           <p className="about-description">{section.caseDescription}</p>
         </div>
       </div>
-      <div className="about-wrapper">
-        <div></div>
-        <div className="about-content">
-          <h2 className="content-title">{section.contentTitle}</h2>
-          
-          {/* Контейнер для списка с возможностью скрытия */}
-          <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
-            <ol className="content-list">
-              {section.contentItems?.map((item, i) => (
-                <li 
-                  key={i} 
-                  className={`content-element ${i === 0 ? 'first-visible' : ''}`}
-                >
-                  <button 
-                    className="content-theme anchor-link"
-                    onClick={() => onAnchorClick(item.anchorId)}
-                  >
-                    <span className="decoration">{item.text}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </div>
-          
-          {/* Кнопка для скрытия/раскрытия */}
-          <button 
-            className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
-            onClick={toggleContent}
-          >
-          </button>
-        </div>
-        <div className="about-client">
-          {section.clientImage && (
-            <Image 
-              className="client-image tablet" 
-              src={section.clientImage.url} 
-              alt={section.clientImage.alt || "Изображение клиента"} 
-              width={996} 
-              height={612}
-            />
-          )}
-          <p className="images-description">{section.clientImageDescription}</p>
-          <h1 className="client-title">
-            {section.clientTitle}
-          </h1>
-          <h2 className="client-subtitle">{section.clientSubtitle}</h2>
-          <p className="client-description">{section.clientDescription}</p>
-          {section.layoutImage && (
-            <Image 
-              className="client-image layout" 
-              src={section.layoutImage.url} 
-              alt={section.layoutImage.alt || "Изображение макета"} 
-              width={1244} 
-              height={663}
-            />
-          )}
-          <p className="images-description layout">{section.layoutImageDescription}</p>
-        </div>
-      </div>
     </StyledCaseAbout>
   );
 };
@@ -105,7 +41,13 @@ export default function DynamicCase({ caseData }) {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  };   
+
+    const [isContentExpanded, setIsContentExpanded] = useState(false);
+
+    const toggleContent = () => {
+        setIsContentExpanded(!isContentExpanded);
+    };
 
   // Проверяем, есть ли heroSection
   const hasHeroSection = caseData.sections?.some(section => section.blockType === 'heroSection');
@@ -114,11 +56,12 @@ export default function DynamicCase({ caseData }) {
   const renderSection = (section, index) => {
     // Используем blockId из данных или генерируем fallback
     const blockId = section.blockId || `${section.blockType}-${index}`;
+    const bgImageUrl = section.backgroundImage?.url;
 
     switch (section.blockType) {
       case 'heroSection':
         return (
-          <div key={index} id={blockId}>
+          <StyledHeroSection key={index} id={blockId} $bgImage={bgImageUrl}>
             <div className="case-container">
               <ul className="stamps-list for-mobile">
                 {section.stamps?.slice(0, 3).map((stamp, i) => (
@@ -149,7 +92,7 @@ export default function DynamicCase({ caseData }) {
               <button className="container-button">{section.buttonText}</button>
             </div>
             <BreadCrumbs />
-          </div>
+          </StyledHeroSection>
         );
 
       case 'aboutProjectSection':
@@ -170,19 +113,34 @@ export default function DynamicCase({ caseData }) {
               <div></div>
               <div className="about-content">
                 <h2 className="content-title">{section.contentTitle}</h2>
+                <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                 <ol className="content-list">
                   {section.contentItems?.map((item, i) => (
-                    <li key={i} className="content-element">
+                    i == 0 ? 
+                      <li key={i} className="content-element first-visible">
                       <button 
                         className="content-theme anchor-link"
                         onClick={() => scrollToAnchor(item.anchorId)}
                       >
                         <span className="decoration">{item.text}</span>
                       </button>
+                    </li> 
+                    :
+                     <li key={i} className="content-element">
+                      <button 
+                        className="content-theme anchor-link"
+                        onClick={() => scrollToAnchor(item.anchorId)}
+                      >
+                      {item.text}
+                      </button>
                     </li>
                   ))}
                 </ol>
-                <button className="content-button"></button>
+                </div>
+                <button 
+                  className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
+                  onClick={toggleContent}
+                />
               </div>
               <div className="about-client">
                 {section.clientImage && (
@@ -283,12 +241,20 @@ export default function DynamicCase({ caseData }) {
               {section.tasks?.map((task, i) => (
                 <li key={i} className="card-wrapper">
                   <Card className={task.isLight ? 'light' : ''}>
-                    <h2>{task.text}</h2>
+                    <h2 className="card-description">{task.text}</h2>
                     <p className="card-number">/{String(i + 1).padStart(2, '0')}</p>
                   </Card>
                 </li>
               ))}
             </ul>
+          </StyledBuisness>
+        );
+
+      case 'textSection':
+        return (
+          <StyledBuisness key={index} id={blockId}>
+            <h1 className="buisness-title">{section.subtitle}</h1>
+            <p>{section.description}</p>
           </StyledBuisness>
         );
 
@@ -326,7 +292,7 @@ export default function DynamicCase({ caseData }) {
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
         <Link className="cases-link" href="/cases">\&nbsp;Кейсы&nbsp;</Link>
-        <Link className="cases-link active" href={`/cases/${caseData.slug}`}>\&nbsp;{caseData.title}</Link>
+        <Link className="cases-link active" href={`/cases/${caseData.slug}`}>\&nbsp;{caseData.path}</Link>
       </div>
       <div className="case-wrapper">
         <h1 className="case-title">{caseData.title}</h1>
@@ -334,8 +300,6 @@ export default function DynamicCase({ caseData }) {
         {/* Рендерим все секции кейса */}
         {caseData.sections?.map(renderSection)}
         
-        {/* Если нет heroSection, показываем BreadCrumbs в конце */}
-        {!hasHeroSection && <BreadCrumbs />}
       </div>
       
       {/* Секция портфолио, если включена */}

@@ -8,18 +8,13 @@ import Card from "@/components/ui/card/card";
 import { useState } from "react";
 
 // Импорты стилей
-import { StyledCase1 } from "../case1/style";
+import { StyledCase1, StyledHeroSection } from "../case1/style";
 import { StyledCaseAbout } from "../case1/blocks/about/style";
 import { StyledGoals } from "../case1/blocks/goals/style";
 import { StyledBuisness } from "../case1/blocks/buisness/style";
 
 // Компонент для блока about с функционалом скрытия
 const AboutProjectSection = ({ section, index, blockId, scrollToAnchor }) => {
-  const [isContentExpanded, setIsContentExpanded] = useState(false);
-
-  const toggleContent = () => {
-    setIsContentExpanded(!isContentExpanded);
-  };
 
   return (
     <StyledCaseAbout key={index} id={blockId}>
@@ -35,62 +30,6 @@ const AboutProjectSection = ({ section, index, blockId, scrollToAnchor }) => {
           <p className="about-description">{section.caseDescription}</p>
         </div>
       </div>
-      <div className="about-wrapper">
-        <div></div>
-        <div className="about-content">
-          <h2 className="content-title">{section.contentTitle}</h2>
-          
-          <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
-            <ol className="content-list">
-              {section.contentItems?.map((item, i) => (
-                <li 
-                  key={i} 
-                  className={`content-element ${i === 0 ? 'first-visible' : ''}`}
-                >
-                  <button 
-                    className="content-theme anchor-link"
-                    onClick={() => scrollToAnchor(item.anchorId)}
-                  >
-                    <span className="decoration">{item.text}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </div>
-          
-          <button 
-            className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
-            onClick={toggleContent}
-          >
-            {isContentExpanded ? 'Свернуть' : 'Развернуть'}
-          </button>
-        </div>
-        <div className="about-client">
-          {section.clientImage && (
-            <Image 
-              className="client-image tablet" 
-              src={section.clientImage.url} 
-              alt={section.clientImage.alt || "Изображение клиента"} 
-              width={996} 
-              height={612}
-            />
-          )}
-          <p className="images-description">{section.clientImageDescription}</p>
-          <h1 className="client-title">{section.clientTitle}</h1>
-          <h2 className="client-subtitle">{section.clientSubtitle}</h2>
-          <p className="client-description">{section.clientDescription}</p>
-          {section.layoutImage && (
-            <Image 
-              className="client-image layout" 
-              src={section.layoutImage.url} 
-              alt={section.layoutImage.alt || "Изображение макета"} 
-              width={1244} 
-              height={663}
-            />
-          )}
-          <p className="images-description layout">{section.layoutImageDescription}</p>
-        </div>
-      </div>
     </StyledCaseAbout>
   );
 };
@@ -104,17 +43,24 @@ export default function DynamicPage({ pageData }) {
     }
   };
 
+    const [isContentExpanded, setIsContentExpanded] = useState(false);
+
+    const toggleContent = () => {
+        setIsContentExpanded(!isContentExpanded);
+    };
+
   // Проверяем, есть ли heroSection
   const hasHeroSection = pageData.sections?.some(section => section.blockType === 'heroSection');
   
   // Функция для рендера секций
   const renderSection = (section, index) => {
     const blockId = section.blockId || `${section.blockType}-${index}`;
+    const bgImageUrl = section.backgroundImage?.url;
 
     switch (section.blockType) {
       case 'heroSection':
         return (
-          <div key={index} id={blockId}>
+          <StyledHeroSection key={index} id={blockId}>
             <div className="case-container">
               <ul className="stamps-list for-mobile">
                 {section.stamps?.slice(0, 3).map((stamp, i) => (
@@ -141,7 +87,7 @@ export default function DynamicPage({ pageData }) {
               <button className="container-button">{section.buttonText}</button>
             </div>
             <BreadCrumbs />
-          </div>
+          </StyledHeroSection>
         );
 
       case 'aboutProjectSection':
@@ -162,19 +108,34 @@ export default function DynamicPage({ pageData }) {
               <div></div>
               <div className="about-content">
                 <h2 className="content-title">{section.contentTitle}</h2>
+                <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                 <ol className="content-list">
                   {section.contentItems?.map((item, i) => (
-                    <li key={i} className="content-element">
+                    i == 0 ? 
+                      <li key={i} className="content-element first-visible">
                       <button 
                         className="content-theme anchor-link"
                         onClick={() => scrollToAnchor(item.anchorId)}
                       >
                         <span className="decoration">{item.text}</span>
                       </button>
+                    </li> 
+                    :
+                     <li key={i} className="content-element">
+                      <button 
+                        className="content-theme anchor-link"
+                        onClick={() => scrollToAnchor(item.anchorId)}
+                      >
+                      {item.text}
+                      </button>
                     </li>
                   ))}
                 </ol>
-                <button className="content-button"></button>
+                </div>
+                <button 
+                  className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
+                  onClick={toggleContent}
+                />
               </div>
               <div className="about-client">
                 {section.clientImage && (
@@ -275,12 +236,20 @@ export default function DynamicPage({ pageData }) {
               {section.tasks?.map((task, i) => (
                 <li key={i} className="card-wrapper">
                   <Card className={task.isLight ? 'light' : ''}>
-                    <h2>{task.text}</h2>
+                    <h2 className="card-description">{task.text}</h2>
                     <p className="card-number">/{String(i + 1).padStart(2, '0')}</p>
                   </Card>
                 </li>
               ))}
             </ul>
+          </StyledBuisness>
+        );
+
+    case 'textSection':
+        return (
+          <StyledBuisness key={index} id={blockId}>
+            <h1 className="buisness-title">{section.subtitle}</h1>
+            <p>{section.description}</p>
           </StyledBuisness>
         );
 
@@ -325,8 +294,6 @@ export default function DynamicPage({ pageData }) {
         {/* Рендерим все секции страницы */}
         {pageData.sections?.map(renderSection)}
         
-        {/* Если нет heroSection, показываем BreadCrumbs в конце */}
-        {!hasHeroSection && <BreadCrumbs />}
       </div>
       
       {/* Секция портфолио, если включена */}

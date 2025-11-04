@@ -13,6 +13,12 @@ export const StyledBuisness = styled.section`
         margin-bottom: 30px;
     }
 
+    p {
+        font-size: 26px;
+        font-weight: 400;
+        color: #000;
+    }
+
     .buisness-subtitle {
         font-weight: 700;
         font-size: 36px;
@@ -24,6 +30,7 @@ export const StyledBuisness = styled.section`
     .cards-list {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        align-items: stretch;
         column-gap: 41px;
         row-gap: 28px;
         list-style-type: none;

@@ -7,7 +7,21 @@ export const StyledCase1 = styled.main`
     margin-top: 100px;
     margin-bottom: 84px;
 
-    
+    .case-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(241, 245, 249, 1);
+        background-image: url("/images/Mobile-section.jpg");
+        filter: brightness(1.1);
+        background-size: 140%;
+        background-position: 0% 40%;
+        padding-top: 120px;
+        padding-left: 52px;
+        padding-bottom: 110px;
+        border-radius: 10px 10px 30px 30px;
+        z-index: 1;
+    }
 
     .link-container {
         display: flex;
@@ -39,22 +53,6 @@ export const StyledCase1 = styled.main`
         letter-spacing: -3px;
         color: rgba(68, 75, 90, 1);
         max-width: 1240px;
-    }
-
-    .case-container {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background-color: rgba(241, 245, 249, 1);
-        background-image: url("/images/Mobile-section.jpg");
-        filter: brightness(1.1);
-        background-size: 140%;
-        background-position: 0% 40%;
-        padding-top: 120px;
-        padding-left: 52px;
-        padding-bottom: 110px;
-        border-radius: 10px 10px 30px 30px;
-        z-index: 1;
     }
 
     .container-title {
@@ -350,6 +348,52 @@ export const StyledCase1 = styled.main`
 
         .person-container::before {
             width: 100%;
+        }
+    }
+`
+
+export const StyledHeroSection = styled.div`
+    .case-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(241, 245, 249, 1);
+        ${props => props.$bgImage && `
+        background-image: url(${props.$bgImage});
+        `}
+        filter: brightness(1.1);
+        background-size: cover;
+        background-position: 0% 40%;
+        background-repeat: no-repeat;
+        padding-top: 120px;
+        padding-left: 52px;
+        padding-bottom: 110px;
+        border-radius: 10px 10px 30px 30px;
+        z-index: 1;
+    }
+
+    @media (max-width: 1279px) {
+        .case-container {
+            overflow: hidden;
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
+            border: none;
+            filter: none;
+            padding-right: 40px;
+        }
+    }
+
+    @media (max-width: 756px) {
+        .case-container {
+            border: none;
+            padding: 20px 10px 52px 12px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            filter: none;
+            height: auto;
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
         }
     }
 `

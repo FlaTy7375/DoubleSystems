@@ -21,14 +21,8 @@ const caseBlocks: Block[] = [
         defaultValue: 'hero'
       },
       {
-        name: 'title',
-        label: 'Заголовок',
-        type: 'text',
-        required: true,
-      },
-      {
         name: 'subtitle',
-        label: 'Подзаголовок',
+        label: 'Заголовок',
         type: 'text',
         required: true,
       },
@@ -52,8 +46,15 @@ const caseBlocks: Block[] = [
         ],
       },
       {
+        name: 'backgroundImage',
+        label: 'Фоновое изображение (для контейнера)',
+        type: 'upload',
+        relationTo: 'media',
+        required: true,
+      },
+      {
         name: 'image',
-        label: 'Изображение',
+        label: 'Изображение для моб версии (не фоновое)',
         type: 'upload',
         relationTo: 'media',
         required: true,
@@ -63,6 +64,34 @@ const caseBlocks: Block[] = [
         label: 'Текст кнопки',
         type: 'text',
         defaultValue: 'Рассказываем о проекте',
+      },
+    ],
+  },
+    {
+    slug: 'textSection',
+    labels: {
+      singular: 'Текстовая секция',
+      plural: 'Текстовые секции',
+    },
+    fields: [
+      {
+        name: 'blockId',
+        label: 'ID блока (для якорных ссылок, латиница)',
+        type: 'text',
+        required: true,
+        defaultValue: 'hero'
+      },
+      {
+        name: 'subtitle',
+        label: 'Заголовок',
+        type: 'text',
+        required: true,
+      },
+      {
+        name: 'description',
+        label: 'Описание',
+        type: 'textarea',
+        required: true,
       },
     ],
   },
@@ -550,13 +579,8 @@ export default buildConfig({
       labels: { singular: 'Кейс', plural: 'Портфолио (кейсы)' },
       fields: [
         { name: 'title', label: 'Название', type: 'text', required: true },
+        { name: 'path', label: 'Путь (cases/name)', type: 'text', required: true },
         { name: 'slug', label: 'Слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar' } },
-        {
-          name: 'description',
-          label: 'Краткое описание',
-          type: 'textarea',
-          required: true,
-        },
         {
           name: 'tags',
           label: 'Теги',
@@ -566,13 +590,6 @@ export default buildConfig({
           admin: {
             position: 'sidebar',
           },
-        },
-        {
-          name: 'featuredImage',
-          label: 'Главное изображение',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
         },
         {
           name: 'sections',
