@@ -150,22 +150,26 @@ export default buildConfig({
     process.env.SUPABASE_SECRET_ACCESS_KEY
       ? [
           s3Storage({
-            collections: {
-              media: {
-                disableLocalStorage: true,
-                prefix: 'media',
+          collections: {
+            media: {
+              disableLocalStorage: true,
+              prefix: 'media',
+              generateURL: ({ filename, prefix, bucket }) => {
+                // Прямой публичный URL Supabase
+                return `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${bucket}/${prefix ? `${prefix}/` : ''}${filename}`;
               },
             },
-            bucket: process.env.SUPABASE_BUCKET_NAME,
-            config: {
-              endpoint: process.env.SUPABASE_ENDPOINT,
-              forcePathStyle: true,
-              region: process.env.SUPABASE_REGION || 'eu-north-1',
-              credentials: {
-                accessKeyId: process.env.SUPABASE_ACCESS_KEY_ID,
-                secretAccessKey: process.env.SUPABASE_SECRET_ACCESS_KEY,
-              },
+          },
+          bucket: process.env.SUPABASE_BUCKET_NAME!,
+          config: {
+            endpoint: process.env.SUPABASE_ENDPOINT!,
+            forcePathStyle: true,
+            region: process.env.SUPABASE_REGION || 'eu-north-1',
+            credentials: {
+              accessKeyId: process.env.SUPABASE_ACCESS_KEY_ID!,
+              secretAccessKey: process.env.SUPABASE_SECRET_ACCESS_KEY!,
             },
+          },
           }),
         ]
       : []),

@@ -213,7 +213,6 @@ export const StyledGoals = styled.section`
         letter-spacing: -1px;
         color: rgba(68, 75, 90, 1);
         margin-bottom: 35px;
-        max-width: 860px;
         word-wrap: break-word;
         hyphens: auto;
     }

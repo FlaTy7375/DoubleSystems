@@ -48,9 +48,6 @@ export default function DynamicPage({ pageData }) {
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
     };
-
-  // Проверяем, есть ли heroSection
-  const hasHeroSection = pageData.sections?.some(section => section.blockType === 'heroSection');
   
   // Функция для рендера секций
   const renderSection = (section, index) => {
@@ -60,7 +57,7 @@ export default function DynamicPage({ pageData }) {
     switch (section.blockType) {
       case 'heroSection':
         return (
-          <StyledHeroSection key={index} id={blockId}>
+          <StyledHeroSection key={index} id={blockId} $bgImage={bgImageUrl}>
             <div className="case-container">
               <ul className="stamps-list for-mobile">
                 {section.stamps?.slice(0, 3).map((stamp, i) => (

@@ -21,6 +21,7 @@ export const StyledCase1 = styled.main`
         padding-bottom: 110px;
         border-radius: 10px 10px 30px 30px;
         z-index: 1;
+        margin-top: 20px;
     }
 
     .link-container {
@@ -324,7 +325,6 @@ export const StyledCase1 = styled.main`
             content: "";
             width: 406px;
             height: 680px;
-            background-image: url("/images/left-leaf.svg");
             background-repeat: no-repeat;
             top: -10px;
             left: 0;

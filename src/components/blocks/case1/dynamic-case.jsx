@@ -48,9 +48,6 @@ export default function DynamicCase({ caseData }) {
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
     };
-
-  // Проверяем, есть ли heroSection
-  const hasHeroSection = caseData.sections?.some(section => section.blockType === 'heroSection');
   
   // Функция для рендера секций
   const renderSection = (section, index) => {
