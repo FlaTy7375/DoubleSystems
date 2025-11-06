@@ -487,7 +487,7 @@ export default buildConfig({
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),
   
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
+  serverURL:process.env.SITE_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
   admin: {
     user: 'users',
