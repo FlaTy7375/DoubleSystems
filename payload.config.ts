@@ -3,8 +3,8 @@ import { buildConfig } from 'payload';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import type { Block, CollectionConfig } from 'payload';
+import { s3Storage } from '@payloadcms/storage-s3';
 
-// --- БЛОКИ ДЛЯ КОНТЕНТА КЕЙСОВ И СТРАНИЦ ---
 const caseBlocks: Block[] = [
   {
     slug: 'heroSection',
@@ -67,7 +67,7 @@ const caseBlocks: Block[] = [
       },
     ],
   },
-    {
+  {
     slug: 'textSection',
     labels: {
       singular: 'Текстовая секция',
@@ -477,7 +477,6 @@ const caseBlocks: Block[] = [
   },
 ];
 
-// --- КОНФИГУРАЦИЯ ---
 export default buildConfig({
   db: postgresAdapter({
     pool: {
@@ -487,7 +486,7 @@ export default buildConfig({
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),
   
-  serverURL:process.env.SITE_URL || 'http://localhost:3000',
+  serverURL: process.env.SITE_URL || 'http://localhost:3000',
   secret: process.env.PAYLOAD_SECRET || 'SOME_DEFAULT_SECRET_FOR_BUILD',
   admin: {
     user: 'users',
@@ -498,25 +497,49 @@ export default buildConfig({
 
   graphQL: { disable: true },
 
+  plugins: [
+    ...(process.env.SUPABASE_ENDPOINT && process.env.SUPABASE_BUCKET_NAME && process.env.SUPABASE_ACCESS_KEY_ID && process.env.SUPABASE_SECRET_ACCESS_KEY
+      ? [
+          s3Storage({
+            collections: {
+              media: {
+                disableLocalStorage: true,
+                prefix: 'media',
+              },
+            },
+            bucket: process.env.SUPABASE_BUCKET_NAME,
+            config: {
+              endpoint: process.env.SUPABASE_ENDPOINT,
+              forcePathStyle: true,
+              region: process.env.SUPABASE_REGION || 'eu-north-1',
+              credentials: {
+                accessKeyId: process.env.SUPABASE_ACCESS_KEY_ID,
+                secretAccessKey: process.env.SUPABASE_SECRET_ACCESS_KEY,
+              },
+            },
+          }),
+        ]
+      : []),
+  ],
+
   collections: [
-    // 1. Пользователи (USERS)
     {
       slug: 'users',
       auth: true,
       fields: [{ name: 'name', type: 'text', label: 'Имя пользователя', required: true }],
     },
 
-    // 2. Медиа
     {
       slug: 'media',
-      upload: true,
+      upload: {
+        staticDir: path.resolve(__dirname, '../../public/media'),
+      },
       access: { read: () => true },
       fields: [
         { name: 'alt', label: 'Альтернативный текст', type: 'text', required: true },
       ],
     },
 
-    // 3. Теги
     {
       slug: 'tags',
       labels: { singular: 'Тег', plural: 'Теги' },
@@ -525,7 +548,6 @@ export default buildConfig({
       ],
     },
 
-    // 4. СТРАНИЦЫ (НОВАЯ КОЛЛЕКЦИЯ)
     {
       slug: 'pages',
       labels: { singular: 'Страница', plural: 'Страницы' },
@@ -544,8 +566,8 @@ export default buildConfig({
           required: true,
           admin: { 
             position: 'sidebar',
-            description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio и т.д.)'
-          } 
+            description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio и т.д.)',
+          },
         },
         {
           name: 'description',
@@ -570,10 +592,9 @@ export default buildConfig({
             position: 'sidebar',
           },
         },
-      ],
-    } as CollectionConfig,
+      ] as CollectionConfig,
+    },
 
-    // 5. ПОРТФОЛИО (КЕЙСЫ)
     {
       slug: 'cases',
       labels: { singular: 'Кейс', plural: 'Портфолио (кейсы)' },
@@ -606,10 +627,9 @@ export default buildConfig({
             position: 'sidebar',
           },
         },
-      ],
-    } as CollectionConfig,
+      ] as CollectionConfig,
+    },
 
-    // 6. БЛОГ
     {
       slug: 'posts',
       labels: { singular: 'Запись блога', plural: 'Блог' },
@@ -677,10 +697,9 @@ export default buildConfig({
             },
           ],
         },
-      ],
-    } as CollectionConfig,
+      ] as CollectionConfig,
+    },
 
-    // 7. УСЛУГИ
     {
       slug: 'services',
       labels: { singular: 'Услуга', plural: 'Услуги' },
@@ -695,10 +714,9 @@ export default buildConfig({
           relationTo: 'media',
           required: true,
         },
-      ],
-    } as CollectionConfig,
+      ] as CollectionConfig,
+    },
 
-    // 8. FAQ
     {
       slug: 'faqs',
       labels: { singular: 'Вопрос-Ответ', plural: 'FAQ' },
@@ -706,10 +724,9 @@ export default buildConfig({
         { name: 'question', label: 'Вопрос', type: 'text', required: true },
         { name: 'answer', label: 'Ответ', type: 'richText', required: true, editor: lexicalEditor() },
         { name: 'order', label: 'Порядок вывода', type: 'number', admin: { position: 'sidebar' } },
-      ],
-    } as CollectionConfig,
+      ] as CollectionConfig,
+    },
 
-    // 9. ЗАЯВКИ С САЙТА
     {
       slug: 'applications',
       labels: { singular: 'Заявка', plural: 'Заявки с сайта' },
@@ -731,7 +748,6 @@ export default buildConfig({
   ],
 
   globals: [
-    // Главная
     {
       slug: 'home',
       label: 'Главная страница',
@@ -830,7 +846,6 @@ export default buildConfig({
         },
       ],
     },
-    // Часто задаваемые вопросы
     {
       slug: 'faq',
       label: 'Часто задаваемые вопросы',
@@ -868,7 +883,6 @@ export default buildConfig({
         },
       ],
     },
-    // Блог
     {
       slug: 'blog',
       label: 'Блог (Новости) общая страница',
