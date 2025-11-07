@@ -274,19 +274,33 @@ export const StyledHeader = styled.header`
         padding: 0 36px;
 
         &.active-block {
-            position: absolute;
-            top: 0;
-            background-color: #ffffffff;
-            width: 100%;
-            height: 600px;
+            background: rgba(38, 49, 67, 1);
         }
 
+        &.active-block .header-logo {
+            filter: grayscale(100%) brightness(470%);
+        }
+
+        &.active-block .search-button {
+            filter: invert(100%);
+        }
+
+        &.active-block .lang-button {
+            background-color: #ffffff7b;
+        }
+
+        &.active-block .active.lang-button {
+            background: none;
+            color: rgba(255, 70, 0, 1);
+            background-color: #ffffffff;
+        }
+        
         .header-nav, .header-phone, .lang-container, .social-link.search, .message-button, .search-container, .search-container.active-block {
             display: none;
         }
 
         .menu-button::before, .menu-button::after, .button-decor {
-            background-color: rgba(47, 52, 63, 1);
+            background-color: rgba(255, 70, 0, 1);
         }
 
         .menu-button:hover::after, .menu-button:hover::before, .menu-button:hover .button-decor {
@@ -308,9 +322,8 @@ export const StyledHeader = styled.header`
             width: 100%;
             height: 80px;
             margin-left: 0;
-            padding: 0 20px;
-            background-color: #fff;
-            border-top: 0.5px solid #000;
+            padding: 0 36px;
+            background: rgba(38, 49, 67, 1);
         }
 
         .lang-container.active-block {
@@ -318,21 +331,29 @@ export const StyledHeader = styled.header`
         }
 
         .search-field {
+            padding-left: 2px;
+            padding-bottom: 10px;
             border: none;
+            border-bottom: 1px solid #fff;
+            background-color: transparent;
+        }
+
+        .search-field::placeholder {
+            color: #fff;
         }
 
         .header-nav {
+            padding: 0;
             position: absolute;
-            top: 165px;
+            top: 164px;
             left: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             width: 100%;
-            background-color: #fff;
+            background: linear-gradient(rgba(38, 49, 67, 1), rgba(11, 14, 21, 1));
             height: 500px;
-            border: 0.5px solid #000;
         }
 
         .nav-link {
@@ -342,10 +363,7 @@ export const StyledHeader = styled.header`
             width: 100%;
             height: 100px;
             font-size: 24px;
-        }
-
-        .nav-link:hover {
-            background-color: #f2f2f2ff;
+            color: #fff;
         }
     }
 `

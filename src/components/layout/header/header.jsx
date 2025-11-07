@@ -23,7 +23,7 @@ export default function Header() {
     }
 
     return (
-    <StyledHeader>
+    <StyledHeader className={`${activeId === true ? 'active-block' : ''}`}>
         <Link className='logo-link' href="/"><Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56"></Image></Link>
         <a className='header-phone' href='tel:8 800 543 22 44'>8 800 543 22 44</a>
         <ul className={`socials-list ${activeId === false ? 'active-block' : ''}`}>
