@@ -158,6 +158,7 @@ export const StyledCaseAbout = styled.section`
         position: fixed;
         z-index: 100;
         bottom: 30px;
+        margin-right: 20px;
         max-width: 456px;
         height: fit-content;
         border-radius: 30px;
@@ -341,6 +342,10 @@ export const StyledCaseAbout = styled.section`
         .about-wrapper {
             display: flex;
             flex-direction: column;
+        }
+
+        .about-project {
+            min-width: auto;
         }
 
         .project-title {

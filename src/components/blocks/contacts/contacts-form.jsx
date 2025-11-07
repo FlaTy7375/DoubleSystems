@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { StyledContactsForm } from "./style"
 import Link from "next/link"
 import Image from "next/image"
@@ -10,6 +11,13 @@ import Vk from "@/assets/images/svg/vk-footer.svg"
 import Themes from "../portfolio/themes"
 
 export default function ContactsForm() {
+
+    const [activeId, setActiveId] = useState(1)
+
+    const handleActiveItem = (id) => {
+        setActiveId(id)
+    }
+
     return(
         <StyledContactsForm>
             <div className="link-container">
@@ -49,20 +57,24 @@ export default function ContactsForm() {
                     <ul className="form-list">
                         <li className="list-item">
                             <label className="field-label">Как с Вами связаться?</label>
-                            <div className="buttons-container">
-                                <button className="socials-button active">
-                                    <Image className="social-image" src={WhatsApp} alt="Иконка whats app" width={18} height={18}></Image>
-                                    WhatsApp</button>
-                                <button className="socials-button">
-                                    <Image className="social-image" src={PhoneLogo} alt="Иконка phone" width={18} height={18}></Image>
-                                    Phone</button>
-                                <button className="socials-button">
-                                    <Image className="social-image" src={Telegram} alt="Иконка telegram" width={18} height={18}></Image>
-                                    Telegram</button>
-                                <button className="socials-button">
-                                    <Image className="social-image" src={Vk} alt="Иконка vk" width={18} height={18}></Image>
-                                    VK</button>
-                            </div>
+                                <div className="buttons-container">
+                                    <button className={`socials-button ${activeId === 1 ? "active" : ""}`} onClick={() => handleActiveItem(1)} type="button">
+                                    <Image className="social-image" src={WhatsApp} alt="Иконка whats app" width={18} height={18} />
+                                    WhatsApp
+                                    </button>
+                                    <button className={`socials-button ${activeId === 2 ? "active" : ""}`} onClick={() => handleActiveItem(2)} type="button">
+                                    <Image className="social-image" src={PhoneLogo} alt="Иконка phone" width={18} height={18} />
+                                    Phone
+                                    </button>
+                                    <button className={`socials-button ${activeId === 3 ? "active" : ""}`} onClick={() => handleActiveItem(3)} type="button">
+                                    <Image className="social-image" src={Telegram} alt="Иконка telegram" width={18} height={18} />
+                                    Telegram
+                                    </button>
+                                    <button className={`socials-button ${activeId === 4 ? "active" : ""}`} onClick={() => handleActiveItem(4)} type="button">
+                                    <Image className="social-image" src={Vk} alt="Иконка vk" width={18} height={18} />
+                                    VK
+                                    </button>
+                                </div>
                             <input className="form-field" type="phone" placeholder="+1 (000) 000-0000"></input>
                         </li>
                         <li className="list-item">

@@ -85,7 +85,7 @@ export default function Cases({ cases = [], description = '' }) {
                   </p>
                 ))}
               </div>
-              <Link className="info-title" href={`/cases${index+1}`}>
+              <Link className="info-title" href={`/cases/case${index+1}`}>
                 {caseItem.title}
               </Link>
             </InfoBlock>
