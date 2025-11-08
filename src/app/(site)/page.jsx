@@ -16,6 +16,7 @@ export default async function Main() {
 
   const home = await payload.findGlobal({
     slug: 'home',
+    cache: 'no-store', 
   });
 
   const featuredCaseIds = home.featuredCases.map((item) => item.case.id);
@@ -27,11 +28,13 @@ export default async function Main() {
         in: featuredCaseIds,
       },
     },
+    cache: 'no-store', 
   });
 
   const services = await payload.find({
     collection: 'services',
     limit: 4,
+    cache: 'no-store', 
   });
 
   const highlightedCases = home.highlightedCases?.map((caseItem) => ({

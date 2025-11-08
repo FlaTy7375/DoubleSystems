@@ -175,7 +175,7 @@ export const StyledGoals = styled.section`
         line-height: 42px;
         letter-spacing: -1px;
         margin-bottom: 34px;
-        color: #000;
+        color: rgba(68, 75, 90, 1);
         max-width: 398px;
         word-wrap: break-word;
         hyphens: auto;
@@ -186,7 +186,7 @@ export const StyledGoals = styled.section`
         letter-spacing: -1px;
         font-size: 24px;
         line-height: 135%;
-        color: #000;
+        color: rgba(68, 75, 90, 1);
         margin: 0;
         max-width: 432px;
         word-wrap: break-word;

@@ -16,7 +16,7 @@ export const StyledCases = styled.section`
     .cases-wrapper {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
+        align-items: stretch;
         gap: 37px;
         row-gap: 54px;
     }
@@ -25,6 +25,7 @@ export const StyledCases = styled.section`
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: auto;
         font-size: 18px;
         font-weight: 500;
         color: rgba(238, 240, 243, 1);

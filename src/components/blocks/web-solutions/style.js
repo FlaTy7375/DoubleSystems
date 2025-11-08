@@ -133,21 +133,26 @@ export const StyledWebSolutions = styled.section`
   .slider-button {
     position: absolute;
     top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transform: translateY(-50%);
     background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
     color: white;
     border: none;
-    padding: 10px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     font-size: 18px;
     z-index: 10;
 
     &.prev {
-      left: 10px;
+      left: 7px;
     }
 
     &.next {
-      right: 10px;
+      right: 7px;
     }
 
     &:hover {

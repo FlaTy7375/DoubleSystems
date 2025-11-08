@@ -4,50 +4,26 @@ import DynamicPage from '@/components/blocks/dynamic-page/dynamic-page';
 import { notFound } from 'next/navigation';
 import "../../../styles.css";
 
-// Предопределенные слаги для страниц
-const STATIC_PAGES = ['about-us', 'prices', 'portfolio', 'services', 'what-we-do'];
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; 
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: payloadConfig });
+export default async function Page(props) {
   
-  // Получаем страницы из базы данных
-  const pages = await payload.find({ 
-    collection: 'pages', 
-    limit: 100 
-  });
-
-  // Создаем параметры для страниц из базы
-  const params = pages.docs.map(page => ({
-    slug: page.slug,
-  }));
-
-  // Добавляем статические страницы, если их нет в базе
-  STATIC_PAGES.forEach(staticSlug => {
-    if (!pages.docs.some(page => page.slug === staticSlug)) {
-      params.push({ slug: staticSlug });
-    }
-  });
-
-  return params;
-}
-
-export default async function Page({ params }) {
-  const awaitedParams = await params;
-  const slug = awaitedParams.slug; 
+  const { slug } = await props.params; 
   
   const payload = await getPayload({ config: payloadConfig });
 
-  // Ищем страницу в базе данных
   const pageData = await payload.find({
     collection: 'pages',
     where: { slug: { equals: slug } },
     limit: 1,
     depth: 2,
+    // Отключаем кэширование Next.js
+    cache: 'no-store', 
   });
   
   const pageItem = pageData.docs[0];
 
-  // Если страница не найдена в базе, показываем 404
   if (!pageItem) {
     return notFound();
   }

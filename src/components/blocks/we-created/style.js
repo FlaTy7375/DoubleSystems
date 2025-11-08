@@ -18,6 +18,7 @@ export const StyledWeCreated = styled.section`
     .card-list {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        align-items: stretch;
         column-gap: 41px;
         row-gap: 30px;
         list-style-type: none;

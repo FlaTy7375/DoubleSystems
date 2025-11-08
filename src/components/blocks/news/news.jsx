@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { useState, useMemo } from 'react'; 
 import { StyledNews } from './style';
 import InfoBlock from '@/components/ui/info-block/info-block';
+import NewsTheme from './news-themes';
 
-// 🛑 Статические импорты для дефолтного контента
+// 🛑 Статические импорты для дефолтного контента (Заглушки)
 import News1 from '@/assets/images/news1.png';
 import News2 from '@/assets/images/case4.png';
 import News3 from '@/assets/images/news3.png';
@@ -15,12 +16,11 @@ import News6 from '@/assets/images/case1.jpg';
 import News7 from '@/assets/images/news7.png';
 import News8 from '@/assets/images/news8.png';
 import News9 from '@/assets/images/news9.png';
-import NewsTheme from './news-themes';
 
-// 💡 Массив дефолтного контента (сокращенно, но должен быть полным)
+// 💡 Массив дефолтного контента (Смешанный формат: старый локальный и новый ISO)
 const DEFAULT_POSTS = [
-    { id: 'default-1', slug: 'healthhub', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '08.08.2025 11:29', views: '365', themes: [{theme: 'НОВОСТИ СТУДИИ'}, {theme: 'АКЦИИ'}], image: News1, },
-    { id: 'default-2', slug: 'case4', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатфортное мобильное приложение...', date: '07.08.2025 18:46', views: '209', themes: [{theme: 'НОВОСТИ СТУДИИ'}, {theme: 'АКЦИИ'}], image: News2, },
+    { id: 'default-1', slug: 'news1', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '02.02.2025 11:24', views: '245', themes: [{theme: 'ПРИЛОЖЕНИЕ'}], image: News1, },
+    { id: 'default-2', slug: 'news2', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '03.12.2025 14:35', views: '347', themes: [{theme: 'ПРИЛОЖЕНИЕ'}], image: News2, },
     { id: 'default-3', slug: 'news3', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '05.08.2025 19:54', views: '567', themes: [{theme: 'ПРИЛОЖЕНИЕ'}], image: News3, },
     { id: 'default-4', slug: 'news4', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '25.07.2025 07:39', views: '872', themes: [{theme: 'ПОРТАЛ'}], image: News4, },
     { id: 'default-5', slug: 'news5', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '21.07.2025 00:31', views: '114', themes: [{theme: 'ЭКОСИСТЕМА ЗДОРОВЬЯ'}], image: News5, },
@@ -41,29 +41,49 @@ const DEFAULT_THEMES_LIST = [
 const formatPostDate = (dateString) => {
     if (!dateString) return 'Дата не указана';
     
-    const dateObj = new Date(dateString);
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Месяцы с 0
-    const year = dateObj.getFullYear();
-    
-    const hours = String(dateObj.getHours()).padStart(2, '0');
-    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    let dateObj = null;
+
+    // 1. Попытка парсинга стандартным способом (для ISO: 2025-11-05T22:00:00.000Z)
+    dateObj = new Date(dateString);
+
+    // Если парсинг не удался (например, это локальный формат "ДД.ММ.ГГГГ ЧЧ:ММ")
+    if (isNaN(dateObj.getTime())) {
+        
+        // 2. Попытка парсинга локального формата
+        const [datePart, timePart] = dateString.split(' ');
+        
+        if (datePart && timePart) {
+            const [day, month, year] = datePart.split('.').map(Number);
+            const [hours, minutes] = (timePart || '00:00').split(':').map(Number);
+            
+            // Месяц в JS идет с 0 (поэтому month - 1)
+            dateObj = new Date(year, month - 1, day, hours, minutes);
+        }
+    }
+
+    // Финальная проверка
+    if (!dateObj || isNaN(dateObj.getTime())) {
+        console.error("Не удалось разобрать дату:", dateString);
+        return 'Ошибка даты';
+    }
+
+    // 3. Форматирование (для обоих форматов)
+    const formattedDay = String(dateObj.getDate()).padStart(2, '0');
+    const formattedMonth = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const formattedYear = dateObj.getFullYear();
+    const formattedHours = String(dateObj.getHours()).padStart(2, '0');
+    const formattedMinutes = String(dateObj.getMinutes()).padStart(2, '0');
 
     // Формат ДД.ММ.ГГГГ ЧЧ:ММ
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
+    return `${formattedDay}.${formattedMonth}.${formattedYear} ${formattedHours}:${formattedMinutes}`;
 };
 
 
 export default function News({ pageData = {} }) {
     
-    // 1. Состояния для активной темы (фильтрации)
     const [activeTheme, setActiveTheme] = useState(null); 
-    
-    // 2. НОВОЕ СОСТОЯНИЕ: Количество постов, которое нужно показать (начальное: 6)
     const [postsToShow, setPostsToShow] = useState(6); 
 
-
-    // 3. Извлечение данных и Fallback
     const adminTitle = pageData.title;
     const adminPosts = pageData.posts || []; 
     const adminThemesList = pageData.themesList || []; 
@@ -72,7 +92,6 @@ export default function News({ pageData = {} }) {
     const finalThemesList = adminThemesList.length > 0 ? adminThemesList : DEFAULT_THEMES_LIST;
     const finalTitle = adminTitle || 'Новости компании'; 
 
-    // 4. Логика фильтрации (по-прежнему, с useMemo)
     const filteredPosts = useMemo(() => {
         if (!activeTheme) {
             return finalPosts;
@@ -83,15 +102,12 @@ export default function News({ pageData = {} }) {
         });
     }, [finalPosts, activeTheme]); 
 
-    // 5. Логика "Показать ещё": Обрезаем отфильтрованный массив до текущего лимита
     const visiblePosts = filteredPosts.slice(0, postsToShow);
 
-    // 6. Функция, увеличивающая лимит на 3 (или до максимального значения)
     const handleShowMore = () => {
         setPostsToShow(prevCount => prevCount + 3);
     };
 
-    // 7.  Условие для кнопки: Показываем, если есть еще не показанные посты
     const showLoadMoreButton = filteredPosts.length > postsToShow;
 
     return (
@@ -102,7 +118,6 @@ export default function News({ pageData = {} }) {
             </div>
             <h1 className="news-title">{finalTitle}</h1>
             <div className="news-wrapper">
-                {/* 1. Проверка: Если постов нет, выводим сообщение */}
                 {filteredPosts.length === 0 ? (
                     <div style={{ padding: '40px', textAlign: 'center', width: '100%' }}>
                         <p style={{ fontSize: '1.2rem', color: '#666' }}>
@@ -116,7 +131,6 @@ export default function News({ pageData = {} }) {
                         </button>
                     </div>
                 ) : (
-                    // 2. Итерация по видимым постам (visiblePosts)
                     visiblePosts.map((post, index) => {
                         
                         const themes = post.themes?.map(t => t.theme) || [];

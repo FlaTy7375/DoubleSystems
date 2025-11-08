@@ -5,7 +5,7 @@ import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs";
 import Portfolio from "../portfolio/portfolio";
 import Image from "next/image";
 import Card from "@/components/ui/card/card";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Импорты стилей
 import { StyledCase1, StyledHeroSection } from "./style";
@@ -13,7 +13,6 @@ import { StyledCaseAbout } from "./blocks/about/style";
 import { StyledGoals } from "./blocks/goals/style";
 import { StyledBuisness } from "./blocks/buisness/style";
 
-// Компонент для блока about с функционалом скрытия
 const AboutSection = ({ section, index, blockId, onAnchorClick }) => {
 
   return (
@@ -44,11 +43,55 @@ export default function DynamicCase({ caseData }) {
   };   
 
     const [isContentExpanded, setIsContentExpanded] = useState(false);
+    // 👇 Состояния и рефы для фиксации оглавления (Sticky functionality)
+    const [isContentFixed, setIsContentFixed] = useState(false);
+    const aboutContentRef = useRef(null);
+    const initialTop = useRef(0); 
+    const contentHeight = useRef(0);
 
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
     };
   
+    useEffect(() => {
+        // Устанавливаем исходную позицию и высоту ОДИН РАЗ при монтировании
+        if (aboutContentRef.current && initialTop.current === 0) {
+            const rect = aboutContentRef.current.getBoundingClientRect();
+            // Позиция относительно верха документа
+            initialTop.current = rect.top + window.scrollY; 
+            contentHeight.current = rect.height;
+        }
+
+        const handleScroll = () => {
+            if (aboutContentRef.current && initialTop.current > 0) {
+                const scrollY = window.scrollY || document.documentElement.scrollTop;
+                
+                // Новая точка фиксации: на 300px раньше, чем блок достигнет верха
+                const fixationPoint = initialTop.current - 160; 
+            
+                // 1. Установить фиксацию: когда прокрутка достигла точки фиксации
+                if (scrollY >= fixationPoint) {
+                    if (!isContentFixed) {
+                        setIsContentFixed(true);
+                    }
+                } 
+                // 2. Снять фиксацию: когда прокрутка вернулась выше точки фиксации
+                else { // scrollY < fixationPoint
+                    if (isContentFixed) {
+                        setIsContentFixed(false);
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [isContentFixed]);
+
   // Функция для рендера секций
   const renderSection = (section, index) => {
     // Используем blockId из данных или генерируем fallback
@@ -107,8 +150,18 @@ export default function DynamicCase({ caseData }) {
         return (
           <StyledCaseAbout key={index} id={blockId}>
             <div className="about-wrapper">
-              <div></div>
-              <div className="about-content">
+              
+              {isContentFixed && (
+                    <div 
+                        className="placeholder" 
+                        style={{ height: contentHeight.current + 'px' }}
+                    ></div>
+                )}
+
+              <div 
+                ref={aboutContentRef}
+                className={`about-content ${isContentFixed ? 'fixed' : ''}`}
+              >
                 <h2 className="content-title">{section.contentTitle}</h2>
                 <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                 <ol className="content-list">

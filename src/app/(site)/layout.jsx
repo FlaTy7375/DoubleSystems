@@ -7,7 +7,7 @@ import Cookie from '@/components/ui/cookie/cookie'
 export default async function SiteLayout({ children }) {
 
   const payload = await getPayload({ config: payloadConfig });
-  const faq = await payload.findGlobal({ slug: 'faq' });
+  const faq = await payload.findGlobal({ slug: 'faq', cache: 'no-store' });
 
   return (
       <html lang="ru">

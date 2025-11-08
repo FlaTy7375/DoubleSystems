@@ -155,9 +155,7 @@ export const StyledCaseAbout = styled.section`
     }
 
     .about-content {
-        position: fixed;
-        z-index: 100;
-        bottom: 30px;
+        position: relative;
         margin-right: 20px;
         max-width: 456px;
         height: fit-content;
@@ -165,6 +163,13 @@ export const StyledCaseAbout = styled.section`
         padding: 20px 60px 30px 20px;
         background-color: rgba(255, 255, 255, 0.94);
         box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .about-content.fixed {
+        position: fixed;
+        max-width: 416px;
+        top: 30px;
+        z-index: 1000;
     }
 
     .content-title {

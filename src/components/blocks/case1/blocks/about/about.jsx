@@ -5,14 +5,62 @@ import Image from "next/image"
 import TabletAndPhone from "@/assets/images/tablet-phone-about.png"
 import Phone from "@/assets/images/case-about-mobile.png"
 import ClientImage from "@/assets/images/client-image.png"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function CaseAbout({ onAnchorClick }) {
     const [isContentExpanded, setIsContentExpanded] = useState(false);
+    const [isContentFixed, setIsContentFixed] = useState(false);
+    const aboutContentRef = useRef(null);
+    // Реф для хранения ИСХОДНОЙ позиции блока (top относительно документа)
+    const initialTop = useRef(0); 
+    // Реф для хранения ВЫСОТЫ блока, чтобы использовать ее для плейсхолдера
+    const contentHeight = useRef(0);
 
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
     };
+
+    useEffect(() => {
+        // Устанавливаем исходную позицию и высоту ОДИН РАЗ при монтировании
+        if (aboutContentRef.current && initialTop.current === 0) {
+            const rect = aboutContentRef.current.getBoundingClientRect();
+            // Позиция относительно верха документа
+            initialTop.current = rect.top + window.scrollY; 
+            contentHeight.current = rect.height;
+        }
+
+        const handleScroll = () => {
+            if (aboutContentRef.current && initialTop.current > 0) {
+                const scrollY = window.scrollY || document.documentElement.scrollTop;
+                
+                // Новая точка фиксации: на 300px раньше, чем блок достигнет верха
+                const fixationPoint = initialTop.current - 190; 
+                
+                // 1. Установить фиксацию: когда прокрутка достигла точки фиксации
+                if (scrollY >= fixationPoint) {
+                    // 🛑 Защитная проверка от бесконечного цикла
+                    if (!isContentFixed) {
+                        setIsContentFixed(true);
+                    }
+                } 
+                // 2. Снять фиксацию: когда прокрутка вернулась выше точки фиксации
+                else { // scrollY < fixationPoint
+                    // 🛑 Защитная проверка от бесконечного цикла
+                    if (isContentFixed) {
+                        setIsContentFixed(false);
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Вызываем сразу при загрузке
+        handleScroll();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [isContentFixed]); // Достаточно следить за изменением isContentFixed
 
     return(
         <StyledCaseAbout>
@@ -36,8 +84,19 @@ export default function CaseAbout({ onAnchorClick }) {
                 </div>
             </div>
             <div className="about-wrapper">
-                <div></div>
-                <div className="about-content">
+                {/* Плейсхолдер для сохранения макета при фиксации. */}
+                {/* Его высота берется из рефа contentHeight. */}
+                {isContentFixed && (
+                    <div 
+                        className="placeholder" 
+                        style={{ height: contentHeight.current + 'px' }}
+                    ></div>
+                )}
+                
+                <div 
+                    ref={aboutContentRef}
+                    className={`about-content ${isContentFixed ? 'fixed' : ''}`}
+                >
                     <h2 className="content-title">Содержание:</h2>
                     
                     {/* Контейнер для списка с возможностью скрытия */}

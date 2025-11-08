@@ -69,7 +69,7 @@ export const StyledInfoBlock = styled.div`
         content: "";
         width: 16px;
         height: 16px;
-        background-image: url("./images/eye.svg");
+        background-image: url("/images/eye.svg");
         left: -20px;
     }
 

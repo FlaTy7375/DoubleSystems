@@ -39,7 +39,7 @@ export const StyledNews = styled.section`
     .news-wrapper {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
+        align-items: stretch;
         gap: 37px;
         row-gap: 54px;
         margin-bottom: 65px;
