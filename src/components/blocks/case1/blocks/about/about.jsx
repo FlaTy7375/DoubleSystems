@@ -5,62 +5,156 @@ import Image from "next/image"
 import TabletAndPhone from "@/assets/images/tablet-phone-about.png"
 import Phone from "@/assets/images/case-about-mobile.png"
 import ClientImage from "@/assets/images/client-image.png"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 
 export default function CaseAbout({ onAnchorClick }) {
     const [isContentExpanded, setIsContentExpanded] = useState(false);
     const [isContentFixed, setIsContentFixed] = useState(false);
     const aboutContentRef = useRef(null);
-    // Реф для хранения ИСХОДНОЙ позиции блока (top относительно документа)
     const initialTop = useRef(0); 
-    // Реф для хранения ВЫСОТЫ блока, чтобы использовать ее для плейсхолдера
     const contentHeight = useRef(0);
+    const isUpdating = useRef(false); // Флаг для предотвращения рекурсии
+    const rafId = useRef(null); // Для requestAnimationFrame
 
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
     };
 
-    useEffect(() => {
-        // Устанавливаем исходную позицию и высоту ОДИН РАЗ при монтировании
-        if (aboutContentRef.current && initialTop.current === 0) {
+    // Функция для обновления размеров и позиции
+    const updateDimensions = useCallback(() => {
+        if (aboutContentRef.current && !isUpdating.current) {
+            isUpdating.current = true;
+            
             const rect = aboutContentRef.current.getBoundingClientRect();
-            // Позиция относительно верха документа
-            initialTop.current = rect.top + window.scrollY; 
+            // Обновляем позицию только если блок не фиксирован
+            if (!isContentFixed) {
+                initialTop.current = rect.top + window.scrollY;
+            }
+            // Всегда обновляем высоту
             contentHeight.current = rect.height;
+            
+            setTimeout(() => {
+                isUpdating.current = false;
+            }, 50);
+        }
+    }, [isContentFixed]);
+
+    const handleScroll = useCallback(() => {
+        if (rafId.current) {
+            cancelAnimationFrame(rafId.current);
         }
 
-        const handleScroll = () => {
-            if (aboutContentRef.current && initialTop.current > 0) {
+        rafId.current = requestAnimationFrame(() => {
+            if (aboutContentRef.current && initialTop.current > 0 && !isUpdating.current) {
                 const scrollY = window.scrollY || document.documentElement.scrollTop;
-                
-                // Новая точка фиксации: на 300px раньше, чем блок достигнет верха
                 const fixationPoint = initialTop.current - 190; 
                 
-                // 1. Установить фиксацию: когда прокрутка достигла точки фиксации
-                if (scrollY >= fixationPoint) {
-                    // 🛑 Защитная проверка от бесконечного цикла
+                // Добавляем гистерезис для предотвращения мерцания
+                const scrollBuffer = 10; // пикселей буфера
+                
+                if (scrollY >= fixationPoint + scrollBuffer) {
                     if (!isContentFixed) {
                         setIsContentFixed(true);
                     }
-                } 
-                // 2. Снять фиксацию: когда прокрутка вернулась выше точки фиксации
-                else { // scrollY < fixationPoint
-                    // 🛑 Защитная проверка от бесконечного цикла
+                } else if (scrollY < fixationPoint - scrollBuffer) {
                     if (isContentFixed) {
                         setIsContentFixed(false);
                     }
                 }
             }
+        });
+    }, [isContentFixed]);
+
+    useEffect(() => {
+        // Инициализация размеров с задержкой
+        const initTimeout = setTimeout(() => {
+            updateDimensions();
+        }, 100);
+
+        const handleResize = () => {
+            if (rafId.current) {
+                cancelAnimationFrame(rafId.current);
+            }
+            rafId.current = requestAnimationFrame(() => {
+                updateDimensions();
+            });
         };
 
+        // Упрощенный MutationObserver - только для существенных изменений
+        const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            for (const mutation of mutations) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    shouldUpdate = true;
+                    break;
+                }
+                if (mutation.type === 'childList') {
+                    shouldUpdate = true;
+                    break;
+                }
+            }
+            if (shouldUpdate) {
+                handleResize();
+            }
+        });
+
+        if (aboutContentRef.current) {
+            observer.observe(aboutContentRef.current, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+
         window.addEventListener('scroll', handleScroll, { passive: true });
-        // Вызываем сразу при загрузке
-        handleScroll();
+        window.addEventListener('resize', handleResize, { passive: true });
+        window.addEventListener('orientationchange', handleResize);
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('orientationchange', handleResize);
+            observer.disconnect();
+            clearTimeout(initTimeout);
+            if (rafId.current) {
+                cancelAnimationFrame(rafId.current);
+            }
         };
-    }, [isContentFixed]); // Достаточно следить за изменением isContentFixed
+    }, [handleScroll, updateDimensions]);
+
+    // Обновляем высоту при изменении состояния раскрытия с задержкой
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            updateDimensions();
+        }, 150); // Увеличиваем задержку для завершения анимации
+
+        return () => clearTimeout(timeoutId);
+    }, [isContentExpanded, updateDimensions]);
+
+    // Обновляем позицию когда блок возвращается из фиксированного состояния
+    useEffect(() => {
+        if (!isContentFixed) {
+            const timeoutId = setTimeout(() => {
+                updateDimensions();
+            }, 200); // Увеличиваем задержку после возврата
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [isContentFixed, updateDimensions]);
+
+    // Отдельный эффект для предотвращения пульсации при фиксации
+    useEffect(() => {
+        if (isContentFixed) {
+            // При фиксации временно отключаем обновления размеров
+            isUpdating.current = true;
+            const timeoutId = setTimeout(() => {
+                isUpdating.current = false;
+            }, 300);
+            
+            return () => clearTimeout(timeoutId);
+        }
+    }, [isContentFixed]);
 
     return(
         <StyledCaseAbout>
@@ -84,12 +178,11 @@ export default function CaseAbout({ onAnchorClick }) {
                 </div>
             </div>
             <div className="about-wrapper">
-                {/* Плейсхолдер для сохранения макета при фиксации. */}
-                {/* Его высота берется из рефа contentHeight. */}
+                {/* Плейсхолдер с динамической высотой */}
                 {isContentFixed && (
                     <div 
                         className="placeholder" 
-                        style={{ height: contentHeight.current + 'px' }}
+                        style={{ height: `${contentHeight.current}px` }}
                     ></div>
                 )}
                 
@@ -99,10 +192,8 @@ export default function CaseAbout({ onAnchorClick }) {
                 >
                     <h2 className="content-title">Содержание:</h2>
                     
-                    {/* Контейнер для списка с возможностью скрытия */}
                     <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                         <ol className="content-list">
-                            {/* Первый пункт всегда видим */}
                             <li className="content-element first-visible">
                                 <button 
                                     className="content-theme anchor-link"
@@ -113,7 +204,6 @@ export default function CaseAbout({ onAnchorClick }) {
                                 </button>
                             </li>
                             
-                            {/* Остальные пункты скрываются/показываются */}
                             <li className="content-element">
                                 <button 
                                     className="content-theme anchor-link"
@@ -165,7 +255,6 @@ export default function CaseAbout({ onAnchorClick }) {
                         </ol>
                     </div>
                     
-                    {/* Кнопка для скрытия/раскрытия */}
                     <button 
                         className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
                         onClick={toggleContent}

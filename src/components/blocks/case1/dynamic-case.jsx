@@ -67,7 +67,7 @@ export default function DynamicCase({ caseData }) {
                 const scrollY = window.scrollY || document.documentElement.scrollTop;
                 
                 // Новая точка фиксации: на 300px раньше, чем блок достигнет верха
-                const fixationPoint = initialTop.current - 160; 
+                const fixationPoint = initialTop.current - 190; 
             
                 // 1. Установить фиксацию: когда прокрутка достигла точки фиксации
                 if (scrollY >= fixationPoint) {

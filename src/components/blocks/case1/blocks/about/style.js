@@ -7,6 +7,10 @@ export const StyledCaseAbout = styled.section`
     margin: 0 auto;
     margin-top: 45px;
 
+    .placeholder {
+        height: 1px;
+    }
+
     .content-container {
     transition: all 0.3s ease;
     overflow: hidden;
@@ -168,7 +172,7 @@ export const StyledCaseAbout = styled.section`
     .about-content.fixed {
         position: fixed;
         max-width: 416px;
-        top: 30px;
+        top: 70px;
         z-index: 1000;
     }
 
@@ -323,6 +327,11 @@ export const StyledCaseAbout = styled.section`
     }
 
     @media (max-width: 1279px) {
+
+        .about-content.fixed {
+            max-width: none;
+            width: 95%;
+        }
         .about-wrapper {
             display: flex;
             flex-direction: column;
@@ -343,6 +352,10 @@ export const StyledCaseAbout = styled.section`
 
     @media (max-width: 756px) {
         padding: 0;
+
+        .about-content.fixed {
+            width: 90%;
+        }
 
         .about-wrapper {
             display: flex;
