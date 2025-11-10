@@ -1,41 +1,31 @@
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
-import Blog1 from '@/components/blocks/blog1/blog1';
+import DynamicPost from '@/components/blocks/case1/dynamic-post';
 import "../../../../styles.css";
 
-export async function generateStaticParams() {
+export const dynamic = 'force-dynamic';
+
+export default async function PostPage(props) {
+
+  const { slug } = await props.params; 
+  
   const payload = await getPayload({ config: payloadConfig });
-  const posts = await payload.find({ collection: 'posts', limit: 100 });
 
-  return posts.docs.map(post => ({
-    slug: post.slug,
-  }));
-}
+  const postData = await payload.find({
+    collection: 'posts',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 2,
+    // Отключаем кэширование Next.js для свежести данных
+    cache: 'no-store', 
+  });
+  
+  const postItem = postData.docs[0];
 
+  if (!postItem) {
+    return <div>Запись блога не найдена</div>; 
+  }
 
-export default async function SinglePostPage({ params }) {
-    
-    const awaitedParams = await params;
-    const slug = awaitedParams.slug; 
-    
-    const payload = await getPayload({ config: payloadConfig });
-
-    const postData = await payload.find({
-        collection: 'posts',
-        where: { slug: { equals: slug } },
-        limit: 1,
-        depth: 2,
-    });
-    
-    const post = postData.docs[0];
-
-    if (!post) {
-        return <main><h1>404 | Пост "{slug}" не найден</h1></main>;
-    }
-
-    return (
-        <main>
-            <Blog1 post={post} />
-        </main>
-    );
+  // Передаем данные в DynamicPost
+  return <DynamicPost postData={postItem} />;
 }

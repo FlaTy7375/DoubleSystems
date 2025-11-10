@@ -491,35 +491,135 @@ export interface Post {
   title: string;
   slug: string;
   tags?: (number | Tag)[] | null;
-  featuredImage: number | Media;
-  content?:
+  date: string;
+  author?: (number | null) | User;
+  sections?:
     | (
         | {
-            text?: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
+            blockId: string;
+            subtitle: string;
+            description: string;
+            stamps?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            backgroundImage: number | Media;
+            image: number | Media;
+            buttonText?: string | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'textContent';
+            blockType: 'heroSection';
           }
         | {
-            image: number | Media;
-            caption?: string | null;
+            blockId: string;
+            subtitle: string;
+            description: string;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'imageContent';
+            blockType: 'textSection';
+          }
+        | {
+            blockId: string;
+            projectTitle: string;
+            projectDescription: string;
+            client: string;
+            status: string;
+            caseTitle: string;
+            caseDescription: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'aboutProjectSection';
+          }
+        | {
+            blockId: string;
+            contentTitle: string;
+            contentItems?:
+              | {
+                  text: string;
+                  anchorId: string;
+                  id?: string | null;
+                }[]
+              | null;
+            clientImage: number | Media;
+            clientImageDescription: string;
+            clientTitle: string;
+            clientSubtitle: string;
+            clientDescription: string;
+            layoutImage: number | Media;
+            layoutImageDescription: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'clientSection';
+          }
+        | {
+            blockId: string;
+            title: string;
+            description: string;
+            strategyTitle: string;
+            strategyItems?:
+              | {
+                  title: string;
+                  description: string;
+                  id?: string | null;
+                }[]
+              | null;
+            conclusion: string;
+            strategyImage: number | Media;
+            imageDescription: string;
+            processTitle: string;
+            processDescription: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'strategySection';
+          }
+        | {
+            blockId: string;
+            title: string;
+            description: string;
+            goals?:
+              | {
+                  title: string;
+                  description: string;
+                  isLight?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'goalsSection';
+          }
+        | {
+            blockId: string;
+            title: string;
+            subtitle: string;
+            tasks?:
+              | {
+                  text: string;
+                  isLight?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'businessSection';
+          }
+        | {
+            blockId: string;
+            authorImage: number | Media;
+            authorName: string;
+            authorRole: string;
+            authorDescription?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            buttonText?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'authorSection';
           }
       )[]
     | null;
@@ -1054,22 +1154,142 @@ export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   tags?: T;
-  featuredImage?: T;
-  content?:
+  date?: T;
+  author?: T;
+  sections?:
     | T
     | {
-        textContent?:
+        heroSection?:
           | T
           | {
-              text?: T;
+              blockId?: T;
+              subtitle?: T;
+              description?: T;
+              stamps?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              backgroundImage?: T;
+              image?: T;
+              buttonText?: T;
               id?: T;
               blockName?: T;
             };
-        imageContent?:
+        textSection?:
           | T
           | {
-              image?: T;
-              caption?: T;
+              blockId?: T;
+              subtitle?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        aboutProjectSection?:
+          | T
+          | {
+              blockId?: T;
+              projectTitle?: T;
+              projectDescription?: T;
+              client?: T;
+              status?: T;
+              caseTitle?: T;
+              caseDescription?: T;
+              id?: T;
+              blockName?: T;
+            };
+        clientSection?:
+          | T
+          | {
+              blockId?: T;
+              contentTitle?: T;
+              contentItems?:
+                | T
+                | {
+                    text?: T;
+                    anchorId?: T;
+                    id?: T;
+                  };
+              clientImage?: T;
+              clientImageDescription?: T;
+              clientTitle?: T;
+              clientSubtitle?: T;
+              clientDescription?: T;
+              layoutImage?: T;
+              layoutImageDescription?: T;
+              id?: T;
+              blockName?: T;
+            };
+        strategySection?:
+          | T
+          | {
+              blockId?: T;
+              title?: T;
+              description?: T;
+              strategyTitle?: T;
+              strategyItems?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              conclusion?: T;
+              strategyImage?: T;
+              imageDescription?: T;
+              processTitle?: T;
+              processDescription?: T;
+              id?: T;
+              blockName?: T;
+            };
+        goalsSection?:
+          | T
+          | {
+              blockId?: T;
+              title?: T;
+              description?: T;
+              goals?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    isLight?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        businessSection?:
+          | T
+          | {
+              blockId?: T;
+              title?: T;
+              subtitle?: T;
+              tasks?:
+                | T
+                | {
+                    text?: T;
+                    isLight?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        authorSection?:
+          | T
+          | {
+              blockId?: T;
+              authorImage?: T;
+              authorName?: T;
+              authorRole?: T;
+              authorDescription?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
               id?: T;
               blockName?: T;
             };
