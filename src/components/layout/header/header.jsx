@@ -32,13 +32,13 @@ export default function Header() {
             <li className='social-item'><a className='social-link' href='telegram'><Image src={TgLogo} alt='Telegram'></Image></a></li>
         </ul>
         <nav className={`header-nav ${activeId === false ? 'active-block' : ''}`}>
-            <Link className='nav-link' href="/prices">Prices</Link>
-            <Link className='nav-link' href="/about-us">About Us</Link>
-            <Link className='nav-link' href="/portfolio">Portfolio</Link>
-            <Link className='nav-link' href="/services">Services</Link>
-            <Link className='nav-link' href="/blog">Blog</Link>
-            <Link className='nav-link' href="/contacts">Contact Us</Link>
-            <Link className='nav-link' href="/what-we-do">What we do</Link>
+            <Link className='nav-link' href="/prices">Цены</Link>
+            <Link className='nav-link' href="/about-us">О нас</Link>
+            <Link className='nav-link' href="/portfolio">Портфолио</Link>
+            <Link className='nav-link' href="/services">Услуги</Link>
+            <Link className='nav-link' href="/blog">Блог</Link>
+            <Link className='nav-link' href="/contacts">Связаться</Link>
+            <Link className='nav-link' href="/what-we-do">Что мы делаем</Link>
         </nav>
         <div className={`search-container ${activeId === true ? 'active-block' : ''}`}>
             <input name='search' className='search-field' placeholder='Поиск по сайту' type='search' 

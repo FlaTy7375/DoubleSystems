@@ -207,6 +207,7 @@ export const StyledCaseAbout = styled.section`
         width: 18px;
         height: 9px;
         background-image: url("/images/content-icon.svg");
+        transform: rotate(180deg);
         background-repeat: no-repeat;
         background-position: 50%;
         transition: all 0.3s ease;
@@ -218,7 +219,7 @@ export const StyledCaseAbout = styled.section`
     }
 
     .content-button.expanded {
-        transform: rotate(180deg);
+        transform: rotate(0deg);
     }
 
     .about-client {
