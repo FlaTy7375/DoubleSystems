@@ -9,56 +9,68 @@ import Cases from '@/components/blocks/cases/cases';
 import Technology from '@/components/blocks/technology/technology';
 import '../../styles.css';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Main() {
   const payload = await getPayload({
     config: payloadConfig,
   });
 
+  // --- 1. ЗАГРУЗКА HOME (для заголовков и флагов) ---
   const home = await payload.findGlobal({
     slug: 'home',
+    // depth: 1 достаточно, так как мы не используем отношения highlightedCases
+    depth: 1, 
     cache: 'no-store', 
   });
-
-  const featuredCaseIds = home.featuredCases.map((item) => item.case.id);
-
-  const cases = await payload.find({
+  
+  const allPublishedCases = await payload.find({
     collection: 'cases',
-    where: {
-      id: {
-        in: featuredCaseIds,
-      },
-    },
-    cache: 'no-store', 
+    // Сортировка по дате публикации (по убыванию: новейшие первыми)
+    sort: '-previewDate', 
+    // depth: 2 для загрузки превью-изображений (previewImage -> media)
+    depth: 2, 
+    cache: 'no-store',
   });
+  
+  // --- 2. МАППИНГ АВТОМАТИЧЕСКИ ЗАГРУЖЕННЫХ КЕЙСОВ ---
+  const autoCases = allPublishedCases.docs.map((caseItem) => {
+    // caseItem — это уже сам объект кейса
+    const title = caseItem.previewTitle || caseItem.title || 'Без названия';
+    const image = caseItem.previewImage || null;
+    const views = caseItem.previewViews || 85;
+    const dateValue = caseItem.previewDate;
+    
+    const themesData = caseItem.previewThemes || [];
+    const themes = themesData.map(t => t.theme) || []; 
 
-  const services = await payload.find({
-    collection: 'services',
-    limit: 4,
-    cache: 'no-store', 
-  });
-
-  const highlightedCases = home.highlightedCases?.map((caseItem) => ({
-    title: caseItem.title || 'Без названия',
-    description: caseItem.description || '',
-    themes: caseItem.themes?.map((theme) => theme.theme) || [],
-    date: caseItem.date ? new Date(caseItem.date).toLocaleString('ru-RU', {
+    const formattedDate = dateValue ? new Date(dateValue).toLocaleString('ru-RU', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-    }) : 'Не указано',
-    views: caseItem.views || 85,
-    image: caseItem.image ? { url: caseItem.image.url, alt: caseItem.title || 'Изображение кейса' } : null,
-  })) || [];
+    }) : 'Не указано';
 
-  const technologies = home.technologies?.map((techGroup) => ({
-  type: techGroup.type || 'Без типа',
-  list: techGroup.list?.map((tech) => ({
-    techName: tech.techName || 'Без названия',
-    logo: tech.logo ? { url: tech.logo.url, alt: tech.techName || 'Логотип технологии' } : null,
-  })) || [],
-  })) || [];
+    return {
+        slug: caseItem.slug || 'no-slug', 
+        title: title,
+        themes: themes,
+        date: formattedDate,
+        views: views,
+        // Проверка, что image.url существует
+        image: image && image.url ? { url: image.url, alt: title } : null,
+    };
+  });
+
+  // --- 3. ЗАГРУЗКА FEATURED CASES (для WebSolutions) ---
+  const featuredCaseIds = home.featuredCases?.map((item) => item.case?.id).filter(id => id) || [];
+  const cases = await payload.find({
+    collection: 'cases',
+    where: { id: { in: featuredCaseIds } },
+    depth: 1, 
+    cache: 'no-store', 
+  });
 
   return (
     <>
@@ -68,10 +80,11 @@ export default async function Main() {
       <Portfolio items={home.portfolioItems || []} themes={home.portfolioThemes || []} />
       <MobileApp items={home.mobileAppItems || []} />
       <Cases
-        cases={highlightedCases}
-        description={home.casesDescription?.root?.children?.map((child) => child.children?.map((c) => c.text).join('')) || ''}
+        autoCases={autoCases} 
+        description={home.portfolioDescription || ''} 
+        globalSettings={home} 
       />
-      <Technology technologies={technologies} />
+      <Technology technologies={home.technologies || []} />
     </>
   );
 }

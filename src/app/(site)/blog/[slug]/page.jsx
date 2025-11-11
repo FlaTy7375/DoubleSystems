@@ -11,19 +11,20 @@ export default async function PostPage(props) {
   
   const payload = await getPayload({ config: payloadConfig });
 
+  // Загрузка данных для поста
   const postData = await payload.find({
     collection: 'posts',
     where: { slug: { equals: slug } },
     limit: 1,
+    // depth: 2 должен быть достаточен для загрузки всех секций
     depth: 2,
-    // Отключаем кэширование Next.js для свежести данных
     cache: 'no-store', 
   });
   
   const postItem = postData.docs[0];
 
   if (!postItem) {
-    return <div>Запись блога не найдена</div>; 
+    return <div>Запись блога **{slug}** не найдена</div>; 
   }
 
   // Передаем данные в DynamicPost

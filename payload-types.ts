@@ -345,6 +345,19 @@ export interface Page {
 export interface Case {
   id: number;
   title: string;
+  /**
+   * Используется в списках, если не переопределено на главной.
+   */
+  previewTitle: string;
+  previewImage: number | Media;
+  previewViews?: number | null;
+  previewDate: string;
+  previewThemes?:
+    | {
+        theme: string;
+        id?: string | null;
+      }[]
+    | null;
   path: string;
   slug: string;
   tags?: (number | Tag)[] | null;
@@ -489,6 +502,23 @@ export interface Case {
 export interface Post {
   id: number;
   title: string;
+  /**
+   * Отображается на странице /blog
+   */
+  previewTitle: string;
+  /**
+   * Отображается на странице /blog
+   */
+  previewDescription: string;
+  previewImage: number | Media;
+  previewViews?: number | null;
+  previewDate: string;
+  previewThemes?:
+    | {
+        theme: string;
+        id?: string | null;
+      }[]
+    | null;
   slug: string;
   tags?: (number | Tag)[] | null;
   date: string;
@@ -1001,6 +1031,16 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface CasesSelect<T extends boolean = true> {
   title?: T;
+  previewTitle?: T;
+  previewImage?: T;
+  previewViews?: T;
+  previewDate?: T;
+  previewThemes?:
+    | T
+    | {
+        theme?: T;
+        id?: T;
+      };
   path?: T;
   slug?: T;
   tags?: T;
@@ -1152,6 +1192,17 @@ export interface CasesSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
+  previewTitle?: T;
+  previewDescription?: T;
+  previewImage?: T;
+  previewViews?: T;
+  previewDate?: T;
+  previewThemes?:
+    | T
+    | {
+        theme?: T;
+        id?: T;
+      };
   slug?: T;
   tags?: T;
   date?: T;
@@ -1379,6 +1430,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Home {
   id: number;
   title?: string | null;
+  portfolioTitle?: string | null;
+  portfolioDescription?: string | null;
+  /**
+   * Если нет ни одного кейса в коллекции, будут отображены заглушки.
+   */
+  showDefaultCases?: boolean | null;
+  /**
+   * Если включено, статические кейсы будут отображены после всех динамических.
+   */
+  showStaticCasesWithDynamic?: boolean | null;
   featuredCases?:
     | {
         case: number | Case;
@@ -1425,22 +1486,6 @@ export interface Home {
         title: string;
         image?: (number | null) | Media;
         imageAlt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  highlightedCases?:
-    | {
-        title: string;
-        description?: string | null;
-        image: number | Media;
-        date: string;
-        themes?:
-          | {
-              theme?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        views?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -1505,22 +1550,14 @@ export interface Blog {
         id?: string | null;
       }[]
     | null;
-  posts?:
-    | {
-        title: string;
-        description: string;
-        image: number | Media;
-        date: string;
-        views?: number | null;
-        themes?:
-          | {
-              theme?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+  /**
+   * Если нет ни одного поста в коллекции, будут отображены заглушки.
+   */
+  showDefaultPosts?: boolean | null;
+  /**
+   * Если включено, статические посты будут отображены после всех динамических.
+   */
+  showStaticPostsWithDynamic?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1530,6 +1567,10 @@ export interface Blog {
  */
 export interface HomeSelect<T extends boolean = true> {
   title?: T;
+  portfolioTitle?: T;
+  portfolioDescription?: T;
+  showDefaultCases?: T;
+  showStaticCasesWithDynamic?: T;
   featuredCases?:
     | T
     | {
@@ -1579,22 +1620,6 @@ export interface HomeSelect<T extends boolean = true> {
         imageAlt?: T;
         id?: T;
       };
-  highlightedCases?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-        date?: T;
-        themes?:
-          | T
-          | {
-              theme?: T;
-              id?: T;
-            };
-        views?: T;
-        id?: T;
-      };
   technologies?:
     | T
     | {
@@ -1642,22 +1667,8 @@ export interface BlogSelect<T extends boolean = true> {
         themeName?: T;
         id?: T;
       };
-  posts?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-        date?: T;
-        views?: T;
-        themes?:
-          | T
-          | {
-              theme?: T;
-              id?: T;
-            };
-        id?: T;
-      };
+  showDefaultPosts?: T;
+  showStaticPostsWithDynamic?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
