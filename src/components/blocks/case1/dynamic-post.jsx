@@ -6,6 +6,7 @@ import Portfolio from "../portfolio/portfolio";
 import Image from "next/image";
 import Card from "@/components/ui/card/card";
 import { useState, useEffect, useRef } from "react";
+import { useTranslate } from "@/components/translate/useTranslation";
 
 import { StyledCase1, StyledHeroSection } from "./style";
 import { StyledCaseAbout } from "./blocks/about/style";
@@ -13,18 +14,22 @@ import { StyledGoals } from "./blocks/goals/style";
 import { StyledBuisness } from "./blocks/buisness/style";
 
 const AboutSection = ({ section, index, blockId }) => {
+  // Переводим тексты для AboutSection
+  const clientText = useTranslate('Клиент:');
+  const statusText = useTranslate('Статус:');
+
   return (
     <StyledCaseAbout key={index} id={blockId}>
       <div className="about-wrapper">
         <div className="about-project">
-          <h2 className="project-title">{section.projectTitle}</h2>
-          <p className="project-description">{section.projectDescription}</p>
-          <p className="project-description">Клиент:<br></br> <span className="decoration">{section.client}</span></p>
-          <p className="project-description">Статус:<br></br> <span className="decoration">{section.status}</span></p>
+          <h2 className="project-title">{useTranslate(section.projectTitle)}</h2>
+          <p className="project-description">{useTranslate(section.projectDescription)}</p>
+          <p className="project-description">{clientText}<br></br> <span className="decoration">{useTranslate(section.client)}</span></p>
+          <p className="project-description">{statusText}<br></br> <span className="decoration">{useTranslate(section.status)}</span></p>
         </div>
         <div className="about-case">
-          <h1 className="about-title">{section.caseTitle}</h1>
-          <p className="about-description">{section.caseDescription}</p>
+          <h1 className="about-title">{useTranslate(section.caseTitle)}</h1>
+          <p className="about-description">{useTranslate(section.caseDescription)}</p>
         </div>
       </div>
     </StyledCaseAbout>
@@ -40,48 +45,53 @@ export default function DynamicPost({ postData }) {
     }
   };   
 
-    const [isContentExpanded, setIsContentExpanded] = useState(false);
-    const [isContentFixed, setIsContentFixed] = useState(false);
-    const aboutContentRef = useRef(null);
-    const initialTop = useRef(0); 
-    const contentHeight = useRef(0);
+  // Переводим общие тексты
+  const blogLink = useTranslate('Блог');
+  const writeButtonText = useTranslate('Написать');
+  const contentTitleText = useTranslate('Содержание:');
 
-    const toggleContent = () => {
-        setIsContentExpanded(!isContentExpanded);
-    };
+  const [isContentExpanded, setIsContentExpanded] = useState(false);
+  const [isContentFixed, setIsContentFixed] = useState(false);
+  const aboutContentRef = useRef(null);
+  const initialTop = useRef(0); 
+  const contentHeight = useRef(0);
+
+  const toggleContent = () => {
+      setIsContentExpanded(!isContentExpanded);
+  };
   
-    useEffect(() => {
-        if (aboutContentRef.current && initialTop.current === 0) {
-            const rect = aboutContentRef.current.getBoundingClientRect();
-            initialTop.current = rect.top + window.scrollY; 
-            contentHeight.current = rect.height;
-        }
+  useEffect(() => {
+      if (aboutContentRef.current && initialTop.current === 0) {
+          const rect = aboutContentRef.current.getBoundingClientRect();
+          initialTop.current = rect.top + window.scrollY; 
+          contentHeight.current = rect.height;
+      }
 
-        const handleScroll = () => {
-            if (aboutContentRef.current && initialTop.current > 0) {
-                const scrollY = window.scrollY || document.documentElement.scrollTop;
-                
-                const fixationPoint = initialTop.current - 190; 
-            
-                if (scrollY >= fixationPoint) {
-                    if (!isContentFixed) {
-                        setIsContentFixed(true);
-                    }
-                } else {
-                    if (isContentFixed) {
-                        setIsContentFixed(false);
-                    }
-                }
-            }
-        };
+      const handleScroll = () => {
+          if (aboutContentRef.current && initialTop.current > 0) {
+              const scrollY = window.scrollY || document.documentElement.scrollTop;
+              
+              const fixationPoint = initialTop.current - 190; 
+          
+              if (scrollY >= fixationPoint) {
+                  if (!isContentFixed) {
+                      setIsContentFixed(true);
+                  }
+              } else {
+                  if (isContentFixed) {
+                      setIsContentFixed(false);
+                  }
+              }
+          }
+      };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [isContentFixed]);
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+      };
+  }, [isContentFixed]);
 
   const renderSection = (section, index) => {
     const blockId = section.blockId || `${section.blockType}-${index}`;
@@ -94,31 +104,31 @@ export default function DynamicPost({ postData }) {
             <div className="case-container">
               <ul className="stamps-list for-mobile">
                 {section.stamps?.slice(0, 3).map((stamp, i) => (
-                  <li key={i} className="stamp">{stamp.text}</li>
+                  <li key={i} className="stamp">{useTranslate(stamp.text)}</li>
                 ))}
               </ul>
               <h2 className="container-title">
-                {section.subtitle}
+                {useTranslate(section.subtitle)}
               </h2>
               <h2 className="container-title for-mobile">
-                {section.title}
+                {useTranslate(section.title)}
               </h2>
               <ul className="stamps-list">
                 {section.stamps?.map((stamp, i) => (
-                  <li key={i} className="stamp">{stamp.text}</li>
+                  <li key={i} className="stamp">{useTranslate(stamp.text)}</li>
                 ))}
               </ul>
-              <p className="container-description">{section.description}</p>
+              <p className="container-description">{useTranslate(section.description)}</p>
               {section.image && (
                 <Image 
                   className="container-image" 
                   src={section.image.url} 
-                  alt={section.image.alt || section.title} 
+                  alt={useTranslate(section.image.alt) || useTranslate(section.title)} 
                   width={322} 
                   height={231}
                 />
               )}
-              {section.buttonText && <button className="container-button">{section.buttonText}</button>}
+              {section.buttonText && <button className="container-button">{useTranslate(section.buttonText)}</button>}
             </div>
             <BreadCrumbs />
           </StyledHeroSection>
@@ -150,7 +160,7 @@ export default function DynamicPost({ postData }) {
                 ref={aboutContentRef}
                 className={`about-content ${isContentFixed ? 'fixed' : ''}`}
               >
-                <h2 className="content-title">{section.contentTitle}</h2>
+                <h2 className="content-title">{contentTitleText}</h2>
                 <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                 <ol className="content-list">
                   {section.contentItems?.map((item, i) => (
@@ -160,7 +170,7 @@ export default function DynamicPost({ postData }) {
                         className="content-theme anchor-link"
                         onClick={() => scrollToAnchor(item.anchorId)}
                       >
-                        <span className="decoration">{item.text}</span>
+                        <span className="decoration">{useTranslate(item.text)}</span>
                       </button>
                     </li> 
                     :
@@ -169,7 +179,7 @@ export default function DynamicPost({ postData }) {
                         className="content-theme anchor-link"
                         onClick={() => scrollToAnchor(item.anchorId)}
                       >
-                      {item.text}
+                      {useTranslate(item.text)}
                       </button>
                     </li>
                   ))}
@@ -185,27 +195,27 @@ export default function DynamicPost({ postData }) {
                   <Image 
                     className="client-image tablet" 
                     src={section.clientImage.url} 
-                    alt={section.clientImage.alt || "Изображение клиента"} 
+                    alt={useTranslate(section.clientImage.alt) || "Изображение клиента"} 
                     width={996} 
                     height={612}
                   />
                 )}
-                <p className="images-description">{section.clientImageDescription}</p>
+                <p className="images-description">{useTranslate(section.clientImageDescription)}</p>
                 <h1 className="client-title">
-                  {section.clientTitle}
+                  {useTranslate(section.clientTitle)}
                 </h1>
-                <h2 className="client-subtitle">{section.clientSubtitle}</h2>
-                <p className="client-description">{section.clientDescription}</p>
+                <h2 className="client-subtitle">{useTranslate(section.clientSubtitle)}</h2>
+                <p className="client-description">{useTranslate(section.clientDescription)}</p>
                 {section.layoutImage && (
                   <Image 
                     className="client-image layout" 
                     src={section.layoutImage.url} 
-                    alt={section.layoutImage.alt || "Изображение макета"} 
+                    alt={useTranslate(section.layoutImage.alt) || "Изображение макета"} 
                     width={1244} 
                     height={663}
                   />
                 )}
-                <p className="images-description layout">{section.layoutImageDescription}</p>
+                <p className="images-description layout">{useTranslate(section.layoutImageDescription)}</p>
               </div>
             </div>
           </StyledCaseAbout>
@@ -216,34 +226,34 @@ export default function DynamicPost({ postData }) {
           <StyledGoals key={index} id={blockId}>
             <div className="goals-wrapper">
               <div className="text-container">
-                <h2 className="container-title">{section.title}</h2>
+                <h2 className="container-title">{useTranslate(section.title)}</h2>
                 <p className="container-description">
-                  {section.description}
+                  {useTranslate(section.description)}
                 </p>
               </div>
               <div className="strategy-container">
-                <h2 className="strategy-title">{section.strategyTitle}</h2>
+                <h2 className="strategy-title">{useTranslate(section.strategyTitle)}</h2>
                 {section.strategyItems?.map((item, i) => (
                   <p key={i} className="strategy-description">
-                    <span className="decoration">{item.title}:</span><br></br>
-                    {item.description}
+                    <span className="decoration">{useTranslate(item.title)}:</span><br></br>
+                    {useTranslate(item.description)}
                   </p>
                 ))}
-                <p className="strategy-description bold">{section.conclusion}</p>
+                <p className="strategy-description bold">{useTranslate(section.conclusion)}</p>
                 {section.strategyImage && (
                   <Image 
                     className="strategy-image" 
                     src={section.strategyImage.url} 
-                    alt={section.strategyImage.alt || "Изображение стратегии"} 
+                    alt={useTranslate(section.strategyImage.alt) || "Изображение стратегии"} 
                     width={1244} 
                     height={759}
                   />
                 )}
-                <p className="images-description strategy">{section.imageDescription}</p>
+                <p className="images-description strategy">{useTranslate(section.imageDescription)}</p>
                 
                 <div>
-                  <h2 className="strategy-subtitle">{section.processTitle}</h2>
-                  <p className="process-description">{section.processDescription}</p>
+                  <h2 className="strategy-subtitle">{useTranslate(section.processTitle)}</h2>
+                  <p className="process-description">{useTranslate(section.processDescription)}</p>
                 </div>
               </div>
             </div>
@@ -253,14 +263,14 @@ export default function DynamicPost({ postData }) {
       case 'goalsSection':
         return (
           <StyledGoals key={index} id={blockId}>
-            <h1 className="goals-title">{section.title}</h1>
-            <p className="goals-description">{section.description}</p>
+            <h1 className="goals-title">{useTranslate(section.title)}</h1>
+            <p className="goals-description">{useTranslate(section.description)}</p>
             <ul className="cards-list">
               {section.goals?.map((goal, i) => (
                 <li key={i} className="card-wrapper">
                   <Card className={goal.isLight ? 'light' : ''}>
-                    <h2>{goal.title}</h2>
-                    <p className="card-description">{goal.description}</p>
+                    <h2>{useTranslate(goal.title)}</h2>
+                    <p className="card-description">{useTranslate(goal.description)}</p>
                     <p className="card-number">/{String(i + 1).padStart(2, '0')}</p>
                   </Card>
                 </li>
@@ -272,13 +282,13 @@ export default function DynamicPost({ postData }) {
       case 'businessSection':
         return (
           <StyledBuisness key={index} id={blockId}>
-            <h1 className="buisness-title">{section.title}</h1>
-            <h2 className="buisness-subtitle">{section.subtitle}</h2>
+            <h1 className="buisness-title">{useTranslate(section.title)}</h1>
+            <h2 className="buisness-subtitle">{useTranslate(section.subtitle)}</h2>
             <ul className="cards-list">
               {section.tasks?.map((task, i) => (
                 <li key={i} className="card-wrapper">
                   <Card className={task.isLight ? 'light' : ''}>
-                    <h2 className="card-description">{task.text}</h2>
+                    <h2 className="card-description">{useTranslate(task.text)}</h2>
                     <p className="card-number">/{String(i + 1).padStart(2, '0')}</p>
                   </Card>
                 </li>
@@ -290,8 +300,8 @@ export default function DynamicPost({ postData }) {
       case 'textSection':
         return (
           <StyledBuisness key={index} id={blockId}>
-            <h1 className="buisness-title">{section.subtitle}</h1>
-            <p>{section.description}</p>
+            <h1 className="buisness-title">{useTranslate(section.subtitle)}</h1>
+            <p>{useTranslate(section.description)}</p>
           </StyledBuisness>
         );
 
@@ -302,19 +312,19 @@ export default function DynamicPost({ postData }) {
               {section.authorImage && (
                 <Image 
                   src={section.authorImage.url} 
-                  alt={section.authorImage.alt || section.authorName} 
+                  alt={useTranslate(section.authorImage.alt) || useTranslate(section.authorName)} 
                   width={100} 
                   height={100}
                 />
               )}
               <Link className="write-button" href="/contacts">
-                {section.buttonText}
+                {writeButtonText}
               </Link>
             </div>
-            <h3 className="person-name">{section.authorName}</h3>
-            <p className="person-role">{section.authorRole}</p>
+            <h3 className="person-name">{useTranslate(section.authorName)}</h3>
+            <p className="person-role">{useTranslate(section.authorRole)}</p>
             {section.authorDescription?.map((desc, i) => (
-              <p key={i} className="person-description">{desc.text}</p>
+              <p key={i} className="person-description">{useTranslate(desc.text)}</p>
             ))}
           </div>
         );
@@ -328,11 +338,11 @@ export default function DynamicPost({ postData }) {
     <StyledCase1> 
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
-        <Link className="cases-link" href="/blog">\&nbsp;Блог&nbsp;</Link> 
-        <Link className="cases-link active" href={`/blog/${postData.slug}`}>\&nbsp;{postData.title}</Link> 
+        <Link className="cases-link" href="/blog">\&nbsp;{blogLink}&nbsp;</Link> 
+        <Link className="cases-link active" href={`/blog/${postData.slug}`}>\&nbsp;{useTranslate(postData.title)}</Link> 
       </div>
       <div className="case-wrapper">
-        <h1 className="case-title">{postData.title}</h1>
+        <h1 className="case-title">{useTranslate(postData.title)}</h1>
         
         {postData.sections?.map(renderSection)}
         

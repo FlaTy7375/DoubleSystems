@@ -287,7 +287,7 @@ export const StyledFooter = styled.footer`
 
     .decor-text {
         position: absolute;
-        width: 1740px;
+        width: 1620px;
         font-size: 237px;
         bottom: -60px;
         color: #fff;

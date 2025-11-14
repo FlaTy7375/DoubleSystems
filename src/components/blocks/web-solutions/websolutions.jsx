@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { StyledWebSolutions } from './style';
 import PhoneAndTablet from "@/assets/images/tablet-and-phone.png"
 import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
+import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function WebSolutions({ cases = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,25 +29,39 @@ export default function WebSolutions({ cases = [] }) {
   const featuredImageUrl = currentCase?.featuredImage?.url || PhoneAndTablet;
   const featuredImageAlt = currentCase?.featuredImage?.alt || 'Изображение кейса';
 
+  // Переводим все тексты
+  const translatedTitle = useTranslate(title)
+  const caseText = useTranslate("Кейс:");
+  const ecosystemText = useTranslate("Экосистема здоровья");
+  const buttonText = useTranslate("Рассказываем о проекте");
+
+  // Переводим теги
+  const translatedTags = tags.map(tag => ({
+    ...tag,
+    tag: useTranslate(tag.tag)
+  }));
+
+  // Переводим описание (если оно статичное в default)
+  const translatedDescription = useTranslate(description);
 
   return (
     <StyledWebSolutions>
-      <h1 className="solutions-title">{title}</h1>
+      <h1 className="solutions-title">{translatedTitle}</h1>
       <div className="solutions-container">
         <button className="slider-button prev" onClick={goToPrev}>
           &lt;
         </button>
         <ul className="stamps-list for-mobile">
-          {tags.slice(0, 3).map((tag, index) => (
+          {translatedTags.slice(0, 3).map((tag, index) => (
             <li key={index} className="stamp">
               {tag.tag}
             </li>
           ))}
         </ul>
-        <h2 className="container-title for-pc">Кейс: {title}</h2>
-        <h2 className="container-title for-mobile">Экосистема здоровья</h2>
+        <h2 className="container-title for-pc">{caseText} {translatedTitle}</h2>
+        <h2 className="container-title for-mobile">{ecosystemText}</h2>
         <ul className="stamps-list for-pc">
-          {tags.map((tag, index) => (
+          {translatedTags.map((tag, index) => (
             <li key={index} className="stamp">
               {tag.tag}
             </li>
@@ -54,7 +69,7 @@ export default function WebSolutions({ cases = [] }) {
         </ul>
         <p
           className="container-description"
-          dangerouslySetInnerHTML={{ __html: description }}
+          dangerouslySetInnerHTML={{ __html: translatedDescription }}
         />
         <Image
           className="container-image"
@@ -63,7 +78,7 @@ export default function WebSolutions({ cases = [] }) {
           width={912}
           height={666}
         />
-        <button className="container-button">Рассказываем о проекте</button>
+        <button className="container-button">{buttonText}</button>
         <button className="slider-button next" onClick={goToNext}>
           &gt;
         </button>

@@ -2,6 +2,7 @@
 
 import { StyledPortfolio } from './style';
 import Themes from './themes';
+import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function Portfolio({ className, items = [], themes = [] }) {
   // Значения по умолчанию, если данные отсутствуют
@@ -39,12 +40,26 @@ export default function Portfolio({ className, items = [], themes = [] }) {
     : defaultItems;
   const displayThemes = themes.length > 0 ? themes : defaultThemes;
 
+  // Переводим все тексты
+  const portfolioTitle = useTranslate("Портфолио");
+  const noTitle = useTranslate("Без названия");
+
+  // Переводим displayItems
+  const translatedItems = displayItems.map(item => ({
+    ...item,
+    title: useTranslate(item.title),
+    links: item.links.map(link => useTranslate(link))
+  }));
+
+  // Переводим темы
+  const translatedThemes = displayThemes.map(theme => useTranslate(theme));
+
   return (
     <StyledPortfolio className={className}>
-      <h1 className="portfolio-title">Портфолио</h1>
-      <Themes themes={displayThemes} />
+      <h1 className="portfolio-title">{portfolioTitle}</h1>
+      <Themes themes={translatedThemes} />
       <ul className="portfolio-list">
-        {displayItems.map((item, index) => (
+        {translatedItems.map((item, index) => (
           <li key={index} className="portfolio-item">
             <h2 className="item-title">{item.title}</h2>
             <div className="item-container">
@@ -52,11 +67,9 @@ export default function Portfolio({ className, items = [], themes = [] }) {
                 <a
                   key={linkIndex}
                   className="item-link"
-                  href={`#${(typeof link === 'string' ? link : link.text || link.toString())
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}`}
+                  href={`#${link.toLowerCase().replace(/\s+/g, '-')}`}
                 >
-                  {typeof link === 'string' ? link : link.text || link.toString()}
+                  {link}
                 </a>
               ))}
             </div>

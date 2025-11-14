@@ -1,6 +1,7 @@
 'use client';
 
 import { StyledThemes } from './style';
+import { useTranslate } from "@/components/translate/useTranslation"
 
 export default function Themes({ themes = [] }) {
   // Значения по умолчанию
@@ -15,7 +16,7 @@ export default function Themes({ themes = [] }) {
     <StyledThemes>
       {displayThemes.map((theme, index) => (
         <li key={index} className="theme">
-          {theme}
+          {useTranslate(theme)}
         </li>
       ))}
     </StyledThemes>

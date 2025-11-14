@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 import { StyledNews } from './style';
 import InfoBlock from '@/components/ui/info-block/info-block';
 import NewsTheme from './news-themes';
+import { useTranslate } from "@/components/translate/useTranslation"
 
 // 🛑 Статические импорты для дефолтного контента (Заглушки)
 import News1 from '@/assets/images/news1.png';
@@ -16,6 +17,85 @@ import News6 from '@/assets/images/case1.jpg';
 import News7 from '@/assets/images/news7.png';
 import News8 from '@/assets/images/news8.png';
 import News9 from '@/assets/images/news9.png';
+
+// Компонент для переводимого поста
+const TranslatedPost = ({ post, formatPostDate }) => {
+    // Переводим каждый текст отдельно
+    const title = useTranslate(post.previewTitle || post.title || 'Без названия');
+    const description = useTranslate(post.previewDescription || 'Нет описания');
+    const imageAlt = useTranslate(post.image?.alt) || title;
+    
+    const themes = post.themes?.map(t => ({
+        ...t,
+        theme: useTranslate(t.theme)
+    })) || [];
+    
+    const postLink = `/blog/${post.slug}`;
+
+    return (
+        <InfoBlock 
+            Img={{ 
+                url: getImageUrl(post.image), 
+                alt: imageAlt
+            }}
+            data={formatPostDate(post.date)}
+            views={post.views || '85'}
+        >
+            <div className="theme-container">
+                {themes.map((theme, i) => (
+                    <p key={i} className="info-theme">{theme.theme}</p>
+                ))}
+            </div>
+            
+            <Link className="info-title" href={postLink}>
+                {title}
+            </Link>
+            
+            <p className="info-description">
+                {description}
+            </p>
+        </InfoBlock>
+    );
+};
+
+// Компонент для переводимого дефолтного поста
+const TranslatedDefaultPost = ({ post, formatPostDate }) => {
+    // Переводим каждый текст отдельно
+    const title = useTranslate(post.title);
+    const description = useTranslate(post.description);
+    
+    const themes = post.themes?.map(t => ({
+        ...t,
+        theme: useTranslate(t.theme)
+    })) || [];
+    
+    const postLink = `/blog/${post.slug}`;
+
+    return (
+        <InfoBlock 
+            Img={{ 
+                url: getImageUrl(post.image), 
+                alt: title 
+            }}
+            data={formatPostDate(post.date)}
+            views={post.views || '85'}
+        >
+            <div className="theme-container">
+                {themes.map((theme, i) => (
+                    <p key={i} className="info-theme">{theme.theme}</p>
+                ))}
+            </div>
+            
+            <Link className="info-title" href={postLink}>
+                {title}
+            </Link>
+            
+            <p className="info-description">
+                {description}
+            </p>
+        </InfoBlock>
+    );
+};
 
 // Хелпер для корректного получения URL
 const getImageUrl = (image) => {
@@ -78,6 +158,18 @@ const formatPostDate = (dateString) => {
     return `${formattedDay}.${formattedMonth}.${formattedYear} ${formattedHours}:${formattedMinutes}`;
 };
 
+// Вспомогательная функция для определения типа поста
+const isDefaultPost = (post) => {
+    // Проверяем, является ли пост дефолтным по различным признакам
+    if (typeof post.id === 'string' && post.id.startsWith('default-')) {
+        return true;
+    }
+    // Дополнительные проверки для дефолтных постов
+    if (DEFAULT_POSTS.some(defaultPost => defaultPost.slug === post.slug)) {
+        return true;
+    }
+    return false;
+};
 
 export default function News({ posts = [], globalSettings = {} }) {
     
@@ -85,13 +177,24 @@ export default function News({ posts = [], globalSettings = {} }) {
     const [postsToShow, setPostsToShow] = useState(6); 
 
     // Получаем настройки из globals.blog
-    const adminTitle = globalSettings.title;
+    const adminTitle = useTranslate(globalSettings.title);
     const adminThemesList = globalSettings.themesList || []; 
     // 💡 Флаги
     const showDefaultPosts = globalSettings.showDefaultPosts ?? true; 
     const showStaticPostsWithDynamic = globalSettings.showStaticPostsWithDynamic ?? false;
 
-    // 1. Преобразуем посты из Payload с использованием полей preview*
+    // Переводим все тексты
+    const defaultTitle = useTranslate('Новости компании');
+    const noTitle = useTranslate('Без названия');
+    const noDescription = useTranslate('Нет описания');
+    const noDate = useTranslate('Не указано');
+    const noPostsText = useTranslate('Нет постов, соответствующих теме:');
+    const showAllNews = useTranslate('Показать все новости');
+    const loadMoreButton = useTranslate('Показать ещё');
+    const breadcrumbHome = useTranslate('DoubleSystems');
+    const breadcrumbBlog = useTranslate('Блог Новости');
+
+    // 1. Преобразуем посты из Payload (без перевода здесь)
     const payloadPosts = posts.map((post) => ({
         id: post.id,
         slug: post.slug,
@@ -99,11 +202,11 @@ export default function News({ posts = [], globalSettings = {} }) {
         description: post.previewDescription || 'Нет описания',
         date: post.previewDate || 'Не указано',
         views: String(post.previewViews || 85),
-        themes: post.previewThemes || [], // Массив { theme: string }
-        image: post.previewImage, // Объект Payload Media
+        themes: post.previewThemes || [],
+        image: post.previewImage,
     }));
 
-    // 2. Определяем финальный список постов
+    // 2. Определяем финальный список постов (без перевода здесь)
     let finalPosts = [];
     
     if (payloadPosts.length > 0) {
@@ -120,9 +223,17 @@ export default function News({ posts = [], globalSettings = {} }) {
         finalPosts = DEFAULT_POSTS;
     }
     
-    // 3. Определяем финальные темы и заголовок
-    const finalThemesList = adminThemesList.length > 0 ? adminThemesList : DEFAULT_THEMES_LIST;
-    const finalTitle = adminTitle || 'Новости компании'; 
+    // 3. Определяем финальные темы (переводим здесь)
+    const finalThemesList = adminThemesList.length > 0 
+        ? adminThemesList.map(theme => ({
+            themeName: useTranslate(theme.themeName)
+        })) 
+        : DEFAULT_THEMES_LIST.map(theme => ({
+            themeName: useTranslate(theme.themeName)
+        }));
+    
+    // Определяем заголовок (но не переводим здесь, а в JSX)
+    const finalTitle = adminTitle || 'Новости компании';
 
     // Используем finalPosts в useMemo
     const filteredPosts = useMemo(() => {
@@ -130,7 +241,6 @@ export default function News({ posts = [], globalSettings = {} }) {
             return finalPosts;
         }
         return finalPosts.filter(post => {
-            // Учитываем формат { theme: string }
             const postThemes = post.themes?.map(t => t.theme) || [];
             return postThemes.includes(activeTheme);
         });
@@ -147,64 +257,57 @@ export default function News({ posts = [], globalSettings = {} }) {
     return (
         <StyledNews>
             <div className="link-container">
-                <Link className="news-link" href="/">DoubleSystems &nbsp;</Link>
-                <Link className="news-link active" href="/blog">\&nbsp;Блог Новости&nbsp;</Link>
+                <Link className="news-link" href="/">{breadcrumbHome} &nbsp;</Link>
+                <Link className="news-link active" href="/blog">\&nbsp; {breadcrumbBlog}</Link>
             </div>
-            <h1 className="news-title">{finalTitle}</h1>
+            <h1 className="news-title">
+                    {
+                    adminTitle 
+                    ? useTranslate(adminTitle)
+                    : defaultTitle 
+                }</h1>
             <div className="news-wrapper">
                 {filteredPosts.length === 0 ? (
                     <div style={{ padding: '40px', textAlign: 'center', width: '100%' }}>
                         <p style={{ fontSize: '1.2rem', color: '#666' }}>
-                            Нет постов, соответствующих теме: **{activeTheme}**.
+                            {noPostsText} **{activeTheme}**.
                         </p>
                         <button 
                             onClick={() => setActiveTheme(null)} 
                             className='all-news'
                         >
-                            Показать все новости
+                            {showAllNews}
                         </button>
                     </div>
                 ) : (
                     visiblePosts.map((post, index) => {
-                        
-                        // Используем ID или уникальный slug для ключа
                         const key = post.id || post.slug || index;
-                        const themes = post.themes?.map(t => t.theme) || [];
-                        const postLink = `/blog/${post.slug}`;
-
-                        return (
-                            <InfoBlock 
-                                key={key}
-                                // Передаем объект { url, alt } или статический импорт
-                                Img={{ 
-                                    url: getImageUrl(post.image), 
-                                    alt: post.image?.alt || post.title 
-                                }}
-                                data={formatPostDate(post.date)}
-                                views={post.views || '85'}
-                            >
-                                <div className="theme-container">
-                                    {themes.map((theme, i) => (
-                                        <p key={i} className="info-theme">{theme}</p>
-                                    ))}
-                                </div>
-                                
-                                <Link className="info-title" href={postLink}>
-                                    {post.title}
-                                </Link>
-                                
-                                <p className="info-description">
-                                    {post.description}
-                                </p>
-                            </InfoBlock>
-                        );
+                        
+                        // Определяем тип поста и рендерим соответствующий компонент
+                        if (isDefaultPost(post)) {
+                            return (
+                                <TranslatedDefaultPost 
+                                    key={key}
+                                    post={post}
+                                    formatPostDate={formatPostDate}
+                                />
+                            );
+                        } else {
+                            return (
+                                <TranslatedPost 
+                                    key={key}
+                                    post={post}
+                                    formatPostDate={formatPostDate}
+                                />
+                            );
+                        }
                     })
                 )}
             </div>
             
             {showLoadMoreButton && (
                 <button className="news-button" onClick={handleShowMore}>
-                    Показать ещё
+                    {loadMoreButton}
                 </button>
             )}
             <NewsTheme 

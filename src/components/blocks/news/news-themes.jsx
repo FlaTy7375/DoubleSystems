@@ -1,4 +1,5 @@
 'use client'
+import { useTranslate } from "@/components/translate/useTranslation"
 
 export default function NewsTheme({ themesList = [], activeTheme, setActiveTheme }) {
     
@@ -11,7 +12,7 @@ export default function NewsTheme({ themesList = [], activeTheme, setActiveTheme
 
     return(
         <>
-            <h1 className="themes-title">По темам:</h1>
+            <h1 className="themes-title">{useTranslate('По темам:')}</h1>
             <ul className="themes-list">
                 {themesList.map((item, index) => {
                     const themeName = item.themeName;
@@ -25,7 +26,7 @@ export default function NewsTheme({ themesList = [], activeTheme, setActiveTheme
                             className={`theme ${isActive ? 'active' : ''}`}
                             onClick={() => handleThemeClick(themeName)}
                         >
-                            {themeName}
+                            {useTranslate(themeName)}
                         </li>
                     )
                 })}

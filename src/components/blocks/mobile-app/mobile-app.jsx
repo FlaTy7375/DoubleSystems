@@ -5,6 +5,7 @@ import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
 import Image from 'next/image';
 import { useState } from 'react';
 import MobileSectionImg from "@/assets/images/Mobile-section.jpg"
+import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function MobileApp({ items = [] }) {
   // Значения по умолчанию, если данные отсутствуют
@@ -38,13 +39,29 @@ export default function MobileApp({ items = [] }) {
 
   const currentItem = displayItems[currentIndex] || {};
 
+  // Переводим все тексты
+  const defaultImageAlt = useTranslate('Изображение мобильного приложения');
+  const placeholderImageAlt = useTranslate('Изображение мобильного приложения');
+
+  // Переводим displayItems
+  const translatedItems = displayItems.map(item => ({
+    ...item,
+    title: useTranslate(item.title),
+    image: {
+      ...item.image,
+      alt: useTranslate(item.image?.alt || 'Изображение мобильного приложения')
+    }
+  }));
+
+  const translatedCurrentItem = translatedItems[currentIndex] || {};
+
   return (
     <StyledMobileApp>
-      <h1 className="mobile-title">{currentItem.title}</h1>
+      <h1 className="mobile-title">{translatedCurrentItem.title}</h1>
       <div className="image-container">
         <Image
-          src={currentItem.image?.url || '/placeholder-image.jpg'}
-          alt={currentItem.image?.alt || currentItem.imageAlt || 'Изображение мобильного приложения'}
+          src={translatedCurrentItem.image?.url || MobileSectionImg}
+          alt={translatedCurrentItem.image?.alt || placeholderImageAlt}
           width={600}
           height={400}
           className="app-image"

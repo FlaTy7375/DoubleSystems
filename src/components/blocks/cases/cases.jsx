@@ -9,6 +9,7 @@ import Case3 from '@/assets/images/case3.png';
 import Case4 from '@/assets/images/case4.png';
 import Case5 from '@/assets/images/case5.png';
 import Link from 'next/link';
+import { useTranslate } from '@/components/translate/useTranslation';
 
 // Хелпер для корректного получения URL
 const getImageUrl = (image) => {
@@ -92,13 +93,32 @@ export default function Cases({ autoCases = [], globalSettings = {} }) {
   }
   
   // 3. Если ничего нет (нет динамики, и оба флага false), displayCases остается пустым [].
-  
+
+  // Переводим все тексты
+  const defaultAdminTitle = useTranslate("Наши кейсы");
+  const noCasesText = useTranslate("Кейсы не найдены. Добавьте их в коллекцию \"Портфолио (кейсы)\".");
+  const buttonText = useTranslate("Запросить коммерческое предложение");
+
+  // Переводим displayCases
+  const translatedCases = displayCases.map(caseItem => ({
+    ...caseItem,
+    title: useTranslate(caseItem.title),
+    themes: caseItem.themes.map(theme => useTranslate(theme)),
+    image: {
+      ...caseItem.image,
+      alt: useTranslate(caseItem.image?.alt || caseItem.title)
+    }
+  }));
+
+  // Переводим adminTitle (если он не дефолтный)
+  const translatedAdminTitle = adminTitle === 'Наши кейсы' ? defaultAdminTitle : useTranslate(adminTitle);
+
   return (
     <StyledCases>
-      <h1 className="cases-title">{adminTitle}</h1>
+      <h1 className="cases-title">{translatedAdminTitle}</h1>
       <div className="cases-wrapper">
-        {displayCases.length > 0 ? (
-          displayCases.map((caseItem, index) => (
+        {translatedCases.length > 0 ? (
+          translatedCases.map((caseItem, index) => (
             <InfoBlock
               // Используем уникальный ключ, объединяя slug и index, чтобы избежать коллизий
               key={`${caseItem.slug || 'no-slug'}-${index}`} 
@@ -122,9 +142,9 @@ export default function Cases({ autoCases = [], globalSettings = {} }) {
             </InfoBlock>
           ))
         ) : (
-          <p>Кейсы не найдены. Добавьте их в коллекцию "Портфолио (кейсы)".</p>
+          <p>{noCasesText}</p>
         )}
-        <button className="cases-button">Запросить коммерческое предложение</button>
+        <button className="cases-button">{buttonText}</button>
       </div>
     </StyledCases>
   );

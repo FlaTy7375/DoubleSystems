@@ -2,6 +2,7 @@
 
 import { StyledWeCreated } from './style';
 import Card from '@/components/ui/card/card';
+import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function WeCreated({ items = [] }) {
   // Значения по умолчанию
@@ -67,11 +68,25 @@ export default function WeCreated({ items = [] }) {
       }))
     : defaultItems;
 
+  // Переводим все тексты
+  const createdTitle = useTranslate("Мы создаём.");
+  const noTitle = useTranslate("Без названия");
+  const noDescription = useTranslate("Нет описания");
+  const noAdvantages = useTranslate("Нет преимуществ");
+
+  // Переводим displayItems
+  const translatedItems = displayItems.map(item => ({
+    ...item,
+    title: useTranslate(item.title),
+    description: useTranslate(item.description),
+    advantages: item.advantages.map(adv => useTranslate(adv))
+  }));
+
   return (
     <StyledWeCreated>
-      <h1 className="created-title">Мы создаём.</h1>
+      <h1 className="created-title">{createdTitle}</h1>
       <ul className="card-list">
-        {displayItems.map((item, index) => (
+        {translatedItems.map((item, index) => (
           <li key={index} className="card-wrapper">
             <Card className={item.light ? 'light' : ''}>
               <h2>{item.title}</h2>

@@ -6,6 +6,7 @@ import TabletAndPhone from "@/assets/images/tablet-phone-about.png"
 import Phone from "@/assets/images/case-about-mobile.png"
 import ClientImage from "@/assets/images/client-image.png"
 import { useState, useEffect, useRef, useCallback } from "react"
+import { useTranslate } from "@/components/translate/useTranslation"
 
 export default function CaseAbout({ onAnchorClick }) {
     const [isContentExpanded, setIsContentExpanded] = useState(false);
@@ -15,6 +16,33 @@ export default function CaseAbout({ onAnchorClick }) {
     const contentHeight = useRef(0);
     const isUpdating = useRef(false); // Флаг для предотвращения рекурсии
     const rafId = useRef(null); // Для requestAnimationFrame
+
+    // Переводим все тексты
+    const aboutProject = useTranslate('О проекте')
+    const ecosystemHealth = useTranslate('Экосистема здоровья:')
+    const webPlatform = useTranslate('веб-платформа и мобильное приложение (в разработке)')
+    const client = useTranslate('Клиент:')
+    const russia = useTranslate('Россия')
+    const status = useTranslate('Статус:')
+    const activeDevelopment = useTranslate('Активная разработка')
+    
+    const caseTitle = useTranslate('Кейс: HealthHub — создание единой экосистемы здоровья')
+    const caseDescription1 = useTranslate('HealthHub — это не просто еще одно приложение для здоровья. Это проектируемая цифровая экосистема, которая объединит пациентов, врачей и поставщиков медицинских товаров в едином, интуитивно понятном пространстве. Мы разрабатываем кроссплатформенное мобильное приложение, которое станет универсальным инструментом для управления здоровьем, профессионального роста специалистов и развития бизнеса нашего клиента.')
+    const caseDescription2 = useTranslate('Проект призван превратить сложную идею «все о здоровье в одном месте» в успешный коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями.')
+    
+    const contentTitle = useTranslate('Содержание:')
+    const contentTheme1 = useTranslate('Кейс: HealthHub — создание единой экосистемы здоровья')
+    const contentTheme2 = useTranslate('О проекте')
+    const contentTheme3 = useTranslate('О клиенте и задаче: Преодоление фрагментации рынка HealthTech')
+    const contentTheme4 = useTranslate('Цели проекта и прогнозируемые показатели')
+    const contentTheme5 = useTranslate('Стратегическое решение: От разрозненных сервисов к All-in-One платформе')
+    const contentTheme6 = useTranslate('Бизнес-потенциал и перспективы роста')
+    const contentTheme7 = useTranslate('Выводы: Что обеспечит успех проекта')
+    
+    const imagesDescription = useTranslate('Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий.')
+    const clientTitle = useTranslate('О клиенте и задаче: Преодоление фрагментации рынка HealthTech')
+    const clientSubtitle = useTranslate('Клиент: Инновационный медицинский холдинг, стремящийся к цифровой трансформации своих услуг и выходу на широкий B2C-рынок.')
+    const clientDescription = useTranslate('Проблема: Современный пользователь сталкивается с фрагментированным опытом управления здоровьем. Для консультации с врачом он использует один сервис, для отслеживания тренировок — другой, для заказа анализов — третий. Это неудобно, данных теряются, а общая картина здоровья остается размытой. Для врачей также отсутствует единый инструмент для работы с пациентами, обучения и анализа своей практики.')
 
     const toggleContent = () => {
         setIsContentExpanded(!isContentExpanded);
@@ -160,21 +188,16 @@ export default function CaseAbout({ onAnchorClick }) {
         <StyledCaseAbout>
             <div className="about-wrapper">
                 <div className="about-project">
-                    <h2 className="project-title">О проекте</h2>
-                    <p className="project-description">Экосистема здоровья:<br></br> <span className="decoration">
-                    веб-платформа и мобильное приложение (в разработке)</span></p>
-                    <p className="project-description">Клиент:<br></br> <span className="decoration">Россия</span></p>
-                    <p className="project-description">Статус:<br></br> <span className="decoration">Активная разработка</span></p>
+                    <h2 className="project-title">{aboutProject}</h2>
+                    <p className="project-description">{ecosystemHealth}<br></br> <span className="decoration">
+                    {webPlatform}</span></p>
+                    <p className="project-description">{client}<br></br> <span className="decoration">{russia}</span></p>
+                    <p className="project-description">{status}<br></br> <span className="decoration">{activeDevelopment}</span></p>
                 </div>
                 <div className="about-case">
-                    <h1 className="about-title">Кейс: HealthHub — создание единой экосистемы здоровья</h1>
-                    <p className="about-description">HealthHub — это не просто еще одно приложение для здоровья.
-                    Это проектируемая цифровая экосистема, которая объединит пациентов,
-                    врачей и поставщиков медицинских товаров в едином, интуитивно понятном пространстве.
-                    Мы разрабатываем кроссплатформенное мобильное приложение, которое станет универсальным
-                    инструментом для управления здоровьем, профессионального роста специалистов и развития бизнеса нашего клиента.</p>
-                    <p className="about-description">Проект призван превратить сложную идею «все о здоровье в одном месте»
-                    в успешный коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями.</p>
+                    <h1 className="about-title">{caseTitle}</h1>
+                    <p className="about-description">{caseDescription1}</p>
+                    <p className="about-description">{caseDescription2}</p>
                 </div>
             </div>
             <div className="about-wrapper">
@@ -190,7 +213,7 @@ export default function CaseAbout({ onAnchorClick }) {
                     ref={aboutContentRef}
                     className={`about-content ${isContentFixed ? 'fixed' : ''}`}
                 >
-                    <h2 className="content-title">Содержание:</h2>
+                    <h2 className="content-title">{contentTitle}</h2>
                     
                     <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
                         <ol className="content-list">
@@ -200,7 +223,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     onClick={() => onAnchorClick('hero')}
                                 >
                                     <span className="decoration">
-                                    Кейс: HealthHub — создание единой экосистемы здоровья</span>
+                                    {contentTheme1}</span>
                                 </button>
                             </li>
                             
@@ -209,7 +232,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('about-project')}
                                 >
-                                    О проекте
+                                    {contentTheme2}
                                 </button>
                             </li>
                             <li className="content-element">
@@ -217,7 +240,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('client')}
                                 >
-                                    О клиенте и задаче: Преодоление фрагментации рынка HealthTech
+                                    {contentTheme3}
                                 </button>
                             </li>
                             <li className="content-element">
@@ -225,7 +248,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('goals')}
                                 >
-                                    Цели проекта и прогнозируемые показатели
+                                    {contentTheme4}
                                 </button>
                             </li>
                             <li className="content-element">
@@ -233,7 +256,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('strategy')}
                                 >
-                                    Стратегическое решение: От разрозненных сервисов к All-in-One платформе
+                                    {contentTheme5}
                                 </button>
                             </li>
                             <li className="content-element">
@@ -241,7 +264,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('business')}
                                 >
-                                    Бизнес-потенциал и перспективы роста
+                                    {contentTheme6}
                                 </button>
                             </li>
                             <li className="content-element">
@@ -249,7 +272,7 @@ export default function CaseAbout({ onAnchorClick }) {
                                     className="content-theme anchor-link"
                                     onClick={() => onAnchorClick('conclusion')}
                                 >
-                                    Выводы: Что обеспечит успех проекта
+                                    {contentTheme7}
                                 </button>
                             </li>
                         </ol>
@@ -264,20 +287,13 @@ export default function CaseAbout({ onAnchorClick }) {
                 </div>
                 <div className="about-client" id="client">
                     <Image className="client-image tablet" src={TabletAndPhone} alt="Изображение планшета и телефона" width={996} height={612}></Image>
-                    <p className="images-description">Веб-платформа и мобильное приложение,
-                    объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
+                    <p className="images-description">{imagesDescription}</p>
                     <Image className="client-image for-mobile" src={Phone} alt="Изображение телефона" width={320} height={653}></Image>
-                    <h1 className="client-title">О клиенте и задаче: Преодоление фрагментации рынка HealthTech</h1>
-                    <h2 className="client-subtitle">Клиент: Инновационный медицинский холдинг, стремящийся
-                    к цифровой трансформации своих услуг и выходу на широкий B2C-рынок.</h2>
-                    <p className="client-description">Проблема: Современный пользователь сталкивается
-                    с фрагментированным опытом управления здоровьем. Для консультации с врачом он использует
-                    один сервис, для отслеживания тренировок — другой, для заказа анализов — третий. Это неудобно,
-                    данных теряются, а общая картина здоровья остается размытой. Для врачей также отсутствует
-                    единый инструмент для работы с пациентами, обучения и анализа своей практики.</p>
+                    <h1 className="client-title">{clientTitle}</h1>
+                    <h2 className="client-subtitle">{clientSubtitle}</h2>
+                    <p className="client-description">{clientDescription}</p>
                     <Image className="client-image layout" src={ClientImage} alt="Изображение макета" width={1244} height={663}></Image>
-                    <p className="images-description layout">Веб-платформа и мобильное приложение,
-                    объединяющие пользователей и специалистов в сфере медицины, образования и технологий.</p>
+                    <p className="images-description layout">{imagesDescription}</p>
                 </div>
             </div>
         </StyledCaseAbout>

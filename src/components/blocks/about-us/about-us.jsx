@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { StyledAboutUs } from './style';
 import Link from 'next/link';
 import Person from "@/assets/images/Alex.png"
+import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function AboutUs({ content = '', person = {} }) {
   // Данные по умолчанию, если пропсы пустые
@@ -31,19 +32,35 @@ export default function AboutUs({ content = '', person = {} }) {
 
   const hasContent = paragraphs.length > 0;
 
+  // Переводим все тексты
+  const aboutTitle = useTranslate("О компании");
+  const writeButton = useTranslate("Написать");
+  const noContentText = useTranslate("Информация о компании пока не добавлена.");
+
+  // Переводим данные по умолчанию
+  const translatedName = useTranslate(name);
+  const translatedRole = useTranslate(role);
+  const translatedImageAlt = useTranslate(imageAlt);
+  
+  // Переводим описание
+  const translatedDescription = description.map(desc => useTranslate(desc));
+
+  // Переводим параграфы по умолчанию
+  const translatedParagraphs = paragraphs.map(para => useTranslate(para));
+
   return (
     <StyledAboutUs>
-      <h2 className="about-title">О компании</h2>
+      <h2 className="about-title">{aboutTitle}</h2>
       <div className="about-person">
         <div className="person-container">
-          <Image src={imageUrl} alt={imageAlt} width={100} height={100} />
+          <Image src={imageUrl} alt={translatedImageAlt} width={100} height={100} />
           <Link className="write-button" href="/contacts">
-            Написать
+            {writeButton}
           </Link>
         </div>
-        <h3 className="person-name">{name}</h3>
-        <p className="person-role">{role}</p>
-        {description.map((desc, index) => (
+        <h3 className="person-name">{translatedName}</h3>
+        <p className="person-role">{translatedRole}</p>
+        {translatedDescription.map((desc, index) => (
           <p key={index} className="person-description">
             {desc}
           </p>
@@ -51,7 +68,7 @@ export default function AboutUs({ content = '', person = {} }) {
       </div>
       <div className="about-container">
         {hasContent ? (
-          paragraphs.map((para, index) => (
+          translatedParagraphs.map((para, index) => (
             <p
               key={index}
               className={`about-description ${index === 0 ? 'small' : ''}`}
@@ -60,7 +77,7 @@ export default function AboutUs({ content = '', person = {} }) {
             </p>
           ))
         ) : (
-          <p className="about-description">Информация о компании пока не добавлена.</p>
+          <p className="about-description">{noContentText}</p>
         )}
       </div>
     </StyledAboutUs>
