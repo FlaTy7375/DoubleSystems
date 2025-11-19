@@ -2,7 +2,6 @@
 
 import { StyledCase1 } from "./style"
 import Link from "next/link"
-import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs"
 import CaseAbout from "./blocks/about/about"
 import Goals from "./blocks/goals/goals"
 import Buisness from "./blocks/buisness/buisness"
@@ -22,7 +21,7 @@ export default function StaticCase1() {
     };
 
     // Переводим все тексты
-    const casesLink = useTranslate('Кейсы')
+    const casesLink = useTranslate('Портфолио')
     const healthEcosystem = useTranslate('Экосистема здоровья')
     const caseTitle = useTranslate('Кейс: HealthHub — проектирование и разработка единой экосистемы здоровья')
     
@@ -39,8 +38,8 @@ export default function StaticCase1() {
         <StyledCase1>
             <div className="link-container">
                 <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
-                <Link className="cases-link" href="/cases">\&nbsp;{casesLink}&nbsp;</Link>
-                <Link className="cases-link active" href="/cases/case1">\&nbsp;{healthEcosystem}</Link>
+                <Link className="cases-link" href="/portfolio">\&nbsp;{casesLink}&nbsp;</Link>
+                <Link className="cases-link active" href="/portfolio/case1">\&nbsp;{healthEcosystem}</Link>
             </div>
             <div className="case-wrapper">
                 <h1 className="case-title">{caseTitle}</h1>
@@ -69,7 +68,6 @@ export default function StaticCase1() {
                     <Image className="container-image" src={TabletAndPhone} alt="Изображение планшета и телефона" width={322} height={231}></Image>
                     <button className="container-button">{containerButton}</button>
                 </div>
-                <BreadCrumbs></BreadCrumbs>
                 
                 {/* Остальные секции с правильными ID */}
                 <div id="about-project">

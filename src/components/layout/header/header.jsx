@@ -1,7 +1,6 @@
-// components/layout/header/header.jsx
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { StyledHeader } from "./style";
 import HeaderLogo from '@/assets/images/header-logo.svg';
@@ -30,10 +29,10 @@ export default function Header({
   const [searchValue, setSearchValue] = useState("");
   const [activeId, setActiveId] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   
   const { language, changeLanguage } = useLanguage();
 
-  // Переводим тексты
   const navPrices = useTranslate("Цены");
   const navAbout = useTranslate("О нас");
   const navPortfolio = useTranslate("Портфолио");
@@ -43,7 +42,6 @@ export default function Header({
   const navWhatWeDo = useTranslate("Что мы делаем");
   const ctaText = useTranslate("Напишите нам!");
 
-  const handleClear = () => setSearchValue('');
   const handleMenu = () => setActiveId(!activeId);
   const toggleLangDropdown = () => setIsLangDropdownOpen(!isLangDropdownOpen);
 
@@ -52,8 +50,31 @@ export default function Header({
     setIsLangDropdownOpen(false);
   };
   
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if (offset > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+  // Функция для скрытия инпута
+  const handleCloseSearch = () => {
+    setActiveId(false);
+    setSearchValue(''); // Очищаем значение при закрытии для удобства
+  };
+
   return (
-    <StyledHeader className={`${activeId === true ? 'active-block' : ''}`}>
+    <StyledHeader className={`${activeId === true ? 'active-block' : ''} ${isScrolled ? 'scrolled' : ''}`}>
       <Link className='logo-link' href="/">
         <Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56" />
       </Link>
@@ -61,7 +82,7 @@ export default function Header({
       <a className='header-phone' href='tel:8 800 543 22 44'>
         8 800 543 22 44
       </a>
-      
+    
       <ul className={`socials-list ${activeId === false ? 'active-block' : ''}`}>
         <li className='social-item'>
           <button className='social-link search' onClick={handleMenu}>
@@ -103,7 +124,7 @@ export default function Header({
         <button className='search-button'>
           <Image src={SearchLogo} alt='Search' />
         </button>
-        <button className='clear-button' onClick={handleClear} />
+        <button className='clear-button' onClick={handleCloseSearch} />
       </div>
       
       <div className={`lang-dropdown ${activeId === true ? 'active-block' : ''}`}>

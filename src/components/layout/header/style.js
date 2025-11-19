@@ -14,6 +14,10 @@ export const StyledHeader = styled.header`
     color: #000;
     z-index: 100;
 
+    &.scrolled {
+        height: 60px;
+    }
+
     .logo-link {
         cursor: pointer;
     }
@@ -35,9 +39,15 @@ export const StyledHeader = styled.header`
         list-style-type: none;
     }
 
-    .social-link {
+    .social-link, .search-button {
         background: none;
         border: none;
+        transition: filter 0.3s ease;
+        cursor: pointer;
+    }
+
+    .social-link:hover, .search-button:hover {
+        filter: brightness(2);
     }
 
     .header-nav {
@@ -322,6 +332,10 @@ export const StyledHeader = styled.header`
     }
 
     @media (max-width: 1279px) {
+
+        &.scrolled {
+             height: 86px;
+        }
         .header-nav, .header-nav.active-block {
             display: none;
         }

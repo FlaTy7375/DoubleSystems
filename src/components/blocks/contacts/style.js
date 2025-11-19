@@ -154,6 +154,7 @@ export const StyledContactsForm = styled.main`
         height: 16px;
         background-color: transparent;
         border: 1px solid rgba(0, 66, 105, 0.28);
+        cursor: pointer;
     }
 
     .input-description {

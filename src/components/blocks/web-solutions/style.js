@@ -28,6 +28,26 @@ export const StyledWebSolutions = styled.section`
         z-index: 1;
     }
 
+    .case-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(241, 245, 249, 1);
+        ${props => props.$bgImage && `
+        background-image: url(${props.$bgImage});
+        `}
+        filter: brightness(1.1);
+        overflow: hidden;
+        background-size: cover;
+        background-position: 0% 40%;
+        background-repeat: no-repeat;
+        padding-top: 120px;
+        padding-left: 52px;
+        padding-bottom: 110px;
+        border-radius: 10px 10px 30px 30px;
+        z-index: 1;
+    }
+
     .solutions-container::before {
         position: absolute;
         content: "";
@@ -186,6 +206,16 @@ export const StyledWebSolutions = styled.section`
         }
     }
 
+    @media (max-width: 1279px) {
+        .case-container {
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
+            border: none;
+            filter: none;
+            padding-right: 40px;
+        }
+    }
+
     @media (max-width: 756px) {
         padding: 0 14px;
         margin-top: 100px;
@@ -206,7 +236,6 @@ export const StyledWebSolutions = styled.section`
             font-size: 48px;
             letter-spacing: -5%;
             color: rgba(68, 75, 90, 1);
-            
         }
 
         .container-description {
@@ -246,6 +275,24 @@ export const StyledWebSolutions = styled.section`
             height: auto;
             margin: 0 auto;
             margin-top: 20px;
+        }
+
+        .case-container {
+            min-height: 360px;
+            border: none;
+            padding: 20px 10px 52px 12px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            filter: none;
+            height: auto;
+            background-image: none;
+            background-color: rgba(241, 245, 249, 1);
+        }
+
+        .slider-button {
+            top: unset;
+            bottom: -10px;
         }
     }
 `

@@ -5,28 +5,63 @@ import "../../../../styles.css";
 
 export const dynamic = 'force-dynamic';
 
-export default async function PostPage(props) {
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
+    const payload = await getPayload({ config: payloadConfig });
 
-  const { slug } = await props.params; 
+    const postData = await payload.find({
+        collection: 'posts',
+        where: { slug: { equals: slug } },
+        limit: 1,
+        depth: 1,
+    });
+    
+    const postItem = postData.docs[0];
+
+    if (!postItem) {
+        return {
+            title: '404 | Запись не найдена',
+            description: `Запись блога со слагом ${slug} не существует.`,
+        };
+    }
+
+    const defaultTitle = postItem.title || postItem.previewTitle || `Запись блога: ${slug}`;
+    const defaultDescription = postItem.previewDescription || 'Читать подробнее в нашем блоге.';
+
+    return {
+        title: defaultTitle,
+        description: defaultDescription,
+        keywords: postItem.tags?.map(t => t.title).join(', ') || 'блог, новости, статьи',
+        openGraph: {
+            title: defaultTitle,
+            description: defaultDescription,
+        },
+    };
+}
+
+export default async function PostPage({ params }) {
+    const { slug } = await params;
   
-  const payload = await getPayload({ config: payloadConfig });
+    const payload = await getPayload({ config: payloadConfig });
 
-  // Загрузка данных для поста
-  const postData = await payload.find({
-    collection: 'posts',
-    where: { slug: { equals: slug } },
-    limit: 1,
-    // depth: 2 должен быть достаточен для загрузки всех секций
-    depth: 2,
-    cache: 'no-store', 
-  });
-  
-  const postItem = postData.docs[0];
+    const postData = await payload.find({
+        collection: 'posts',
+        where: { slug: { equals: slug } },
+        limit: 1,
+        depth: 4,
+        cache: 'no-store', 
+    });
+    
+    const postItem = postData.docs[0];
 
-  if (!postItem) {
-    return <div>Запись блога **{slug}** не найдена</div>; 
-  }
+    if (!postItem) {
+        return (
+            <div style={{ padding: '40px', textAlign: 'center' }}>
+                <h1>404 | Запись блога не найдена</h1>
+                <p>Запись блога со слагом **{slug}** не найдена.</p>
+            </div>
+        ); 
+    }
 
-  // Передаем данные в DynamicPost
-  return <DynamicPost postData={postItem} />;
+    return <DynamicPost postData={postItem} />;
 }

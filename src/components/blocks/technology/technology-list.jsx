@@ -3,19 +3,32 @@
 import Image from 'next/image';
 import { StyledTechnologyList } from './style';
 
+const technologyNames = [
+    // Large Techs (1-14)
+    'Bootstrap', 'Astro', 'Lodash', 'NGXS', 'Redux', 'Svelte', 'Three.js', 
+    'CSS3', 'JavaScript', 'MUI/Material UI', 'Nuxt.js', 'ReduxSaga', 'TypeScript', 'WebSocket',
+    // Small Techs (15-38)
+    'Cypress', 'Jest', 'MobX', 'Protractor JS', 'Three.js', 'VueMeta',
+    'Angular Formly', 'Karma Vector', 'Mocha', 'PWA', 'RxJS', 'Vue Router',
+    'Gulp', 'Lerna', 'Next.js', 'React', 'Sass', 'Vue.js',
+    'Lonic', 'LESS', 'NgRx', 'React Native', 'Stylus', 'Vuex'
+];
+
 export default function TechnologyList({ technologies = [] }) {
-  // Локальные изображения как запасной вариант
+  // 1. Запасные изображения (с добавлением имени из списка technologyNames)
   const defaultLargeTechImages = Array.from({ length: 14 }, (_, i) => ({
     url: require(`@/assets/images/tech/tech${i + 1}.png`).default,
-    alt: `Tech ${i + 1}`,
+    alt: technologyNames[i] || `Tech ${i + 1}`, // Используем имя
+    name: technologyNames[i] || `Tech ${i + 1}`, // Добавляем name для title
   }));
 
   const defaultSmallTechImages = Array.from({ length: 24 }, (_, i) => ({
     url: require(`@/assets/images/tech/tech${i + 15}.png`).default,
-    alt: `Tech ${i + 15}`,
+    alt: technologyNames[i + 14] || `Tech ${i + 15}`, // Используем имя
+    name: technologyNames[i + 14] || `Tech ${i + 15}`, // Добавляем name для title
   }));
 
-  // Фильтруем технологии для больших и малых изображений с проверкой
+  // 2. Фильтрация и обогащение данных (логика без изменений)
   const largeTechs = technologies.length > 0 && technologies[0]?.list
     ? technologies[0].list
         .filter((tech, index) => index < 14)
@@ -50,6 +63,7 @@ export default function TechnologyList({ technologies = [] }) {
                 alt={tech.image.alt}
                 width={104}
                 height={104}
+                title={tech.techName || tech.image.alt}
                 onError={(e) => { e.target.src = '/placeholder-image.jpg'; }}
               />
             ) : (
@@ -59,6 +73,7 @@ export default function TechnologyList({ technologies = [] }) {
                 alt={defaultLargeTechImages[index % defaultLargeTechImages.length].alt}
                 width={104}
                 height={104}
+                title={defaultLargeTechImages[index % defaultLargeTechImages.length].name}
               />
             )}
           </li>
@@ -74,6 +89,7 @@ export default function TechnologyList({ technologies = [] }) {
                 alt={tech.image.alt}
                 width={104}
                 height={104}
+                title={tech.techName || tech.image.alt}
                 onError={(e) => { e.target.src = '/placeholder-image.jpg'; }}
               />
             ) : (
@@ -83,6 +99,7 @@ export default function TechnologyList({ technologies = [] }) {
                 alt={defaultSmallTechImages[(index) % defaultSmallTechImages.length].alt}
                 width={104}
                 height={104}
+                title={defaultSmallTechImages[(index) % defaultSmallTechImages.length].name}
               />
             )}
           </li>

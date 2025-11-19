@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs";
 import Portfolio from "../portfolio/portfolio";
 import Image from "next/image";
 import Card from "@/components/ui/card/card";
@@ -47,7 +46,7 @@ export default function DynamicCase({ caseData }) {
   };
 
   // Переводим общие тексты
-  const casesLink = useTranslate('Кейсы');
+  const casesLink = useTranslate('Портфолио');
   const writeButtonText = useTranslate('Написать');
 
   const [isContentExpanded, setIsContentExpanded] = useState(false);
@@ -139,7 +138,6 @@ export default function DynamicCase({ caseData }) {
               )}
               <button className="container-button">{useTranslate(section.buttonText)}</button>
             </div>
-            <BreadCrumbs />
           </StyledHeroSection>
         );
 
@@ -352,8 +350,8 @@ export default function DynamicCase({ caseData }) {
     <StyledCase1>
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
-        <Link className="cases-link" href="/cases">\&nbsp;{casesLink}&nbsp;</Link>
-        <Link className="cases-link active" href={`/cases/${caseData.slug}`}>\&nbsp;{useTranslate(caseData.path)}</Link>
+        <Link className="cases-link" href="/portfolio">\&nbsp;{casesLink}&nbsp;</Link>
+        <Link className="cases-link active" href={`/portfolio/${caseData.slug}`}>\&nbsp;{useTranslate(caseData.path)}</Link>
       </div>
       <div className="case-wrapper">
         <h1 className="case-title">{useTranslate(caseData.title)}</h1>

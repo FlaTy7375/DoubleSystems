@@ -1,3 +1,4 @@
+// src/components/blocks/cases/Cases.jsx
 "use client"
 
 import { StyledCases } from './style';
@@ -20,14 +21,14 @@ const getImageUrl = (image) => {
 };
 
 /**
- * Компонент отображения списка кейсов (для главной страницы /portfolio)
+ * Компонент отображения списка кейсов (для страницы /portfolio)
  * @param {Array<Object>} autoCases - Автоматически загруженный массив кейсов из коллекции 'cases'.
  * @param {Object} globalSettings - Настройки из globals.home
  */
-export default function Cases({ autoCases = [], globalSettings = {} }) {
+export default function Cases({ autoCases = [], globalSettings = {}, style = {} }) {
   
   // Деструктурируем настройки
-  const showDefaultCases = globalSettings.showDefaultCases ?? false; // Показ статики, если нет динамики
+  const showDefaultCases = globalSettings.showDefaultCases ?? false; 
   const showStaticCasesWithDynamic = globalSettings.showStaticCasesWithDynamic ?? false; 
   const adminTitle = globalSettings.portfolioTitle || 'Наши кейсы';
   
@@ -77,32 +78,32 @@ export default function Cases({ autoCases = [], globalSettings = {} }) {
 
   let displayCases = [];
   
-  // 1. Приоритет динамическим кейсам
+  // 1. Логика сбора кейсов
   if (autoCases.length > 0) {
-      // Начинаем с динамических кейсов
       displayCases = [...autoCases]; 
       
-      // 💡 Если разрешено, добавляем статику к динамике
       if (showStaticCasesWithDynamic) {
           displayCases = [...displayCases, ...defaultCases]; 
       }
   } 
-  // 2. Если динамических нет, но флаг showDefaultCases=true, показываем только статические
   else if (showDefaultCases) { 
       displayCases = defaultCases;
   }
   
-  // 3. Если ничего нет (нет динамики, и оба флага false), displayCases остается пустым [].
-
-  // Переводим все тексты
+  // 2. Вызовы хуков (одиночные)
   const defaultAdminTitle = useTranslate("Наши кейсы");
   const noCasesText = useTranslate("Кейсы не найдены. Добавьте их в коллекцию \"Портфолио (кейсы)\".");
   const buttonText = useTranslate("Запросить коммерческое предложение");
 
-  // Переводим displayCases
+  // Переводим adminTitle
+  const translatedAdminTitle = adminTitle === 'Наши кейсы' ? defaultAdminTitle : useTranslate(adminTitle);
+
+  // 3. Вызовы хуков в цикле (ВНИМАНИЕ: Нарушает правила хуков React!)
   const translatedCases = displayCases.map(caseItem => ({
     ...caseItem,
+    // ⚠️ ХУК В ЦИКЛЕ: ВОЗМОЖНА ОШИБКА
     title: useTranslate(caseItem.title),
+    // ⚠️ ХУК В ЦИКЛЕ: ВОЗМОЖНА ОШИБКА
     themes: caseItem.themes.map(theme => useTranslate(theme)),
     image: {
       ...caseItem.image,
@@ -110,17 +111,21 @@ export default function Cases({ autoCases = [], globalSettings = {} }) {
     }
   }));
 
-  // Переводим adminTitle (если он не дефолтный)
-  const translatedAdminTitle = adminTitle === 'Наши кейсы' ? defaultAdminTitle : useTranslate(adminTitle);
+  // 4. Определение класса контейнера (как вы просили: либо один, либо другой)
+  const isDynamicCase = autoCases.length > 0;
+  // Если есть динамические кейсы, используем 'case-container', иначе - 'solutions-container'
+  const wrapperClass = isDynamicCase ? 'case-container' : 'solutions-container';
+
 
   return (
-    <StyledCases>
+    // 💡 ПРИМЕНЯЕМ ОПРЕДЕЛЕННЫЙ КЛАСС К КОНТЕЙНЕРУ
+    <StyledCases className={wrapperClass} style={style}> 
       <h1 className="cases-title">{translatedAdminTitle}</h1>
       <div className="cases-wrapper">
         {translatedCases.length > 0 ? (
           translatedCases.map((caseItem, index) => (
             <InfoBlock
-              // Используем уникальный ключ, объединяя slug и index, чтобы избежать коллизий
+              // Используем уникальный ключ, объединяя slug и index
               key={`${caseItem.slug || 'no-slug'}-${index}`} 
               Img={{ 
                 url: getImageUrl(caseItem.image), 
@@ -136,7 +141,7 @@ export default function Cases({ autoCases = [], globalSettings = {} }) {
                   </p>
                 ))}
               </div>
-              <Link className="info-title" href={`/cases/${caseItem.slug}`}>
+              <Link className="info-title" href={`/portfolio/${caseItem.slug}`}>
                 {caseItem.title}
               </Link>
             </InfoBlock>

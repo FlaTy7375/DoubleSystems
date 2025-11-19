@@ -2,14 +2,46 @@ import path from 'path';
 import { buildConfig } from 'payload';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { postgresAdapter } from '@payloadcms/db-postgres';
-import type { Block } from 'payload';
+import type { Block, Field } from 'payload';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { fileURLToPath } from 'url';
 
-// ESM fix для __dirname (обязательно при "type": "module")
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// --- БЛОКИ ДЛЯ КОНТЕНТА КЕЙСОВ И СТРАНИЦ (Остаются без изменений) ---
+const seoFields: Field[] = [
+    {
+        name: 'seo',
+        label: 'SEO Мета-теги',
+        type: 'group',
+        fields: [
+            {
+                name: 'title',
+                label: 'Мета-заголовок (Title)',
+                type: 'text',
+                maxLength: 60,
+                localized: true,
+                admin: { description: 'Заголовок страницы для поисковиков (до 60 символов)' }
+            },
+            {
+                name: 'description',
+                label: 'Мета-описание (Description)',
+                type: 'textarea',
+                maxLength: 160,
+                localized: true,
+                admin: { description: 'Краткое описание страницы для поисковиков (до 160 символов)' }
+            },
+            {
+                name: 'keywords',
+                label: 'Ключевые слова (Keywords)',
+                type: 'text',
+                localized: true,
+                admin: { description: 'Ключевые слова через запятую' }
+            },
+        ],
+        admin: { position: 'sidebar' }
+    },
+];
+
 const caseBlocks: Block[] = [
     {
         slug: 'heroSection',
@@ -124,7 +156,6 @@ const caseBlocks: Block[] = [
         ],
     },
 ];
-// --- КОНЕЦ БЛОКОВ ---
 
 export default buildConfig({
     db: postgresAdapter({
@@ -197,9 +228,10 @@ export default buildConfig({
             slug: 'pages',
             labels: { singular: 'Страница', plural: 'Страницы' },
             fields: [
+                ...seoFields,
                 { name: 'title', label: 'Название страницы', type: 'text', required: true },
-                { name: 'slug', label: 'URL слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar', description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio и т.д.)' } },
-                { name: 'description', label: 'Мета-описание', type: 'textarea', admin: { position: 'sidebar' } },
+                // ❗ ВНИМАНИЕ: Для страниц услуг используйте слаг вида 'services/название-услуги'
+                { name: 'slug', label: 'URL слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar', description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio, services/web-dev и т.д.)' } },
                 { name: 'sections', label: 'Секции страницы', type: 'blocks', blocks: caseBlocks },
                 { name: 'showPortfolio', label: 'Показывать секцию портфолио в конце', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
             ],
@@ -207,16 +239,18 @@ export default buildConfig({
         {
             slug: 'cases',
             labels: { singular: 'Кейс', plural: 'Портфолио (кейсы)' },
+            access: {
+              read: () => true,
+            },
             fields: [
+                ...seoFields,
                 { name: 'title', label: 'Название кейса (внутри)', type: 'text', required: true },
                 
-                // --- СТАНДАРТНЫЕ ПОЛЯ ПРЕВЬЮ ---
                 { name: 'previewTitle', label: 'Заголовок для превью (по умолчанию)', type: 'text', required: true, admin: { description: 'Используется в списках, если не переопределено на главной.' } },
                 { name: 'previewImage', label: 'Изображение для превью (по умолчанию)', type: 'upload', relationTo: 'media', required: true },
                 { name: 'previewViews', label: 'Количество просмотров (по умолчанию)', type: 'number', defaultValue: 85, admin: { position: 'sidebar' } },
                 { name: 'previewDate', label: 'Дата публикации (по умолчанию)', type: 'date', required: true, admin: { position: 'sidebar', date: { pickerAppearance: 'dayAndTime' } } },
                 { name: 'previewThemes', label: 'Темы для превью (по умолчанию)', type: 'array', fields: [{ name: 'theme', label: 'Тема', type: 'text', required: true }] },
-                // --------------------------------
                 
                 { name: 'path', label: 'Путь (cases/name)', type: 'text', required: true },
                 { name: 'slug', label: 'Слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar' } },
@@ -229,6 +263,7 @@ export default buildConfig({
             slug: 'posts',
             labels: { singular: 'Запись блога', plural: 'Блог' },
             fields: [
+                ...seoFields,
                 { name: 'title', label: 'Название (внутри)', type: 'text', required: true },
                 { name: 'previewTitle', label: 'Заголовок для списка блога', type: 'text', required: true, admin: { description: 'Отображается на странице /blog' } },
                 { name: 'previewDescription', label: 'Краткое описание для списка', type: 'textarea', required: true, admin: { description: 'Отображается на странице /blog' } },
@@ -245,7 +280,7 @@ export default buildConfig({
         },
         {
             slug: 'services',
-            labels: { singular: 'Услуга', plural: 'Услуги' },
+            labels: { singular: 'Услуга', plural: 'Услуги (Deprecated)' },
             fields: [
                 { name: 'title', label: 'Название услуги', type: 'text', required: true },
                 { name: 'description', label: 'Описание', type: 'richText', required: true, editor: lexicalEditor() },
@@ -283,24 +318,58 @@ export default buildConfig({
             fields: [
                 { name: 'title', label: 'Заголовок страницы', type: 'text' },
                 
-                // --- НАСТРОЙКИ СЕКЦИИ КЕЙСОВ ---
                 { name: 'portfolioTitle', label: 'Заголовок секции Портфолио (Общий)', type: 'text', defaultValue: 'Наши кейсы' },
                 { name: 'portfolioDescription', label: 'Описание секции Портфолио (Общий)', type: 'textarea' },
                 { name: 'showDefaultCases', label: 'Показывать статические/дефолтные кейсы (если нет динамических)', type: 'checkbox', defaultValue: true, admin: { description: 'Если нет ни одного кейса в коллекции, будут отображены заглушки.' } },
                 { name: 'showStaticCasesWithDynamic', label: '💡 Добавлять статические кейсы к динамическим', type: 'checkbox', defaultValue: false, admin: { description: 'Если включено, статические кейсы будут отображены после всех динамических.' } },
-                // -----------------------------
 
                 { name: 'featuredCases', label: 'Кейсы для другой секции (выбор из коллекции)', type: 'array', minRows: 1, fields: [{ name: 'case', label: 'Кейс', type: 'relationship', relationTo: 'cases', required: true }] },
                 { name: 'aboutCompanySection', label: 'Секция "О компании" (на главной)', type: 'textarea' },
-                { name: 'weCreateItems', label: 'Мы создаём (порядок вывода)', type: 'array', minRows: 1, fields: [
-                    { name: 'title', type: 'text', required: true },
-                    { name: 'description', type: 'text', required: true },
-                    { name: 'advantages', type: 'array', fields: [{ name: 'text', type: 'text' }] },
-                    { name: 'number', type: 'text' },
-                    { name: 'gradient', type: 'select', options: ['blue-gradient', 'green-gradient', 'red-gradient'] },
-                    { name: 'light', type: 'checkbox' },
-                ]},
-                { name: 'portfolioItems', type: 'array', fields: [{ name: 'title', type: 'text', required: true }, { name: 'links', type: 'array', fields: [{ name: 'text', type: 'text' }] }] },
+                { 
+                    name: 'weCreateItems', 
+                    label: 'Мы создаём (порядок вывода)', 
+                    type: 'array', 
+                    minRows: 1, 
+                    fields: [
+                        { name: 'title', type: 'text', required: true },
+                        { name: 'description', type: 'text', required: true },
+                        { 
+                            name: 'advantages', 
+                            label: 'Преимущества (отдельные ссылки)',
+                            type: 'array', 
+                            fields: [
+                                { name: 'text', label: 'Текст преимущества', type: 'text' },
+                                { name: 'url', label: 'URL преимущества', type: 'text', required: false }, // 💡 ИЗМЕНЕНИЕ 1
+                            ]
+                        },
+                        { name: 'number', type: 'text' },
+                        { name: 'gradient', type: 'select', options: ['blue-gradient', 'green-gradient', 'red-gradient'] },
+                        { name: 'light', type: 'checkbox' },
+                    ]
+                },
+                { 
+                    name: 'portfolioItems', 
+                    label: 'Секция Портфолио (Список проектов)', 
+                    type: 'array', 
+                    fields: [
+                        { name: 'title', type: 'text', required: true },
+                        { 
+                            name: 'links', 
+                            label: 'Проекты', 
+                            type: 'array', 
+                            fields: [
+                                { name: 'text', label: 'Название проекта', type: 'text', required: true },
+                                { 
+                                    name: 'url', 
+                                    label: 'URL/Слаг кейса (например, /cases/my-project)', 
+                                    type: 'text', 
+                                    required: false, 
+                                    admin: { description: 'Если оставить пустым, будет использована #ссылка-заглушка.' } 
+                                },
+                            ] 
+                        }
+                    ] 
+                },
                 { name: 'portfolioThemes', type: 'array', fields: [{ name: 'text', type: 'text' }] },
                 { name: 'mobileAppItems', label: 'Моб. Приложения (галерея)', type: 'array', fields: [
                     { name: 'title', type: 'text', required: true },

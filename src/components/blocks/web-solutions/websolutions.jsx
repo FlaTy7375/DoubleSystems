@@ -1,89 +1,121 @@
+// src/components/blocks/web-solutions/websolutions.jsx
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { StyledWebSolutions } from './style';
-import PhoneAndTablet from "@/assets/images/tablet-and-phone.png"
+import PhoneAndTablet from '@/assets/images/tablet-and-phone.png'; 
 import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
 import { useTranslate } from '@/components/translate/useTranslation';
+import TagsRenderer from './TagsRenderer'; 
+
+const staticCaseFallback = {
+    previewTitle: "HealthHub — проектирование и разработка единой экосистемы здоровья", 
+    title: "Web-решения",
+    sections: [
+      { 
+        blockType: 'heroSection', 
+        description: 'Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий.',
+        stamps: [{text: "ПРИЛОЖЕНИЕ"}, {text: "ПОРТАЛ"}, {text: "ЭКОСИСТЕМА ЗДОРОВЬЯ"}],
+        backgroundImage: { url: null } 
+      }
+    ],
+    tags: ["Web-решения", "Мобильные приложения"], 
+    previewImage: { url: null, alt: "Статическое изображение заглушка" } 
+};
 
 export default function WebSolutions({ cases = [] }) {
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isDynamicCase = cases.length > 0;
+  const casesToUse = isDynamicCase ? cases : [staticCaseFallback];
+  const totalCases = casesToUse.length;
+
+  const currentCaseForHooks = casesToUse[currentIndex] || casesToUse[0];
+
+  const heroSection = currentCaseForHooks.sections?.find(s => s.blockType === 'heroSection');
+
+  const bgImageUrl = heroSection?.backgroundImage?.url || ''; 
+  
+  const title = useTranslate(currentCaseForHooks.previewTitle || currentCaseForHooks.title || 'Без названия');
+  
+  const rawTags = Array.isArray(heroSection?.stamps)
+    ? heroSection.stamps.map(stamp => stamp?.text || '').filter(Boolean)
+    : (
+        Array.isArray(currentCaseForHooks.tags)
+            ? currentCaseForHooks.tags.map(tag => (typeof tag === 'string' ? tag : tag?.title || '')).filter(Boolean)
+            : []
+    );
+
+  const descriptionText = heroSection?.description || 'Описание отсутствует';
+  const description = useTranslate(descriptionText);
+
+  const imageAlt = useTranslate(currentCaseForHooks.previewImage?.alt || currentCaseForHooks.previewTitle || 'Кейс');
+  
+  const caseText = useTranslate('Кейс:');
+  const buttonText = useTranslate('Рассказываем о проекте');
+
+
+  const containerClass = isDynamicCase ? 'case-container' : 'solutions-container';
+  
+  const canSwitch = totalCases > 1;
 
   const goToPrev = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : cases.length - 1));
+    if (canSwitch) {
+        setCurrentIndex(prev => (prev === 0 ? totalCases - 1 : prev - 1));
+    }
   };
-
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev < cases.length - 1 ? prev + 1 : 0));
+    if (canSwitch) {
+        setCurrentIndex(prev => (prev === totalCases - 1 ? 0 : prev + 1));
+    }
   };
 
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [cases]);
-
-  const currentCase = cases[currentIndex] || {};
-  const title = currentCase?.title || 'Web-решения, Мобильные приложения, Искусственный интеллект, Видеосвязь, Безопасные коммуникации';
-  const description = currentCase?.description?.root?.children?.[0]?.children?.[0]?.text || 'Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий.';
-  const tags = currentCase?.tags?.map((tag) => ({ tag: tag.title })) || [{ tag: 'ПРИЛОЖЕНИЕ' }, { tag: 'ПОРТАЛ' }, { tag: 'ЭКОСИСТЕМА ЗДОРОВЬЯ' }];
-  const featuredImageUrl = currentCase?.featuredImage?.url || PhoneAndTablet;
-  const featuredImageAlt = currentCase?.featuredImage?.alt || 'Изображение кейса';
-
-  // Переводим все тексты
-  const translatedTitle = useTranslate(title)
-  const caseText = useTranslate("Кейс:");
-  const ecosystemText = useTranslate("Экосистема здоровья");
-  const buttonText = useTranslate("Рассказываем о проекте");
-
-  // Переводим теги
-  const translatedTags = tags.map(tag => ({
-    ...tag,
-    tag: useTranslate(tag.tag)
-  }));
-
-  // Переводим описание (если оно статичное в default)
-  const translatedDescription = useTranslate(description);
+  const showStaticImage = !bgImageUrl;
 
   return (
     <StyledWebSolutions>
-      <h1 className="solutions-title">{translatedTitle}</h1>
-      <div className="solutions-container">
-        <button className="slider-button prev" onClick={goToPrev}>
-          &lt;
-        </button>
+      <h1 className="solutions-title">{title}</h1>
+
+      <div 
+        className={containerClass}
+        style={{
+          backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : 'none',
+        }}
+      >
+
         <ul className="stamps-list for-mobile">
-          {translatedTags.slice(0, 3).map((tag, index) => (
-            <li key={index} className="stamp">
-              {tag.tag}
-            </li>
-          ))}
+          <TagsRenderer rawTags={rawTags} limit={3} />
         </ul>
-        <h2 className="container-title for-pc">{caseText} {translatedTitle}</h2>
-        <h2 className="container-title for-mobile">{ecosystemText}</h2>
+
+        <h2 className="container-title for-pc">{caseText} {title}</h2>
+        <h2 className="container-title for-mobile">{caseText} {title}</h2>
+
         <ul className="stamps-list for-pc">
-          {translatedTags.map((tag, index) => (
-            <li key={index} className="stamp">
-              {tag.tag}
-            </li>
-          ))}
+          <TagsRenderer rawTags={rawTags} limit={0} />
         </ul>
-        <p
-          className="container-description"
-          dangerouslySetInnerHTML={{ __html: translatedDescription }}
-        />
-        <Image
-          className="container-image"
-          src={featuredImageUrl}
-          alt={featuredImageAlt}
-          width={912}
-          height={666}
-        />
+
+        <p className="container-description">{description}</p>
+
+        {showStaticImage ? (
+             <Image
+                className="container-image"
+                src={PhoneAndTablet} 
+                alt={imageAlt || "Статический образ по умолчанию"}
+                width={912}
+                height={666}
+                priority
+             />
+        ) : (
+             <div className="container-image-placeholder" /> 
+        )}
+
         <button className="container-button">{buttonText}</button>
-        <button className="slider-button next" onClick={goToNext}>
-          &gt;
-        </button>
+        {canSwitch && <button className="slider-button prev" onClick={goToPrev}>&lt;</button>}
+        {canSwitch && <button className="slider-button next" onClick={goToNext}>&gt;</button>}
       </div>
-      <BreadCrumbs currentIndex={currentIndex} />
+
+      <BreadCrumbs currentIndex={currentIndex} total={totalCases} />
     </StyledWebSolutions>
   );
 }

@@ -198,12 +198,25 @@ export interface Tag {
  */
 export interface Page {
   id: number;
+  seo?: {
+    /**
+     * Заголовок страницы для поисковиков (до 60 символов)
+     */
+    title?: string | null;
+    /**
+     * Краткое описание страницы для поисковиков (до 160 символов)
+     */
+    description?: string | null;
+    /**
+     * Ключевые слова через запятую
+     */
+    keywords?: string | null;
+  };
   title: string;
   /**
-   * Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio и т.д.)
+   * Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio, services/web-dev и т.д.)
    */
   slug: string;
-  description?: string | null;
   sections?:
     | (
         | {
@@ -344,6 +357,20 @@ export interface Page {
  */
 export interface Case {
   id: number;
+  seo?: {
+    /**
+     * Заголовок страницы для поисковиков (до 60 символов)
+     */
+    title?: string | null;
+    /**
+     * Краткое описание страницы для поисковиков (до 160 символов)
+     */
+    description?: string | null;
+    /**
+     * Ключевые слова через запятую
+     */
+    keywords?: string | null;
+  };
   title: string;
   /**
    * Используется в списках, если не переопределено на главной.
@@ -501,6 +528,20 @@ export interface Case {
  */
 export interface Post {
   id: number;
+  seo?: {
+    /**
+     * Заголовок страницы для поисковиков (до 60 символов)
+     */
+    title?: string | null;
+    /**
+     * Краткое описание страницы для поисковиков (до 160 символов)
+     */
+    description?: string | null;
+    /**
+     * Ключевые слова через запятую
+     */
+    keywords?: string | null;
+  };
   title: string;
   /**
    * Отображается на странице /blog
@@ -880,9 +921,15 @@ export interface TagsSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
   title?: T;
   slug?: T;
-  description?: T;
   sections?:
     | T
     | {
@@ -1030,6 +1077,13 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "cases_select".
  */
 export interface CasesSelect<T extends boolean = true> {
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
   title?: T;
   previewTitle?: T;
   previewImage?: T;
@@ -1191,6 +1245,13 @@ export interface CasesSelect<T extends boolean = true> {
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
   title?: T;
   previewTitle?: T;
   previewDescription?: T;
@@ -1454,6 +1515,7 @@ export interface Home {
         advantages?:
           | {
               text?: string | null;
+              url?: string | null;
               id?: string | null;
             }[]
           | null;
@@ -1468,7 +1530,11 @@ export interface Home {
         title: string;
         links?:
           | {
-              text?: string | null;
+              text: string;
+              /**
+               * Если оставить пустым, будет использована #ссылка-заглушка.
+               */
+              url?: string | null;
               id?: string | null;
             }[]
           | null;
@@ -1587,6 +1653,7 @@ export interface HomeSelect<T extends boolean = true> {
           | T
           | {
               text?: T;
+              url?: T;
               id?: T;
             };
         number?: T;
@@ -1602,6 +1669,7 @@ export interface HomeSelect<T extends boolean = true> {
           | T
           | {
               text?: T;
+              url?: T;
               id?: T;
             };
         id?: T;

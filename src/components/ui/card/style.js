@@ -40,12 +40,22 @@ export const StyledCard = styled.div`
         color: rgba(47, 52, 63, 1);
     }
 
+    /* 💡 НОВОЕ ПРАВИЛО: Поднимаем контейнер списка преимуществ */
+    .card-advantages-list {
+        list-style: none; /* Убираем стандартные маркеры списка */
+        padding: 0;
+        margin: 0;
+        position: relative; /* Создаем новый контекст стекирования */
+        z-index: 10; /* Поднимаем выше, чем градиенты и другие элементы контента */
+    }
+
     .card-adv {
         font-weight: 700;
         font-size: 18px;
         color: rgba(255, 70, 0, 1);
         line-height: 30px;
-        z-index: 1;
+        z-index: 10;
+        display: block; /* Ссылки внутри <li> уже блочные, но это не повредит */
     }
 
     .card-number {
@@ -64,6 +74,7 @@ export const StyledCard = styled.div`
         overflow: hidden;
     }
 
+    /* 💡 ИЗМЕНЕННЫЙ Z-INDEX: Градиенты должны быть на самом низком уровне */
     .blue-gradient {
         position: absolute;
         content: "";
@@ -73,7 +84,7 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(0, 217, 255, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0;
+        z-index: 0; /* Ставим ниже всех */
     }
 
     .green-gradient {
@@ -85,7 +96,7 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(111, 255, 0, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0;
+        z-index: 0; /* Ставим ниже всех */
     }
 
     .red-gradient {
@@ -97,14 +108,16 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(255, 0, 0, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0;
+        z-index: 0; /* Ставим ниже всех */
     }
+    /* ------------------------------------------------------------------ */
 
-        @media (max-width: 1799px) { 
-            width: auto;
-            padding-bottom: 90px;
-            padding-right: 80px;
-        }
+
+    @media (max-width: 1799px) { 
+        width: auto;
+        padding-bottom: 90px;
+        padding-right: 80px;
+    }
 
     @media (max-width: 756px) {
         padding: 27px 12px 90px 19px;

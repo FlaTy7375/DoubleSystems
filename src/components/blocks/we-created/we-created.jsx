@@ -2,16 +2,23 @@
 
 import { StyledWeCreated } from './style';
 import Card from '@/components/ui/card/card';
+import Link from 'next/link';
 import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function WeCreated({ items = [] }) {
-  // Значения по умолчанию
+  
+  // Значения по умолчанию (обновлена структура преимуществ)
   const defaultItems = [
     {
       title: 'Web-решения',
       description:
         'Создаем корпоративные порталы, SaaS-платформы и интернет-магазины, которые выдерживают высокие нагрузки и радуют пользователей.',
-      advantages: ['Разработка сайтов и порталов', 'Корпоративные системы', 'SaaS-платформы', 'E-commerce'],
+      advantages: [
+        { text: 'Разработка сайтов и порталов', url: '/services/sites' }, 
+        { text: 'Корпоративные системы', url: '/services/corp' }, 
+        { text: 'SaaS-платформы', url: '/services/saas' }, 
+        { text: 'E-commerce', url: '/services/ecommerce' }
+      ],
       number: '/01',
       gradient: 'blue-gradient',
     },
@@ -19,7 +26,11 @@ export default function WeCreated({ items = [] }) {
       title: 'Мобильные приложения',
       description:
         'Разрабатываем кроссплатформенные и нативные приложения для iOS и Android, которые удобны, быстры и функциональны.',
-      advantages: ['Разработка iOS/Android', 'Кроссплатформенные приложения', 'Интеграции и API'],
+      advantages: [
+        { text: 'Разработка iOS/Android', url: '/services/ios-android' }, 
+        { text: 'Кроссплатформенные приложения', url: '/services/cross-platform' }, 
+        { text: 'Интеграции и API', url: '/services/integrations' }
+      ],
       number: '/02',
       gradient: 'green-gradient',
     },
@@ -27,7 +38,11 @@ export default function WeCreated({ items = [] }) {
       title: 'Искусственный интеллект',
       description:
         'Внедряем AI-решения: от чат-ботов и анализа данных до обработки изображений с помощью нейросетей.',
-      advantages: ['Машинное обучение', 'AI-ассистенты (чат-боты, анализ данных)', 'AI-обработка фото'],
+      advantages: [
+        { text: 'Машинное обучение', url: '/services/ml' }, 
+        { text: 'AI-ассистенты (чат-боты, анализ данных)', url: '/services/ai-bots' }, 
+        { text: 'AI-обработка фото', url: '/services/ai-photo' }
+      ],
       number: '/03',
       gradient: 'red-gradient',
     },
@@ -35,14 +50,20 @@ export default function WeCreated({ items = [] }) {
       title: 'Видеотехнологии',
       description:
         'Разрабатываем системы видеосвязи и конференц-связи на базе WebRTC для бизнеса любого масштаба.',
-      advantages: ['WebRTC и видеоконференции', 'Корпоративные видеосервисы'],
+      advantages: [
+        { text: 'WebRTC и видеоконференции', url: '/services/webrtc' }, 
+        { text: 'Корпоративные видеосервисы', url: '/services/video-corp' }
+      ],
       number: '/04',
       light: true,
     },
     {
       title: 'Безопасность данных',
       description: 'Защищаем ваши коммуникации с помощью VPN, шифрования и P2P-технологий.',
-      advantages: ['VPN, шифрование, P2P-чаты', 'Защита данных'],
+      advantages: [
+        { text: 'VPN, шифрование, P2P-чаты', url: '/services/security-chat' }, 
+        { text: 'Защита данных', url: '/services/data-security' }
+      ],
       number: '/05',
       light: true,
     },
@@ -50,37 +71,69 @@ export default function WeCreated({ items = [] }) {
       title: 'Парсинг данных',
       description:
         'Внедряем AI-решения: от чат-ботов и анализа данных до обработки изображений с помощью нейросетей.',
-      advantages: ['Машинное обучение', 'AI-ассистенты (чат-боты, анализ)', 'AI-обработка фото'],
+      advantages: [
+        { text: 'Машинное обучение', url: '/services/ml' }, 
+        { text: 'AI-ассистенты (чат-боты, анализ)', url: '/services/ai-bots' }, 
+        { text: 'AI-обработка фото', url: '/services/ai-photo' }
+      ],
       number: '/06',
       light: true,
     },
   ];
 
-  // Преобразуем данные из Payload в нужный формат
+  const createdTitle = useTranslate("Мы создаём.");
+  
+  // 1. Преобразование данных из Payload
   const displayItems = items.length > 0
     ? items.map((item) => ({
         title: item.title || 'Без названия',
         description: item.description || 'Нет описания',
-        advantages: item.advantages?.map((adv) => adv.text || 'Нет преимуществ') || [],
+        advantages: item.advantages?.map((adv) => ({
+            text: adv.text || 'Нет преимуществ',
+            url: adv.url || '#',
+        })) || [],
         number: item.number || `/${(items.indexOf(item) + 1).toString().padStart(2, '0')}`,
-        gradient: item.gradient || (item.light ? '' : 'blue-gradient'), // Логика по умолчанию
+        gradient: item.gradient || (item.light ? '' : 'blue-gradient'),
         light: item.light || false,
       }))
     : defaultItems;
 
-  // Переводим все тексты
-  const createdTitle = useTranslate("Мы создаём.");
-  const noTitle = useTranslate("Без названия");
-  const noDescription = useTranslate("Нет описания");
-  const noAdvantages = useTranslate("Нет преимуществ");
-
-  // Переводим displayItems
+  // 2. Перевод данных
   const translatedItems = displayItems.map(item => ({
     ...item,
     title: useTranslate(item.title),
     description: useTranslate(item.description),
-    advantages: item.advantages.map(adv => useTranslate(adv))
+    advantages: item.advantages.map(adv => ({
+        ...adv,
+        text: useTranslate(adv.text),
+    }))
   }));
+  
+  // Функция рендера содержимого карточки
+  const renderCardContent = (item) => (
+    <Card className={item.light ? 'light' : ''}>
+        <h2>{item.title}</h2>
+        <p className="card-description">{item.description}</p>
+        
+        {/* 💡 Используем <ul> и <li> для вывода преимуществ построчно */}
+        <ul className="card-advantages-list">
+            {item.advantages.map((adv, advIndex) => (
+                <li key={advIndex}>
+                    <Link 
+                        className="card-adv"
+                        href={adv.url && adv.url !== '#' ? adv.url : '#'} 
+                    >
+                        {adv.text}
+                    </Link>
+                </li>
+            ))}
+        </ul>
+        {/* ----------------------------------------------------------- */}
+        
+        <p className="card-number">{item.number}</p>
+        {item.gradient && <div className={item.gradient}></div>}
+    </Card>
+  );
 
   return (
     <StyledWeCreated>
@@ -88,19 +141,7 @@ export default function WeCreated({ items = [] }) {
       <ul className="card-list">
         {translatedItems.map((item, index) => (
           <li key={index} className="card-wrapper">
-            <Card className={item.light ? 'light' : ''}>
-              <h2>{item.title}</h2>
-              <p className="card-description">{item.description}</p>
-              <div>
-                {item.advantages.map((adv, advIndex) => (
-                  <p key={advIndex} className="card-adv">
-                    {adv}
-                  </p>
-                ))}
-              </div>
-              <p className="card-number">{item.number}</p>
-              {item.gradient && <div className={item.gradient}></div>}
-            </Card>
+            {renderCardContent(item)}
           </li>
         ))}
       </ul>

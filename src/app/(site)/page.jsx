@@ -1,3 +1,4 @@
+// src/app/(site)/page.jsx
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import WebSolutions from '@/components/blocks/web-solutions/websolutions';
@@ -11,79 +12,91 @@ import '../../styles.css';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Main() {
-  const payload = await getPayload({
-    config: payloadConfig,
-  });
+export async function generateMetadata() {
+  const payload = await getPayload({ config: payloadConfig });
 
-  // --- 1. ЗАГРУЗКА HOME (для заголовков и флагов) ---
   const home = await payload.findGlobal({
     slug: 'home',
-    // depth: 1 достаточно, так как мы не используем отношения highlightedCases
-    depth: 1, 
-    cache: 'no-store', 
+    depth: 1,
   });
-  
-  const allPublishedCases = await payload.find({
-    collection: 'cases',
-    // Сортировка по дате публикации (по убыванию: новейшие первыми)
-    sort: '-previewDate', 
-    // depth: 2 для загрузки превью-изображений (previewImage -> media)
-    depth: 2, 
-    cache: 'no-store',
-  });
-  
-  // --- 2. МАППИНГ АВТОМАТИЧЕСКИ ЗАГРУЖЕННЫХ КЕЙСОВ ---
-  const autoCases = allPublishedCases.docs.map((caseItem) => {
-    // caseItem — это уже сам объект кейса
-    const title = caseItem.previewTitle || caseItem.title || 'Без названия';
-    const image = caseItem.previewImage || null;
-    const views = caseItem.previewViews || 85;
-    const dateValue = caseItem.previewDate;
-    
-    const themesData = caseItem.previewThemes || [];
-    const themes = themesData.map(t => t.theme) || []; 
 
-    const formattedDate = dateValue ? new Date(dateValue).toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }) : 'Не указано';
+  const seo = home.seo || {};
+  const defaultTitle = 'Double Systems - Создание веб-платформ и мобильных приложений';
+  const defaultDescription = 'Разработка инновационных решений для бизнеса: от UX/UI дизайна до сложной интеграции.';
+
+  return {
+    title: seo.title || home.title || defaultTitle,
+    description: seo.description || defaultDescription,
+    keywords: seo.keywords || 'разработка, веб-платформы, мобильные приложения, дизайн, IT-консалтинг',
+    openGraph: {
+      title: seo.title || home.title || defaultTitle,
+      description: seo.description || defaultDescription,
+    },
+  };
+}
+
+export default async function Main() {
+  const payload = await getPayload({ config: payloadConfig });
+
+  const home = await payload.findGlobal({
+    slug: 'home',
+    depth: 2,
+  });
+
+  const allCases = await payload.find({
+    collection: 'cases',
+    sort: '-previewDate',
+    depth: 4,
+    overrideAccess: false,
+  });
+
+  const autoCases = allCases.docs.map((c) => {
+    const title = c.previewTitle || c.title || 'Без названия';
+    const image = c.previewImage;
 
     return {
-        slug: caseItem.slug || 'no-slug', 
-        title: title,
-        themes: themes,
-        date: formattedDate,
-        views: views,
-        // Проверка, что image.url существует
-        image: image && image.url ? { url: image.url, alt: title } : null,
+      slug: c.slug,
+      title,
+      themes: (c.previewThemes || []).map(t => t.theme || ''),
+      date: c.previewDate ? new Date(c.previewDate).toLocaleDateString('ru-RU') : '—',
+      views: c.previewViews || 85,
+      image: image?.url ? { url: image.url, alt: title } : null,
     };
   });
 
-  // --- 3. ЗАГРУЗКА FEATURED CASES (для WebSolutions) ---
-  const featuredCaseIds = home.featuredCases?.map((item) => item.case?.id).filter(id => id) || [];
-  const cases = await payload.find({
-    collection: 'cases',
-    where: { id: { in: featuredCaseIds } },
-    depth: 1, 
-    cache: 'no-store', 
-  });
+  let featuredCases = [];
+
+  if (home.featuredCases && home.featuredCases.length > 0) {
+    featuredCases = await Promise.all(
+      home.featuredCases.map(async (item) => {
+        if (!item.case?.id) return null;
+
+        try {
+          const fullCase = await payload.findByID({
+            collection: 'cases',
+            id: item.case.id,
+            depth: 4,
+            overrideAccess: false,
+          });
+          return fullCase;
+        } catch (err) {
+          console.error('Ошибка загрузки кейса:', item.case.id, err);
+          return null;
+        }
+      })
+    );
+
+    featuredCases = featuredCases.filter(Boolean);
+  }
 
   return (
     <>
-      <WebSolutions cases={cases.docs} />
+      <WebSolutions cases={featuredCases} />
       <AboutUs content={home.aboutCompanySection || ''} person={{}} />
       <WeCreated items={home.weCreateItems || []} />
       <Portfolio items={home.portfolioItems || []} themes={home.portfolioThemes || []} />
       <MobileApp items={home.mobileAppItems || []} />
-      <Cases
-        autoCases={autoCases} 
-        description={home.portfolioDescription || ''} 
-        globalSettings={home} 
-      />
+      <Cases autoCases={autoCases} description={home.portfolioDescription || ''} globalSettings={home} />
       <Technology technologies={home.technologies || []} />
     </>
   );

@@ -5,6 +5,7 @@ export const StyledCases = styled.section`
     padding: 0 20px;
     margin: 0 auto;
     margin-top: 140px;
+    margin-bottom: 60px;
 
     .cases-title {
         margin-bottom: 28px;
@@ -77,6 +78,51 @@ export const StyledCases = styled.section`
             width: 100%;
             font-size: 15px;
             padding: 0 28px;
+        }
+    }
+`
+
+export const StyledPortfolioLinks = styled.div`
+    margin: 0 auto;
+    margin-top: 100px;
+    padding: 0 20px;
+    max-width: 1800px;
+
+    .link-container {
+        display: flex;
+        margin-bottom: 10px;
+        
+    }
+
+    .cases-link {
+        font-size: 15px;
+        font-weight: 400;
+        color: rgba(46, 46, 46, 0.7);
+        cursor: pointer;
+    }
+
+    .cases-link.active {
+        color: rgba(46, 46, 46, 1);
+    }
+
+    .portfolio-title {
+        font-weight: 700;
+        font-size: 50px;
+        letter-spacing: -3px;
+        color: rgba(68, 75, 90, 1);
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 756px) {
+        padding: 0 15px;
+        .cases-link {
+            font-size: 13px;
+        }
+
+        .contacts-title {
+            margin-bottom: 40px;
+            font-size: 32px;
+            letter-spacing: -2px;
         }
     }
 `

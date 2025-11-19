@@ -1,4 +1,4 @@
-// hooks/useTranslation.js
+// src/components/translate/useTranslation.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -176,7 +176,7 @@ const TRANSLATION_APIS = [
 ];
 
 // ──────────────────────────────────────────────────────────────
-// Хук
+// Хук для одной строки
 // ──────────────────────────────────────────────────────────────
 export const useTranslate = (text) => {
   const [translated, setTranslated] = useState(text);
@@ -238,4 +238,74 @@ export const useTranslate = (text) => {
   }, [text, language]);
 
   return translated;
+};
+
+// ──────────────────────────────────────────────────────────────
+// 💡 НОВЫЙ ХУК ДЛЯ МАССИВОВ (РЕШЕНИЕ ПРОБЛЕМЫ С ХУКАМИ)
+// ──────────────────────────────────────────────────────────────
+export const useTranslatedArray = (texts = []) => {
+    const [translatedArray, setTranslatedArray] = useState(texts);
+    const { language } = useLanguage();
+
+    // Мы полагаемся на useEffect в useTranslate для очистки кэша
+    // (или можете добавить clearTranslationCache(); здесь, если нужно)
+
+    useEffect(() => {
+        const translateArray = async () => {
+            if (!texts || texts.length === 0 || language === "Ru") {
+                setTranslatedArray(texts);
+                return;
+            }
+
+            const newTranslations = [];
+            
+            // Если массив пуст или null, мы просто возвращаем его
+            if (!Array.isArray(texts)) {
+                setTranslatedArray([]);
+                return;
+            }
+
+            for (const text of texts) {
+                if (typeof text !== "string") {
+                    newTranslations.push(text);
+                    continue;
+                }
+                
+                const cacheKey = `${text}-${language}`;
+                let translated = translationCache[cacheKey];
+
+                if (!translated) {
+                    // 1. Показываем fallback
+                    translated = getFallbackTranslation(text);
+                    translationCache[cacheKey] = translated; // Обновляем кэш fallback
+
+                    // 2. Параллельно пробуем API
+                    for (const api of TRANSLATION_APIS) {
+                        if (api.name === "fallback") break;
+                        try {
+                            const res = await fetch(api.url(text));
+                            if (!res.ok) continue;
+                            const data = await res.json();
+                            const result = api.parse(data);
+
+                            if (result && result !== text && result.toLowerCase() !== text.toLowerCase()) {
+                                translated = result;
+                                translationCache[cacheKey] = result;
+                                break;
+                            }
+                        } catch {
+                            continue;
+                        }
+                    }
+                }
+                newTranslations.push(translated);
+            }
+            
+            setTranslatedArray(newTranslations);
+        };
+
+        translateArray();
+    }, [texts, language]); // Зависимость от всего массива текстов (prop)
+
+    return translatedArray;
 };

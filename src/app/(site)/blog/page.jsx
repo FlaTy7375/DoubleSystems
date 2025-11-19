@@ -4,7 +4,34 @@ import React from "react";
 import "../../../styles.css";
 import News from "@/components/blocks/news/news";
 
-export const dynamic = 'force-dynamic'; // Добавим для гарантированной свежести данных
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata() {
+    const payload = await getPayload({ config: payloadConfig });
+
+    // Загружаем глобальную настройку 'blog'
+    const blogGlobal = await payload.findGlobal({ 
+        slug: 'blog',
+        depth: 1, // Достаточно минимальной глубины для SEO
+    });
+
+    const seo = blogGlobal.seo || {};
+    const defaultTitle = blogGlobal.title || 'Блог | Новости и статьи о разработке | Double Systems';
+    const defaultDescription = 'Читайте свежие новости, статьи и инсайды о веб-разработке, мобильных приложениях и технологиях от команды Double Systems.';
+
+    return {
+        // Используем SEO-title, или title из global, или дефолтный title
+        title: seo.title || defaultTitle,
+        description: seo.description || defaultDescription,
+        keywords: seo.keywords || 'блог, новости, статьи, разработка, технологии',
+        openGraph: {
+            title: seo.title || defaultTitle,
+            description: seo.description || defaultDescription,
+        },
+    };
+}
+// -----------------------------------------------------
+
 
 export default async function Blog() {
 
@@ -20,9 +47,7 @@ export default async function Blog() {
     // --- 2. Загрузка коллекции постов ---
     const postsData = await payload.find({
         collection: 'posts',
-        // Установите лимит постов, который вам нужен (например, 100 для всей страницы)
         limit: 100, 
-        // depth: 1 нужен, чтобы загрузить связанные медиафайлы (previewImage)
         depth: 1, 
         cache: 'no-store', 
     });

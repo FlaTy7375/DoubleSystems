@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import BreadCrumbs from "@/components/ui/bread-crumbs/bread-crumbs";
 import Portfolio from "../portfolio/portfolio";
 import Image from "next/image";
 import Card from "@/components/ui/card/card";
@@ -91,7 +90,6 @@ export default function DynamicPage({ pageData }) {
               )}
               <button className="container-button">{useTranslate(section.buttonText)}</button>
             </div>
-            <BreadCrumbs />
           </StyledHeroSection>
         );
 
