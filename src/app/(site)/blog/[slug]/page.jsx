@@ -56,9 +56,9 @@ export default async function PostPage({ params }) {
 
     if (!postItem) {
         return (
-            <div style={{ padding: '40px', textAlign: 'center' }}>
+            <div style={{ padding: '40px', textAlign: 'center', marginTop: '60px' }}>
                 <h1>404 | Запись блога не найдена</h1>
-                <p>Запись блога со слагом **{slug}** не найдена.</p>
+                <p>Запись блога с названием {slug} не найдена.</p>
             </div>
         ); 
     }

@@ -225,7 +225,7 @@ export const StyledHeader = styled.header`
     .clear-button::before {    
         position: absolute;
         content: "";
-        width: 12px;
+        width: 18px;
         height: 2px;
         background-color: rgba(255, 70, 0, 1);
         transform: rotate(45deg);
@@ -235,7 +235,7 @@ export const StyledHeader = styled.header`
         position: absolute;
         content: "";
         width: 2px;
-        height: 12px;
+        height: 18px;
         background-color: rgba(255, 70, 0, 1);
         transform: rotate(45deg);
     }

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from "react"
 import { StyledContactsForm } from "./style"
@@ -10,16 +10,39 @@ import Telegram from "@/assets/images/svg/tg-footer.svg"
 import Vk from "@/assets/images/svg/vk-footer.svg"
 import Themes from "../portfolio/themes"
 import { useTranslate } from "@/components/translate/useTranslation"
+import ModalMessage from "@/components/layout/footer/formMessage"
+
+const CONTACT_METHODS = {
+    1: 'WhatsApp',
+    2: 'Phone',
+    3: 'Telegram',
+    4: 'VK',
+};
 
 export default function ContactsForm() {
 
     const [activeId, setActiveId] = useState(1)
+    const [formData, setFormData] = useState({
+        phone: '',
+        name: '',
+        comment: '',
+        agreement: false,
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState('');
 
     const handleActiveItem = (id) => {
         setActiveId(id)
     }
 
-    // Переводим все тексты
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
     const breadcrumbHome = useTranslate('DoubleSystems')
     const breadcrumbContacts = useTranslate('Контакты')
     const contactsTitle = useTranslate('Контакты')
@@ -48,8 +71,66 @@ export default function ContactsForm() {
     
     const tagsTitle = useTranslate('Теги:')
 
+    const msgErrorRequired = useTranslate("Пожалуйста, заполните имя, контактные данные и примите соглашение.");
+    const msgSubmitting = useTranslate("Отправка...");
+    const msgSuccess = useTranslate("Заявка успешно отправлена! Скоро свяжемся.");
+    const msgErrorAPI = useTranslate("Ошибка при отправке заявки. Попробуйте позже.");
+    const msgErrorNetwork = useTranslate("Сетевая ошибка. Проверьте соединение.");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (isSubmitting) return;
+
+        if (!formData.name || !formData.phone || !formData.agreement) { 
+            setMessage(msgErrorRequired); 
+            return;
+        }
+
+        setIsSubmitting(true);
+        setMessage(msgSubmitting); 
+
+        const contactMethod = CONTACT_METHODS[activeId];
+        
+        let payloadData = {
+            name: formData.name,
+            email: 'no-email-contact-page@doublesystems.com', 
+            message: `
+                Комментарий: ${formData.comment || 'Нет комментария'}
+                ---
+                Контакт для связи (${contactMethod}): ${formData.phone}
+            `,
+        };
+
+        try {
+            const response = await fetch('/api/submit-application', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadData),
+            });
+
+            if (response.ok) {
+                setMessage(msgSuccess); 
+                setFormData({ phone: '', name: '', comment: '', agreement: false });
+                setActiveId(1);
+            } else {
+                setMessage(msgErrorAPI);
+            }
+        } catch (error) {
+            setMessage(msgErrorNetwork);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
     return(
         <StyledContactsForm>
+            <ModalMessage 
+                message={message} 
+                onClose={() => setMessage('')} 
+                duration={5000} 
+            />
+
             <div className="link-container">
                 <Link className="cases-link" href="/">{breadcrumbHome} &nbsp;</Link>
                 <Link className="cases-link active" href="/contacts">\ &nbsp;{breadcrumbContacts}</Link>
@@ -82,7 +163,7 @@ export default function ContactsForm() {
                         <p className="contacts-info bold">{addressText}</p>
                     </li>
                 </ul>
-                <form className="contacts-form">
+                <form className="contacts-form" onSubmit={handleSubmit}>
                     <h2 className="form-title">{formTitle}</h2>
                     <ul className="form-list">
                         <li className="list-item">
@@ -105,22 +186,51 @@ export default function ContactsForm() {
                                     {vkText}
                                     </button>
                                 </div>
-                            <input className="form-field" type="phone" placeholder={phonePlaceholder}></input>
+                            <input 
+                                className="form-field" 
+                                type="tel" 
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleInputChange}
+                                placeholder={phonePlaceholder}
+                            />
                         </li>
                         <li className="list-item">
                             <label className="field-label">{nameLabel}</label>
-                            <input className="form-field" type="text" placeholder={namePlaceholder}></input>
+                            <input 
+                                className="form-field" 
+                                type="text" 
+                                name="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                placeholder={namePlaceholder}
+                            />
                         </li>
                         <li className="list-item">
                             <label className="field-label">{commentLabel}</label>
-                            <input className="form-field" type="text"></input>
+                            <input 
+                                className="form-field" 
+                                type="text"
+                                name="comment"
+                                value={formData.comment}
+                                onChange={handleInputChange}
+                            />
                         </li>
                     </ul>
                     <div className="input-container">
-                        <input className="contacts-checkbox" type="checkbox" name="agreement" id="agreement"></input>
+                        <input 
+                            className="contacts-checkbox" 
+                            type="checkbox" 
+                            name="agreement" 
+                            id="agreement"
+                            checked={formData.agreement}
+                            onChange={handleInputChange}
+                        />
                         <label className="input-description" htmlFor="agreement">{agreementText}</label>
                     </div>
-                    <button className="form-button">{buttonText}</button>
+                    <button className="form-button" type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? msgSubmitting : buttonText}
+                    </button>
                 </form>
             </div>
             <h1 className="tegs-title">{tagsTitle}</h1>

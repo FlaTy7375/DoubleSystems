@@ -13,7 +13,7 @@ export const revalidate = 0;
 // --- ГЕНЕРАЦИЯ МЕТАДАННЫХ (SEO) ---
 export async function generateMetadata({ params }) {
     // 1. Формируем полный слаг: 'services/' + params.slug
-    const fullSlug = `services/${params.slug}`; 
+    const fullSlug = await `services/${params.slug}`; 
     
     const payload = await getPayload({ config: payloadConfig });
 
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }) {
 // --- ОСНОВНОЙ КОМПОНЕНТ СТРАНИЦЫ ---
 export default async function ServicePage({ params }) {
     // 1. Формируем полный слаг: 'services/' + params.slug
-    const fullSlug = `services/${params.slug}`; 
+    const fullSlug = await `services/${params.slug}`; 
   
     const payload = await getPayload({ config: payloadConfig });
 

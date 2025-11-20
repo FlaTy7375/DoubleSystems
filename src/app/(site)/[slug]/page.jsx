@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0; 
 
 export async function generateMetadata({ params }) {
-    const { slug } = await params; // Добавляем await
+    const { slug } = await params;
     const payload = await getPayload({ config: payloadConfig });
 
     const pageData = await payload.find({
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-    const { slug } = await params; // Добавляем await
+    const { slug } = await params;
   
     const payload = await getPayload({ config: payloadConfig });
 

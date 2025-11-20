@@ -3,6 +3,7 @@ import payloadConfig from '@payload-config';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
 import Cookie from '@/components/ui/cookie/cookie'
+import '../../styles.css';
 
 export default async function SiteLayout({ children }) {
 

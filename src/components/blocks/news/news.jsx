@@ -7,7 +7,6 @@ import InfoBlock from '@/components/ui/info-block/info-block';
 import NewsTheme from './news-themes';
 import { useTranslate } from "@/components/translate/useTranslation"
 
-// 🛑 Статические импорты для дефолтного контента (Заглушки)
 import News1 from '@/assets/images/news1.png';
 import News2 from '@/assets/images/case4.png';
 import News3 from '@/assets/images/news3.png';
@@ -18,11 +17,9 @@ import News7 from '@/assets/images/news7.png';
 import News8 from '@/assets/images/news8.png';
 import News9 from '@/assets/images/news9.png';
 
-// Компонент для переводимого поста
 const TranslatedPost = ({ post, formatPostDate }) => {
-    // Переводим каждый текст отдельно
-    const title = useTranslate(post.previewTitle || post.title || 'Без названия');
-    const description = useTranslate(post.previewDescription || 'Нет описания');
+    const title = useTranslate(post.title || 'Без названия');
+    const description = useTranslate(post.description || 'Нет описания');
     const imageAlt = useTranslate(post.image?.alt) || title;
     
     const themes = post.themes?.map(t => ({
@@ -58,9 +55,7 @@ const TranslatedPost = ({ post, formatPostDate }) => {
     );
 };
 
-// Компонент для переводимого дефолтного поста
 const TranslatedDefaultPost = ({ post, formatPostDate }) => {
-    // Переводим каждый текст отдельно
     const title = useTranslate(post.title);
     const description = useTranslate(post.description);
     
@@ -97,15 +92,13 @@ const TranslatedDefaultPost = ({ post, formatPostDate }) => {
     );
 };
 
-// Хелпер для корректного получения URL
 const getImageUrl = (image) => {
     if (image && typeof image === 'object' && image.url) {
         return image.url;
     }
-    return image; // Статический импорт
+    return image;
 };
 
-// 💡 Массив дефолтного контента (Используем статические импорты)
 const DEFAULT_POSTS = [
     { id: 'default-1', slug: 'ecosystem-health', title: 'Экосистема здоровья, маркетплейс...', description: 'Мы разрабатываем кроссплатформенное мобильное приложение...', date: '02.02.2025 11:24', views: '245', themes: [{theme: 'ПРИЛОЖЕНИЕ'}], image: News1, },
     { id: 'default-2', slug: 'app-update', title: 'Большое обновление приложения', description: 'Описание обновления...', date: '03.12.2025 14:35', views: '347', themes: [{theme: 'ПРИЛОЖЕНИЕ'}], image: News2, },
@@ -127,7 +120,6 @@ const DEFAULT_THEMES_LIST = [
 ];
 
 const formatPostDate = (dateString) => {
-    // Логика форматирования даты
     if (!dateString) return 'Дата не указана';
     
     let dateObj = null;
@@ -145,7 +137,6 @@ const formatPostDate = (dateString) => {
     }
 
     if (!dateObj || isNaN(dateObj.getTime())) {
-        console.error("Не удалось разобрать дату:", dateString);
         return 'Ошибка даты';
     }
 
@@ -158,13 +149,10 @@ const formatPostDate = (dateString) => {
     return `${formattedDay}.${formattedMonth}.${formattedYear} ${formattedHours}:${formattedMinutes}`;
 };
 
-// Вспомогательная функция для определения типа поста
 const isDefaultPost = (post) => {
-    // Проверяем, является ли пост дефолтным по различным признакам
     if (typeof post.id === 'string' && post.id.startsWith('default-')) {
         return true;
     }
-    // Дополнительные проверки для дефолтных постов
     if (DEFAULT_POSTS.some(defaultPost => defaultPost.slug === post.slug)) {
         return true;
     }
@@ -176,54 +164,43 @@ export default function News({ posts = [], globalSettings = {} }) {
     const [activeTheme, setActiveTheme] = useState(null); 
     const [postsToShow, setPostsToShow] = useState(6); 
 
-    // Получаем настройки из globals.blog
     const adminTitle = useTranslate(globalSettings.title);
     const adminThemesList = globalSettings.themesList || []; 
-    // 💡 Флаги
     const showDefaultPosts = globalSettings.showDefaultPosts ?? true; 
     const showStaticPostsWithDynamic = globalSettings.showStaticPostsWithDynamic ?? false;
 
-    // Переводим все тексты
     const defaultTitle = useTranslate('Новости компании');
-    const noTitle = useTranslate('Без названия');
-    const noDescription = useTranslate('Нет описания');
-    const noDate = useTranslate('Не указано');
     const noPostsText = useTranslate('Нет постов, соответствующих теме:');
     const showAllNews = useTranslate('Показать все новости');
     const loadMoreButton = useTranslate('Показать ещё');
     const breadcrumbHome = useTranslate('DoubleSystems');
     const breadcrumbBlog = useTranslate('Блог Новости');
 
-    // 1. Преобразуем посты из Payload (без перевода здесь)
     const payloadPosts = posts.map((post) => ({
         id: post.id,
         slug: post.slug,
+        // 💡 ИЗМЕНЕНИЕ: Устанавливаем здесь поле description
         title: post.previewTitle || post.title || 'Без названия',
-        description: post.previewDescription || 'Нет описания',
+        description: post.previewDescription || post.title || 'Нет описания',
         date: post.previewDate || 'Не указано',
         views: String(post.previewViews || 85),
         themes: post.previewThemes || [],
         image: post.previewImage,
     }));
 
-    // 2. Определяем финальный список постов (без перевода здесь)
     let finalPosts = [];
     
     if (payloadPosts.length > 0) {
-        // Динамические посты есть
         finalPosts = payloadPosts;
 
         if (showStaticPostsWithDynamic) {
-            // Если флаг слияния true, добавляем статические посты в конец
             finalPosts = [...payloadPosts, ...DEFAULT_POSTS];
         }
         
     } else if (showDefaultPosts) {
-        // Динамических постов нет, но включен режим показа статики как резерва
         finalPosts = DEFAULT_POSTS;
     }
     
-    // 3. Определяем финальные темы (переводим здесь)
     const finalThemesList = adminThemesList.length > 0 
         ? adminThemesList.map(theme => ({
             themeName: useTranslate(theme.themeName)
@@ -232,10 +209,6 @@ export default function News({ posts = [], globalSettings = {} }) {
             themeName: useTranslate(theme.themeName)
         }));
     
-    // Определяем заголовок (но не переводим здесь, а в JSX)
-    const finalTitle = adminTitle || 'Новости компании';
-
-    // Используем finalPosts в useMemo
     const filteredPosts = useMemo(() => {
         if (!activeTheme) {
             return finalPosts;
@@ -283,7 +256,6 @@ export default function News({ posts = [], globalSettings = {} }) {
                     visiblePosts.map((post, index) => {
                         const key = post.id || post.slug || index;
                         
-                        // Определяем тип поста и рендерим соответствующий компонент
                         if (isDefaultPost(post)) {
                             return (
                                 <TranslatedDefaultPost 

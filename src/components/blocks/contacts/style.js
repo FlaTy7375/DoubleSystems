@@ -120,6 +120,10 @@ export const StyledContactsForm = styled.main`
         cursor: pointer;
     }
 
+    .form-field:focus {
+        padding-left: 10px;
+    }
+
     .form-button {
         display: flex;
         align-items: center;

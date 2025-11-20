@@ -149,7 +149,7 @@ export default function Cases({ autoCases = [], globalSettings = {}, style = {} 
         ) : (
           <p>{noCasesText}</p>
         )}
-        <button className="cases-button">{buttonText}</button>
+        <Link className="cases-button" href="/contacts">{buttonText}</Link>
       </div>
     </StyledCases>
   );
