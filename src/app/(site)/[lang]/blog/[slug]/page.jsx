@@ -1,7 +1,7 @@
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import DynamicPost from '@/components/blocks/case1/dynamic-post';
-import "../../../../styles.css";
+import "../../../../../styles.css";
 
 export const dynamic = 'force-dynamic';
 

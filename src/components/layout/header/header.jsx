@@ -10,21 +10,10 @@ import TgLogo from '@/assets/images/svg/telegram.svg';
 import Link from 'next/link';
 import { useLanguage } from '@/components/translate/LanguageContext';
 import { useTranslate } from "@/components/translate/useTranslation"
+import { useLocalizedPath } from '@/components/translate/useLocalizedPath';
 
 export default function Header({ 
-  headerData = {
-    phone: "8 800 543 22 44",
-    nav: [
-      { href: "/prices", title: "Цены" },
-      { href: "/about-us", title: "О нас" },
-      { href: "/portfolio", title: "Портфолио" },
-      { href: "/services", title: "Услуги" },
-      { href: "/blog", title: "Блог" },
-      { href: "/contacts", title: "Связаться" },
-      { href: "/what-we-do", title: "Что мы делаем" }
-    ],
-    cta: "Напишите нам!"
-  }
+  headerData
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [activeId, setActiveId] = useState(false);
@@ -32,15 +21,24 @@ export default function Header({
   const [isScrolled, setIsScrolled] = useState(false);
   
   const { language, changeLanguage } = useLanguage();
+  const getLocalizedPath = useLocalizedPath();
 
-  const navPrices = useTranslate("Цены");
-  const navAbout = useTranslate("О нас");
-  const navPortfolio = useTranslate("Портфолио");
-  const navServices = useTranslate("Услуги");
-  const navBlog = useTranslate("Блог");
-  const navContacts = useTranslate("Связаться");
-  const navWhatWeDo = useTranslate("Что мы делаем");
-  const ctaText = useTranslate("Напишите нам!");
+  const fallbackNav = [
+    { title: 'Цены', href: '/prices' },
+    { title: 'О нас', href: '/about-us' },
+    { title: 'Портфолио', href: '/portfolio' },
+    { title: 'Услуги', href: '/services' },
+    { title: 'Блог', href: '/blog' },
+    { title: 'Связаться', href: '/contacts' },
+    { title: 'Что мы делаем', href: '/what-we-do' },
+  ];
+  const fallbackCtaText = useTranslate("Напишите нам!");
+
+  const navItems = headerData?.nav && headerData.nav.length > 0 ? headerData.nav : fallbackNav;
+  const phoneNumber = headerData?.phoneNumber || "8 800 543 22 44";
+  const whatsappLink = headerData?.whatsappLink || '#whatsapp'; 
+  const telegramLink = headerData?.telegramLink || '#telegram'; 
+  const buttonText = headerData?.ctaText || fallbackCtaText; 
 
   const handleMenu = () => setActiveId(!activeId);
   const toggleLangDropdown = () => setIsLangDropdownOpen(!isLangDropdownOpen);
@@ -67,20 +65,21 @@ export default function Header({
     };
   }, []);
   
-  // Функция для скрытия инпута
   const handleCloseSearch = () => {
     setActiveId(false);
-    setSearchValue(''); // Очищаем значение при закрытии для удобства
+    setSearchValue('');
   };
 
   return (
     <StyledHeader className={`${activeId === true ? 'active-block' : ''} ${isScrolled ? 'scrolled' : ''}`}>
-      <Link className='logo-link' href="/">
+      {/* Логотип */}
+      <Link className='logo-link' href={getLocalizedPath("/")}>
         <Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56" />
       </Link>
       
-      <a className='header-phone' href='tel:8 800 543 22 44'>
-        8 800 543 22 44
+      {/* Динамический номер телефона */}
+      <a className='header-phone' href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
+        {phoneNumber}
       </a>
     
       <ul className={`socials-list ${activeId === false ? 'active-block' : ''}`}>
@@ -90,25 +89,26 @@ export default function Header({
           </button>
         </li>
         <li className='social-item'>
-          <a className='social-link' href='whatsapp'>
+          {/* Динамическая ссылка на WhatsApp */}
+          <a className='social-link' href={whatsappLink} target="_blank" rel="noopener noreferrer">
             <Image src={WhatsAppLogo} alt='Whats app' />
           </a>
         </li>
         <li className='social-item'>
-          <a className='social-link' href='telegram'>
+          {/* Динамическая ссылка на Telegram */}
+          <a className='social-link' href={telegramLink} target="_blank" rel="noopener noreferrer">
             <Image src={TgLogo} alt='Telegram' />
           </a>
         </li>
       </ul>
       
+      {/* Динамическое меню */}
       <nav className={`header-nav ${activeId === false ? 'active-block' : ''}`}>
-        <Link className='nav-link' href="/prices">{navPrices}</Link>
-        <Link className='nav-link' href="/about-us">{navAbout}</Link>
-        <Link className='nav-link' href="/portfolio">{navPortfolio}</Link>
-        <Link className='nav-link' href="/services">{navServices}</Link>
-        <Link className='nav-link' href="/blog">{navBlog}</Link>
-        <Link className='nav-link' href="/contacts">{navContacts}</Link>
-        <Link className='nav-link' href="/what-we-do">{navWhatWeDo}</Link>
+        {navItems.map((item, index) => (
+          <Link key={index} className='nav-link' href={getLocalizedPath(item.href)}>
+            {useTranslate(item.title)}
+          </Link>
+        ))}
       </nav>
       
       <div className={`search-container ${activeId === true ? 'active-block' : ''}`}>
@@ -151,8 +151,9 @@ export default function Header({
         )}
       </div>
       
-      <Link className='message-button' href="/contacts">
-        {ctaText}
+      {/* Кнопка "Написать" */}
+      <Link className='message-button' href={getLocalizedPath("/contacts")}>
+        {buttonText}
       </Link>
       
       <button className='menu-button' onClick={handleMenu}>

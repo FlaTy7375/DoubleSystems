@@ -2,7 +2,7 @@ import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import DynamicCase from '@/components/blocks/case1/dynamic-case';
 import StaticCase1 from '@/components/blocks/case1/case-page'; 
-import "../../../../styles.css";
+import "../../../../../styles.css";
 
 export const dynamic = 'force-dynamic';
 

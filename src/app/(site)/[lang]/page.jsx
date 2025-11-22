@@ -1,4 +1,3 @@
-// src/app/(site)/page.jsx
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import WebSolutions from '@/components/blocks/web-solutions/websolutions';
@@ -8,7 +7,7 @@ import Portfolio from '@/components/blocks/portfolio/portfolio';
 import MobileApp from '@/components/blocks/mobile-app/mobile-app';
 import Cases from '@/components/blocks/cases/cases';
 import Technology from '@/components/blocks/technology/technology';
-import '../../styles.css';
+import "../../../styles.css";
 
 export const dynamic = 'force-dynamic';
 

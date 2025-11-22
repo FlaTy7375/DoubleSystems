@@ -1,4 +1,3 @@
-// src/components/translate/useTranslation.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,18 +7,6 @@ let translationCache = {};
 
 const getFallbackTranslation = (text) => {
   const fallbackTranslations = {
-    // Header
-    "Цены": "Prices",
-    "О нас": "About us",
-    "Портфолио": "Portfolio",
-    "Услуги": "Services",
-    "Блог": "Blog",
-    "Связаться": "Contact",
-    "Что мы делаем": "What we do",
-    "Напишите нам!": "Write to us!",
-    "Поиск по сайту": "Site search",
-
-    // Footer
     "Часто встречающиеся вопросы": "Frequently Asked Questions",
     "Постарались ответить на основные": "We tried to answer the main ones",
     "Наши проекты говорят сами за себя": "Our projects speak for themselves",
@@ -38,16 +25,12 @@ const getFallbackTranslation = (text) => {
     "Phone": "Phone",
     "VK": "VK",
     "Double Systems": "Double Systems",
-
-    // WebSolutions
     "Кейс:": "Case:",
     "Экосистема здоровья": "Health Ecosystem",
     "Рассказываем о проекте": "Tell about the project",
     "ПРИЛОЖЕНИЕ": "APPLICATION",
     "ПОРТАЛ": "PORTAL",
     "ЭКОСИСТЕМА ЗДОРОВЬЯ": "HEALTH ECOSYSTEM",
-
-    // AboutUs
     "О компании": "About company",
     "Написать": "Write",
     "Информация о компании пока не добавлена.":
@@ -58,8 +41,6 @@ const getFallbackTranslation = (text) => {
       "Candidate of Technical Sciences, Associate Professor of Informatics and System Programming",
     "Эксперт в области веб-разработки, мобильных решений и искусственного интеллекта":
       "Expert in web development, mobile solutions and artificial intelligence",
-
-    // WeCreated
     "Мы создаём.": "We create.",
     "Без названия": "No title",
     "Нет описания": "No description",
@@ -86,8 +67,6 @@ const getFallbackTranslation = (text) => {
     "VPN, шифрование, P2P-чаты": "VPN, encryption, P2P chats",
     "Защита данных": "Data protection",
     "AI-ассистенты (чат-боты, анализ)": "AI assistants (chat bots, analysis)",
-
-    // Portfolio
     "Портфолио": "Portfolio",
     "Сервисы:": "Services:",
     "Сайты и порталы:": "Websites and portals:",
@@ -109,8 +88,6 @@ const getFallbackTranslation = (text) => {
     "AI-обработка фото": "AI photo processing",
     "WarOnMap (стратегия)": "WarOnMap (strategy)",
     "P2P Video Chat": "P2P Video Chat",
-
-    // MobileApp
     "Изображение мобильного приложения": "Mobile application image",
     "Изображение приложения для логистики": "Logistics application image",
     "Изображение транспортной платформы": "Transport platform image",
@@ -118,8 +95,6 @@ const getFallbackTranslation = (text) => {
       "Mobile application for international transport forum ESE-2025",
     "Приложение для логистики 2025": "Logistics application 2025",
     "Транспортная платформа 2025": "Transport platform 2025",
-
-    // Cases
     "Наши кейсы": "Our cases",
     "Кейсы не найдены. Добавьте их в коллекцию \"Портфолио (кейсы)\".":
       "Cases not found. Add them to the \"Portfolio (cases)\" collection.",
@@ -141,24 +116,16 @@ const getFallbackTranslation = (text) => {
   return fallbackTranslations[text] || text;
 };
 
-// ──────────────────────────────────────────────────────────────
-// Очистка кэша
-// ──────────────────────────────────────────────────────────────
 export const clearTranslationCache = () => {
   translationCache = {};
 };
 
-// ──────────────────────────────────────────────────────────────
-// Список бесплатных API (lingva + mymemory)
-// ──────────────────────────────────────────────────────────────
 const TRANSLATION_APIS = [
-  // 1. lingva.ml – отличное качество, CORS-разрешён
   {
     name: "lingva",
     url: (text) => `https://lingva.ml/api/v1/ru/en/${encodeURIComponent(text)}`,
     parse: (data) => data.translation,
   },
-  // 2. MyMemory – надёжный GET-запрос, CORS-разрешён
   {
     name: "mymemory",
     url: (text) =>
@@ -167,7 +134,6 @@ const TRANSLATION_APIS = [
       )}&langpair=ru|en`,
     parse: (data) => data.responseData.translatedText,
   },
-  // 3. fallback – если всё упало
   {
     name: "fallback",
     url: () => null,
@@ -175,21 +141,16 @@ const TRANSLATION_APIS = [
   },
 ];
 
-// ──────────────────────────────────────────────────────────────
-// Хук для одной строки
-// ──────────────────────────────────────────────────────────────
 export const useTranslate = (text) => {
   const [translated, setTranslated] = useState(text);
   const { language } = useLanguage();
 
-  // Очищаем кэш при смене языка → перевод сразу меняется
   useEffect(() => {
     clearTranslationCache();
   }, [language]);
 
   useEffect(() => {
     const translate = async () => {
-      // Русский – без перевода
       if (!text || typeof text !== "string" || language === "Ru") {
         setTranslated(text);
         return;
@@ -197,18 +158,15 @@ export const useTranslate = (text) => {
 
       const cacheKey = `${text}-${language}`;
 
-      // Кэш
       if (translationCache[cacheKey]) {
         setTranslated(translationCache[cacheKey]);
         return;
       }
 
-      // 1. Сразу показываем fallback
       const fallback = getFallbackTranslation(text);
       setTranslated(fallback);
       translationCache[cacheKey] = fallback;
 
-      // 2. Параллельно пробуем API
       for (const api of TRANSLATION_APIS) {
         if (api.name === "fallback") break;
 
@@ -226,7 +184,7 @@ export const useTranslate = (text) => {
           ) {
             setTranslated(result);
             translationCache[cacheKey] = result;
-            break; // успех → выходим
+            break;
           }
         } catch {
           continue;
@@ -240,15 +198,9 @@ export const useTranslate = (text) => {
   return translated;
 };
 
-// ──────────────────────────────────────────────────────────────
-// 💡 НОВЫЙ ХУК ДЛЯ МАССИВОВ (РЕШЕНИЕ ПРОБЛЕМЫ С ХУКАМИ)
-// ──────────────────────────────────────────────────────────────
 export const useTranslatedArray = (texts = []) => {
     const [translatedArray, setTranslatedArray] = useState(texts);
     const { language } = useLanguage();
-
-    // Мы полагаемся на useEffect в useTranslate для очистки кэша
-    // (или можете добавить clearTranslationCache(); здесь, если нужно)
 
     useEffect(() => {
         const translateArray = async () => {
@@ -259,7 +211,6 @@ export const useTranslatedArray = (texts = []) => {
 
             const newTranslations = [];
             
-            // Если массив пуст или null, мы просто возвращаем его
             if (!Array.isArray(texts)) {
                 setTranslatedArray([]);
                 return;
@@ -275,11 +226,9 @@ export const useTranslatedArray = (texts = []) => {
                 let translated = translationCache[cacheKey];
 
                 if (!translated) {
-                    // 1. Показываем fallback
                     translated = getFallbackTranslation(text);
-                    translationCache[cacheKey] = translated; // Обновляем кэш fallback
+                    translationCache[cacheKey] = translated;
 
-                    // 2. Параллельно пробуем API
                     for (const api of TRANSLATION_APIS) {
                         if (api.name === "fallback") break;
                         try {
@@ -305,7 +254,28 @@ export const useTranslatedArray = (texts = []) => {
         };
 
         translateArray();
-    }, [texts, language]); // Зависимость от всего массива текстов (prop)
+    }, [texts, language]);
 
     return translatedArray;
+};
+
+export const useTranslatedCase = (caseItem) => {
+    const safeCaseItem = caseItem || {};
+
+    const translatedTitle = useTranslate(safeCaseItem.title || '');
+    
+    const imageAltSource = safeCaseItem.image?.alt || safeCaseItem.title || '';
+    const translatedImageAlt = useTranslate(imageAltSource);
+
+    const translatedThemes = useTranslatedArray(safeCaseItem.themes || []);
+
+    return {
+        ...safeCaseItem,
+        title: translatedTitle,
+        themes: translatedThemes,
+        image: {
+            ...safeCaseItem.image,
+            alt: translatedImageAlt,
+        }
+    };
 };

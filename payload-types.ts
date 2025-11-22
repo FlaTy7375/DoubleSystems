@@ -104,11 +104,13 @@ export interface Config {
     home: Home;
     faq: Faq1;
     blog: Blog;
+    header: Header;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
     faq: FaqSelect<false> | FaqSelect<true>;
     blog: BlogSelect<false> | BlogSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
   };
   locale: null;
   user: User & {
@@ -1629,6 +1631,35 @@ export interface Blog {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  nav?:
+    | {
+        title: string;
+        /**
+         * Например: /about-us, /portfolio, https://external.link
+         */
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  phoneNumber?: string | null;
+  /**
+   * Полный URL (например, https://wa.me/79001234567)
+   */
+  whatsappLink: string;
+  /**
+   * Полный URL (например, https://t.me/yourusername)
+   */
+  telegramLink: string;
+  ctaText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -1737,6 +1768,26 @@ export interface BlogSelect<T extends boolean = true> {
       };
   showDefaultPosts?: T;
   showStaticPostsWithDynamic?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  nav?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        id?: T;
+      };
+  phoneNumber?: T;
+  whatsappLink?: T;
+  telegramLink?: T;
+  ctaText?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

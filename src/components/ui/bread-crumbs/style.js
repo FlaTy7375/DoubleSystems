@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const StyledBreadCrumbs = styled.ul`
     display: flex;
     margin: 0 auto;
+    justify-content: center;
     margin-top: 23px;
     gap: 5px;
     max-width: 300px;

@@ -8,11 +8,20 @@ import Buisness from "./blocks/buisness/buisness"
 import Portfolio from "../portfolio/portfolio"
 import Image from "next/image"
 import TabletAndPhone from "@/assets/images/tablet-and-phone.png"
-import Person from "@/assets/images/Alex.png"
 import { useTranslate } from "@/components/translate/useTranslation"
+import { usePopup } from '../case1/blocks/popup/usePopup';
+import ContactPopup from '../case1/blocks/popup/ContactPopup';
+import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
 
 export default function StaticCase1() {
-    // Функция для плавной прокрутки к якорю
+    const { 
+        isPopupOpen, 
+        popupTargetElement, 
+        handleOpenPopup, 
+        handleClosePopup 
+    } = usePopup();
+
+    // Эта функция обеспечивает плавный скролл к нужному ID
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -20,7 +29,6 @@ export default function StaticCase1() {
         }
     };
 
-    // Переводим все тексты
     const casesLink = useTranslate('Портфолио')
     const healthEcosystem = useTranslate('Экосистема здоровья')
     const caseTitle = useTranslate('Кейс: HealthHub — проектирование и разработка единой экосистемы здоровья')
@@ -36,6 +44,8 @@ export default function StaticCase1() {
 
     return(
         <StyledCase1>
+            <GlobalPopupStyles /> 
+
             <div className="link-container">
                 <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
                 <Link className="cases-link" href="/portfolio">\&nbsp;{casesLink}&nbsp;</Link>
@@ -44,7 +54,6 @@ export default function StaticCase1() {
             <div className="case-wrapper">
                 <h1 className="case-title">{caseTitle}</h1>
                 
-                {/* Hero Section с BreadCrumbs сразу после */}
                 <div id="hero" className="case-container">
                     <ul className="stamps-list for-mobile">
                         <li className="stamp">{stamp1}</li>
@@ -66,16 +75,26 @@ export default function StaticCase1() {
                     </ul>
                     <p className="container-description">{containerDescription}</p>
                     <Image className="container-image" src={TabletAndPhone} alt="Изображение планшета и телефона" width={322} height={231}></Image>
-                    <button className="container-button">{containerButton}</button>
+                    
+                    {/* 👈 Заменяем button на Link и добавляем обработчик скролла */}
+                    <Link 
+                        className="container-button" 
+                        href="#about-project" // Это обеспечит работу ссылки, даже если JS отключен
+                        onClick={(e) => {
+                            e.preventDefault(); // Отменяем стандартное поведение Link
+                            scrollToSection('about-project'); // Вызываем плавный скролл
+                        }}
+                    >
+                        {containerButton}
+                    </Link>
                 </div>
                 
-                {/* Остальные секции с правильными ID */}
                 <div id="about-project">
                     <CaseAbout onAnchorClick={scrollToSection} />
                 </div>
                 
                 <div id="goals">
-                    <Goals />
+                    <Goals onWriteButtonClick={handleOpenPopup} />
                 </div>
 
                 <div id="strategy">
@@ -84,6 +103,7 @@ export default function StaticCase1() {
                         processTitle={useTranslate('Процесс реализации')}
                         processDescription={useTranslate('HealthHub — это не просто еще одно приложение для здоровья. Это проектируемая цифровая экосистема, которая объединит пациентов, врачей и поставщиков медицинских товаров в едином, интуитивно понятном пространстве. Мы разрабатываем кроссплатформенное мобильное приложение, которое станет универсальным инструментом для управления здоровьем, профессионального роста специалистов и развития бизнеса нашего клиента. Проект призван превратить сложную идею «все о здоровье в одном месте» в успешный коммерческий продукт с высоким потенциалом вовлеченности пользователей и четкими бизнес-целями.')}
                         imageDescription={useTranslate('Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий.')}
+                        onWriteButtonClick={handleOpenPopup} 
                     />
                 </div>
                 
@@ -95,11 +115,17 @@ export default function StaticCase1() {
                     <Goals 
                         showAuthor={true}
                         imageDescription={useTranslate('Веб-платформа и мобильное приложение, объединяющие пользователей и специалистов в сфере медицины, образования и технологий.')}
+                        onWriteButtonClick={handleOpenPopup} 
                     />
                 </div>
             </div>
             
-            {/* Секция портфолио */}
+            <ContactPopup
+                isOpen={isPopupOpen}
+                onClose={handleClosePopup}
+                targetElement={popupTargetElement}
+            />
+
             <Portfolio className="case-portfolio"></Portfolio>
         </StyledCase1>
     )

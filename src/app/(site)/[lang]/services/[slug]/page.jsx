@@ -4,7 +4,7 @@ import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import DynamicPage from '@/components/blocks/dynamic-page/dynamic-page';
 import { notFound } from 'next/navigation';
-import "../../../../styles.css";
+import "../../../../../styles.css";
 
 // Настройки для динамического рендеринга
 export const dynamic = 'force-dynamic';

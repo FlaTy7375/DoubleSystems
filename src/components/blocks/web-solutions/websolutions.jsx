@@ -1,8 +1,8 @@
-// src/components/blocks/web-solutions/websolutions.jsx
 'use client';
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link'; // 👈 Добавляем импорт Link
 import { StyledWebSolutions } from './style';
 import PhoneAndTablet from '@/assets/images/tablet-and-phone.png'; 
 import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
@@ -21,14 +21,19 @@ const staticCaseFallback = {
       }
     ],
     tags: ["Web-решения", "Мобильные приложения"], 
-    previewImage: { url: null, alt: "Статическое изображение заглушка" } 
+    previewImage: { url: null, alt: "Статическое изображение заглушка" },
+    slug: 'healthhub-project' // 👈 Добавлено поле slug для заглушки
 };
 
 export default function WebSolutions({ cases = [] }) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const isDynamicCase = cases.length > 0;
-  const casesToUse = isDynamicCase ? cases : [staticCaseFallback];
+
+  const casesToUse = isDynamicCase 
+    ? cases.slice(0, 5) // Если есть динамические кейсы, берем первые 5
+    : [staticCaseFallback]; // Иначе — один статический
+
   const totalCases = casesToUse.length;
 
   const currentCaseForHooks = casesToUse[currentIndex] || casesToUse[0];
@@ -55,9 +60,14 @@ export default function WebSolutions({ cases = [] }) {
   const caseText = useTranslate('Кейс:');
   const buttonText = useTranslate('Рассказываем о проекте');
 
+  // 1. Получаем слаг текущего кейса
+  const currentCaseSlug = currentCaseForHooks.slug; 
+  // 2. Формируем URL. Предполагаем, что страница кейса находится по пути /portfolio/[slug]
+  const caseUrl = currentCaseSlug ? `/portfolio/${currentCaseSlug}` : '#'; 
 
   const containerClass = isDynamicCase ? 'case-container' : 'solutions-container';
   
+  // Переключатель нужен, если кейсов больше одного
   const canSwitch = totalCases > 1;
 
   const goToPrev = () => {
@@ -110,11 +120,16 @@ export default function WebSolutions({ cases = [] }) {
              <div className="container-image-placeholder" /> 
         )}
 
-        <button className="container-button">{buttonText}</button>
+        {/* 3. Заменяем кнопку на компонент Link с динамическим href */}
+        <Link href={caseUrl} className="container-button">
+            {buttonText}
+        </Link>
+        
         {canSwitch && <button className="slider-button prev" onClick={goToPrev}>&lt;</button>}
         {canSwitch && <button className="slider-button next" onClick={goToNext}>&gt;</button>}
       </div>
 
+      {/* Передаем корректное общее количество кейсов */}
       <BreadCrumbs currentIndex={currentIndex} total={totalCases} />
     </StyledWebSolutions>
   );

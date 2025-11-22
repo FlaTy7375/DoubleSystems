@@ -6,11 +6,18 @@ import Image from "next/image"
 import ClientLayout from "@/assets/images/client-layout.png"
 import StrategyImage from "@/assets/images/strategy-image.png"
 import Person from "@/assets/images/Alex.png"
-import Link from "next/link"
 import { useTranslate } from "@/components/translate/useTranslation"
+import { useRef } from "react"
 
-export default function Goals() {
-    // Переводим все тексты
+export default function Goals({ onWriteButtonClick }) {
+    const writeButtonRef = useRef(null);
+
+    const handleClick = (e) => {
+        if (onWriteButtonClick) {
+            onWriteButtonClick(e, writeButtonRef.current);
+        }
+    };
+
     const goalsTitle = useTranslate('Цели проекта и прогнозируемые показатели')
     const goalsDescription = useTranslate('Поскольку сервис находится в стадии активной разработки, мы оперируем целевыми метриками, заложенными в стратегию проекта.')
     
@@ -105,7 +112,6 @@ export default function Goals() {
                 </li>
             </ul>
             
-            {/* Секция стратегических решений с якорем */}
             <div className="goals-wrapper" id="strategy">
                 <div className="text-container">
                     <h2 className="container-title">{strategyTitle}</h2>
@@ -125,7 +131,6 @@ export default function Goals() {
                     <Image className="strategy-image" src={StrategyImage} alt="Изображение макета" width={1244} height={759}></Image>
                     <p className="images-description strategy">{imagesDescription}</p>
                     
-                    {/* Секция процесса реализации с якорем */}
                     <div id="process">
                         <h2 className="strategy-subtitle">{processSubtitle}</h2>
                         <p className="process-description">{processDescription1}</p>
@@ -134,13 +139,21 @@ export default function Goals() {
                 </div>
             </div>
             
-            {/* Секция выводов с якорем */}
             <div id="conclusion">
                 <div className="goals-wrapper">
                     <div className="about-person">
                         <div className="person-container">
                             <Image src={Person} alt='Изображение Автора' width={100} height={100}></Image>
-                            <Link className="write-button" href="/contacts">{writeButton}</Link>
+                            
+                            <button 
+                                ref={writeButtonRef}
+                                className="write-button" 
+                                onClick={handleClick}
+                                type="button" 
+                            >
+                                {writeButton}
+                            </button>
+                            
                         </div>
                         <h3 className="person-name">{personName}</h3>
                         <p className="person-role">{personRole}</p>

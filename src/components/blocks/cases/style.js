@@ -15,8 +15,8 @@ export const StyledCases = styled.section`
     }
 
     .cases-wrapper {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
         align-items: stretch;
         gap: 37px;
         row-gap: 54px;

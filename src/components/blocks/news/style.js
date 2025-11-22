@@ -37,7 +37,8 @@ export const StyledNews = styled.section`
     }
 
     .news-wrapper {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
         flex-wrap: wrap;
         align-items: stretch;
         gap: 37px;

@@ -1,7 +1,7 @@
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import React from "react";
-import "../../../styles.css";
+import "../../../../styles.css";
 import News from "@/components/blocks/news/news";
 
 export const dynamic = 'force-dynamic';

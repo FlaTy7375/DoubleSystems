@@ -6,8 +6,14 @@ import type { Block, Field } from 'payload';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { fileURLToPath } from 'url';
 
+// -----------------------------------------------------------------------------
+// HELPER FOR ESM
+// -----------------------------------------------------------------------------
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// -----------------------------------------------------------------------------
+// BLOCKS AND FIELDS DEFINITIONS
+// -----------------------------------------------------------------------------
 const seoFields: Field[] = [
     {
         name: 'seo',
@@ -157,11 +163,15 @@ const caseBlocks: Block[] = [
     },
 ];
 
+// -----------------------------------------------------------------------------
+// PAYLOAD CONFIG
+// -----------------------------------------------------------------------------
 export default buildConfig({
     db: postgresAdapter({
         pool: {
             connectionString: process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/postgres',
-            ssl: process.env.NODE_ENV !== 'production' ? { rejectUnauthorized: false } : undefined,
+            // Убрана опция SSL в DEV, т.к. она может быть причиной ошибок подключения к локальной БД
+            ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
         },
         migrationDir: path.resolve(__dirname, 'migrations'),
     }),
@@ -185,14 +195,16 @@ export default buildConfig({
                   s3Storage({
                       collections: {
                           media: {
-                              disableLocalStorage: true,
+                              // Отключаем хранение в локальной файловой системе
+                              disableLocalStorage: true, 
                               prefix: 'media',
                           },
                       },
                       bucket: process.env.SUPABASE_BUCKET_NAME,
                       config: {
                           endpoint: process.env.SUPABASE_ENDPOINT,
-                          forcePathStyle: true,
+                          // 👇 ИСПРАВЛЕНИЕ: forcePathStyle: true для совместимости с Supabase/MinIO
+                          forcePathStyle: true, 
                           region: process.env.SUPABASE_REGION || 'eu-north-1',
                           credentials: {
                               accessKeyId: process.env.SUPABASE_ACCESS_KEY_ID,
@@ -213,8 +225,10 @@ export default buildConfig({
         {
             slug: 'media',
             upload: {
-                disableLocalStorage: true,
-                staticDir: path.resolve(__dirname, '../../public/media'),
+                // 👇 ИСПРАВЛЕНИЕ: Убираем disableLocalStorage и staticDir отсюда, 
+                // т.к. они уже указаны в плагине s3Storage.
+                // Если плагин не активен, Payload будет использовать стандартное локальное хранение.
+                // staticDir: path.resolve(__dirname, '../../public/media'), 
             },
             access: { read: () => true },
             fields: [{ name: 'alt', label: 'Альтернативный текст', type: 'text', required: true }],
@@ -230,7 +244,6 @@ export default buildConfig({
             fields: [
                 ...seoFields,
                 { name: 'title', label: 'Название страницы', type: 'text', required: true },
-                // ❗ ВНИМАНИЕ: Для страниц услуг используйте слаг вида 'services/название-услуги'
                 { name: 'slug', label: 'URL слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar', description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio, services/web-dev и т.д.)' } },
                 { name: 'sections', label: 'Секции страницы', type: 'blocks', blocks: caseBlocks },
                 { name: 'showPortfolio', label: 'Показывать секцию портфолио в конце', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
@@ -339,7 +352,7 @@ export default buildConfig({
                             type: 'array', 
                             fields: [
                                 { name: 'text', label: 'Текст преимущества', type: 'text' },
-                                { name: 'url', label: 'URL преимущества', type: 'text', required: false }, // 💡 ИЗМЕНЕНИЕ 1
+                                { name: 'url', label: 'URL преимущества', type: 'text', required: false },
                             ]
                         },
                         { name: 'number', type: 'text' },
@@ -405,6 +418,72 @@ export default buildConfig({
                 { name: 'themesList', label: 'Список тем для фильтрации', type: 'array', minRows: 1, fields: [{ name: 'themeName', label: 'Название темы', type: 'text', required: true }] },
                 { name: 'showDefaultPosts', label: 'Показывать статические/дефолтные посты (если нет динамических)', type: 'checkbox', defaultValue: true, admin: { description: 'Если нет ни одного поста в коллекции, будут отображены заглушки.' } },
                 { name: 'showStaticPostsWithDynamic', label: '💡 Добавлять статические посты к динамическим', type: 'checkbox', defaultValue: false, admin: { description: 'Если включено, статические посты будут отображены после всех динамических.' } },
+            ],
+        },
+        {
+            slug: 'header',
+            label: 'Шапка сайта (Header)',
+            fields: [
+                {
+                    name: 'nav',
+                    label: 'Пункты меню',
+                    type: 'array',
+                    minRows: 1,
+                    defaultValue: [
+                        { title: 'Цены', href: '/prices' },
+                        { title: 'О нас', href: '/about-us' },
+                        { title: 'Портфолио', href: '/portfolio' },
+                        { title: 'Услуги', href: '/services' },
+                        { title: 'Блог', href: '/blog' },
+                        { title: 'Связаться', href: '/contacts' },
+                        { title: 'Что мы делаем', href: '/what-we-do' },
+                    ],
+                    fields: [
+                        {
+                            name: 'title',
+                            label: 'Текст пункта меню',
+                            type: 'text',
+                            required: true,
+                            localized: true,
+                        },
+                        {
+                            name: 'href',
+                            label: 'URL/Ссылка',
+                            type: 'text',
+                            required: true,
+                            admin: { description: 'Например: /about-us, /portfolio, https://external.link' },
+                        },
+                    ],
+                },
+                {
+                    name: 'phoneNumber',
+                    label: 'Номер телефона',
+                    type: 'text',
+                    defaultValue: '8 800 543 22 44',
+                },
+                {
+                    name: 'whatsappLink',
+                    label: 'Ссылка на WhatsApp',
+                    type: 'text',
+                    required: true,
+                    defaultValue: '#whatsapp', 
+                    admin: { description: 'Полный URL (например, https://wa.me/79001234567)' },
+                },
+                {
+                    name: 'telegramLink',
+                    label: 'Ссылка на Telegram',
+                    type: 'text',
+                    required: true,
+                    defaultValue: '#telegram', 
+                    admin: { description: 'Полный URL (например, https://t.me/yourusername)' },
+                },
+                {
+                    name: 'ctaText',
+                    label: 'Текст кнопки "Напишите нам!"',
+                    type: 'text',
+                    defaultValue: 'Напишите нам!',
+                    localized: true,
+                },
             ],
         },
     ],

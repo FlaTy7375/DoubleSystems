@@ -4,18 +4,18 @@ import Link from "next/link";
 import Portfolio from "../portfolio/portfolio";
 import Image from "next/image";
 import Card from "@/components/ui/card/card";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslate } from "@/components/translate/useTranslation";
+import { usePopup } from '../case1/blocks/popup/usePopup';
+import ContactPopup from '../case1/blocks/popup/ContactPopup';
+import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
 
-// Импорты стилей
 import { StyledCase1, StyledHeroSection } from "../case1/style";
 import { StyledCaseAbout } from "../case1/blocks/about/style";
 import { StyledGoals } from "../case1/blocks/goals/style";
 import { StyledBuisness } from "../case1/blocks/buisness/style";
 
-// Компонент для блока about с функционалом скрытия
 const AboutProjectSection = ({ section, index, blockId, scrollToAnchor }) => {
-  // Переводим тексты для AboutProjectSection
   const clientText = useTranslate('Клиент:');
   const statusText = useTranslate('Статус:');
 
@@ -38,6 +38,15 @@ const AboutProjectSection = ({ section, index, blockId, scrollToAnchor }) => {
 };
 
 export default function DynamicPage({ pageData }) {
+  // --- ЛОГИКА POP-UP ---
+  const { 
+      isPopupOpen, 
+      popupTargetElement, 
+      handleOpenPopup, 
+      handleClosePopup 
+  } = usePopup();
+  // ----------------------
+  
   // Функция для плавной прокрутки к якорю
   const scrollToAnchor = (anchorId) => {
     const element = document.getElementById(anchorId);
@@ -63,6 +72,8 @@ export default function DynamicPage({ pageData }) {
 
     switch (section.blockType) {
       case 'heroSection':
+        const targetAnchorId = 'about-project'; // Якорь для секции "О проекте"
+
         return (
           <StyledHeroSection key={index} id={blockId} $bgImage={bgImageUrl}>
             <div className="case-container">
@@ -88,7 +99,17 @@ export default function DynamicPage({ pageData }) {
                   height={231}
                 />
               )}
-              <button className="container-button">{useTranslate(section.buttonText)}</button>
+              {/* ЗАМЕНА: button на Link с якорной ссылкой и скроллом */}
+              <Link
+                className="container-button" 
+                href={`#${targetAnchorId}`}
+                onClick={(e) => {
+                    e.preventDefault();
+                    scrollToAnchor(targetAnchorId);
+                }}
+              >
+                {useTranslate(section.buttonText)}
+              </Link>
             </div>
           </StyledHeroSection>
         );
@@ -257,6 +278,13 @@ export default function DynamicPage({ pageData }) {
         );
 
       case 'authorSection':
+        const authorButtonRef = useRef(null);
+
+        const handleAuthorClick = (e) => {
+            e.preventDefault();
+            handleOpenPopup(e, authorButtonRef.current);
+        };
+
         return (
           <div key={index} id={blockId} className="about-person">
             <div className="person-container">
@@ -268,9 +296,14 @@ export default function DynamicPage({ pageData }) {
                   height={100}
                 />
               )}
-              <Link className="write-button" href="/contacts">
+              <button 
+                ref={authorButtonRef}
+                className="write-button" 
+                onClick={handleAuthorClick}
+                type="button" 
+              >
                 {writeButtonText}
-              </Link>
+              </button>
             </div>
             <h3 className="person-name">{useTranslate(section.authorName)}</h3>
             <p className="person-role">{useTranslate(section.authorRole)}</p>
@@ -287,6 +320,8 @@ export default function DynamicPage({ pageData }) {
 
   return (
     <StyledCase1>
+      <GlobalPopupStyles />
+      
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
         <Link className="cases-link active" href={`/${pageData.slug}`}>\&nbsp;{useTranslate(pageData.title)}</Link>
@@ -294,13 +329,18 @@ export default function DynamicPage({ pageData }) {
       <div className="case-wrapper">
         <h1 className="case-title">{useTranslate(pageData.title)}</h1>
         
-        {/* Рендерим все секции страницы */}
         {pageData.sections?.map(renderSection)}
         
       </div>
       
-      {/* Секция портфолио, если включена */}
       {pageData.showPortfolio && <Portfolio className="case-portfolio" />}
+
+      <ContactPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          targetElement={popupTargetElement}
+      />
+
     </StyledCase1>
   );
 }

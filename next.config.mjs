@@ -1,7 +1,7 @@
 import { withPayload } from '@payloadcms/next/withPayload';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = {  
   compiler: {
     styledComponents: {
       displayName: true,
@@ -12,16 +12,38 @@ const nextConfig = {
   experimental: {
     reactCompiler: false,
   },
+  
+  // 1. ИСПРАВЛЕННАЯ СЕКЦИЯ IMAGES
   images: {
-    domains: ['localhost'],
+    // Устаревшее свойство удалено!
     remotePatterns: [
-            {
-                protocol: 'http', // или 'https', в зависимости от вашего сервера
-                hostname: 'localhost', // 💡 Замените на домен вашего Payload API (например, 'api.doublesystems.com')
-                port: '3000', // Укажите порт, если используете localhost
-                pathname: '/media/**', // Payload хранит медиа в папке /media
-            },
+        {
+            protocol: 'http',
+            hostname: 'localhost',
+            port: '3000',
+            // Путь к медиафайлам должен соответствовать тому, что выдает Payload
+            pathname: '/api/media/file/**',
+        },
     ]
+  },
+
+  // 2. ДОБАВЛЕННЫЕ REWRITES ДЛЯ ОБРАБОТКИ МЕДИАФАЙЛОВ PAYLOAD
+  // Next.js должен знать, что эти пути принадлежат Payload, а не ему.
+  async rewrites() {
+    return [
+      {
+        // Перехватываем все, что начинается с /api/media/file/
+        source: '/api/media/file/:path*',
+        // Перенаправляем запрос обратно на внутренний сервер, где его обработает Payload
+        destination: '/api/media/file/:path*', 
+      },
+      // Рекомендуется также добавить общее правило для API Payload,
+      // если у вас есть другие API-маршруты, кроме медиа
+      // {
+      //   source: '/api/:path*',
+      //   destination: '/api/:path*',
+      // },
+    ];
   },
 };
 

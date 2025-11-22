@@ -1,22 +1,51 @@
-// contexts/LanguageContext.js
+// LanguageContext.js
+
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('Ru');
-
-  useEffect(() => {
-    // Принудительно устанавливаем русский по умолчанию
-    setLanguage('Ru');
-    localStorage.setItem('preferred-language', 'Ru');
-  }, []);
+  const router = useRouter();
+  const pathname = usePathname();
+  
+  // Инициализация состояния языка должна быть Client-side, 
+  // чтобы избежать конфликтов при рендере на сервере.
+  const [language, setLanguage] = useState(() => {
+    // Эта функция запускается только один раз при инициализации.
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('preferred-language') || 'Ru';
+    }
+    return 'Ru'; // Значение по умолчанию для SSR
+  });
 
   const changeLanguage = (lang) => {
+    const oldLangCode = language.toLowerCase();
+    const newLangCode = lang.toLowerCase();
+    
+    // 1. Обновляем состояние и localStorage
     setLanguage(lang);
     localStorage.setItem('preferred-language', lang);
+    
+    // 2. Получаем путь без префикса языка
+    let pathWithoutLocale = pathname;
+    
+    if (pathWithoutLocale.startsWith(`/${oldLangCode}`)) {
+      pathWithoutLocale = pathWithoutLocale.substring(3); // Удаляем /ru или /en
+    }
+    
+    // 3. Формируем новый путь
+    let finalPath = `/${newLangCode}`; // Начинаем с нового префикса
+
+    // Если путь не пустой и не корень, добавляем его
+    if (pathWithoutLocale && pathWithoutLocale !== '/') {
+        finalPath += pathWithoutLocale;
+    }
+    
+    // 4. Перенаправляем
+    router.push(finalPath);
   };
 
   return (

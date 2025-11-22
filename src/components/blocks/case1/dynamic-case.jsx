@@ -6,15 +6,16 @@ import Image from "next/image";
 import Card from "@/components/ui/card/card";
 import { useState, useEffect, useRef } from "react";
 import { useTranslate } from "@/components/translate/useTranslation";
+import { usePopup } from '../case1/blocks/popup/usePopup';
+import ContactPopup from '../case1/blocks/popup/ContactPopup';
+import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
 
-// Импорты стилей
 import { StyledCase1, StyledHeroSection } from "./style";
 import { StyledCaseAbout } from "./blocks/about/style";
 import { StyledGoals } from "./blocks/goals/style";
 import { StyledBuisness } from "./blocks/buisness/style";
 
 const AboutSection = ({ section, index, blockId, onAnchorClick }) => {
-  // Переводим тексты для AboutSection
   const clientText = useTranslate('Клиент:');
   const statusText = useTranslate('Статус:');
 
@@ -37,7 +38,13 @@ const AboutSection = ({ section, index, blockId, onAnchorClick }) => {
 };
 
 export default function DynamicCase({ caseData }) {
-  // Функция для плавной прокрутки к якорю
+  const { 
+      isPopupOpen, 
+      popupTargetElement, 
+      handleOpenPopup, 
+      handleClosePopup 
+  } = usePopup();
+
   const scrollToAnchor = (anchorId) => {
     const element = document.getElementById(anchorId);
     if (element) {
@@ -45,12 +52,10 @@ export default function DynamicCase({ caseData }) {
     }
   };
 
-  // Переводим общие тексты
   const casesLink = useTranslate('Портфолио');
   const writeButtonText = useTranslate('Написать');
 
   const [isContentExpanded, setIsContentExpanded] = useState(false);
-  // 👇 Состояния и рефы для фиксации оглавления (Sticky functionality)
   const [isContentFixed, setIsContentFixed] = useState(false);
   const aboutContentRef = useRef(null);
   const initialTop = useRef(0); 
@@ -61,10 +66,8 @@ export default function DynamicCase({ caseData }) {
   };
 
   useEffect(() => {
-      // Устанавливаем исходную позицию и высоту ОДИН РАЗ при монтировании
       if (aboutContentRef.current && initialTop.current === 0) {
           const rect = aboutContentRef.current.getBoundingClientRect();
-          // Позиция относительно верха документа
           initialTop.current = rect.top + window.scrollY; 
           contentHeight.current = rect.height;
       }
@@ -73,17 +76,14 @@ export default function DynamicCase({ caseData }) {
           if (aboutContentRef.current && initialTop.current > 0) {
               const scrollY = window.scrollY || document.documentElement.scrollTop;
               
-              // Новая точка фиксации: на 300px раньше, чем блок достигнет верха
               const fixationPoint = initialTop.current - 190; 
           
-              // 1. Установить фиксацию: когда прокрутка достигла точки фиксации
               if (scrollY >= fixationPoint) {
                   if (!isContentFixed) {
                       setIsContentFixed(true);
                   }
               } 
-              // 2. Снять фиксацию: когда прокрутка вернулась выше точки фиксации
-              else { // scrollY < fixationPoint
+              else {
                   if (isContentFixed) {
                       setIsContentFixed(false);
                   }
@@ -99,9 +99,7 @@ export default function DynamicCase({ caseData }) {
       };
   }, [isContentFixed]);
 
-  // Функция для рендера секций
   const renderSection = (section, index) => {
-    // Используем blockId из данных или генерируем fallback
     const blockId = section.blockId || `${section.blockType}-${index}`;
     const bgImageUrl = section.backgroundImage?.url;
 
@@ -153,7 +151,6 @@ export default function DynamicCase({ caseData }) {
         );
 
       case 'clientSection':
-        // Переводим заголовок содержания для clientSection
         const contentTitle = useTranslate('Содержание:');
 
         return (
@@ -262,7 +259,6 @@ export default function DynamicCase({ caseData }) {
                 )}
                 <p className="images-description strategy">{useTranslate(section.imageDescription)}</p>
                 
-                {/* Секция процесса реализации */}
                 <div>
                   <h2 className="strategy-subtitle">{useTranslate(section.processTitle)}</h2>
                   <p className="process-description">{useTranslate(section.processDescription)}</p>
@@ -318,6 +314,12 @@ export default function DynamicCase({ caseData }) {
         );
 
       case 'authorSection':
+        const authorButtonRef = useRef(null);
+
+        const handleAuthorClick = (e) => {
+            handleOpenPopup(e, authorButtonRef.current);
+        };
+
         return (
           <div key={index} id={blockId} className="about-person">
             <div className="person-container">
@@ -329,9 +331,14 @@ export default function DynamicCase({ caseData }) {
                   height={100}
                 />
               )}
-              <Link className="write-button" href="/contacts">
+              <button 
+                ref={authorButtonRef}
+                className="write-button" 
+                onClick={handleAuthorClick}
+                type="button"
+              >
                 {writeButtonText}
-              </Link>
+              </button>
             </div>
             <h3 className="person-name">{useTranslate(section.authorName)}</h3>
             <p className="person-role">{useTranslate(section.authorRole)}</p>
@@ -348,6 +355,8 @@ export default function DynamicCase({ caseData }) {
 
   return (
     <StyledCase1>
+      <GlobalPopupStyles /> 
+
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
         <Link className="cases-link" href="/portfolio">\&nbsp;{casesLink}&nbsp;</Link>
@@ -356,12 +365,16 @@ export default function DynamicCase({ caseData }) {
       <div className="case-wrapper">
         <h1 className="case-title">{useTranslate(caseData.title)}</h1>
         
-        {/* Рендерим все секции кейса */}
         {caseData.sections?.map(renderSection)}
         
       </div>
       
-      {/* Секция портфолио, если включена */}
+      <ContactPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          targetElement={popupTargetElement}
+      />
+
       {caseData.showPortfolio && <Portfolio className="case-portfolio" />}
     </StyledCase1>
   );

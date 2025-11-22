@@ -6,6 +6,10 @@ import Image from "next/image";
 import Card from "@/components/ui/card/card";
 import { useState, useEffect, useRef } from "react";
 import { useTranslate } from "@/components/translate/useTranslation";
+// Импортируем хук и компоненты Pop-up
+import { usePopup } from '@/hooks/usePopup';
+import ContactPopup from '@/components/ui/popup/ContactPopup';
+import { GlobalPopupStyles } from '@/styles/GlobalPopupStyles';
 
 import { StyledCase1, StyledHeroSection } from "./style";
 import { StyledCaseAbout } from "./blocks/about/style";
@@ -36,6 +40,14 @@ const AboutSection = ({ section, index, blockId }) => {
 };
 
 export default function DynamicPost({ postData }) { 
+  // --- ЛОГИКА POP-UP ---
+  const { 
+      isPopupOpen, 
+      popupTargetElement, 
+      handleOpenPopup, 
+      handleClosePopup 
+  } = usePopup();
+  // ----------------------
   
   const scrollToAnchor = (anchorId) => {
     const element = document.getElementById(anchorId);
@@ -98,6 +110,8 @@ export default function DynamicPost({ postData }) {
 
     switch (section.blockType) {
       case 'heroSection':
+        const targetAnchorId = 'client'; // Якорь для секции "Содержание" (clientSection)
+
         return (
           <StyledHeroSection key={index} id={blockId} $bgImage={bgImageUrl}>
             <div className="case-container">
@@ -127,7 +141,18 @@ export default function DynamicPost({ postData }) {
                   height={231}
                 />
               )}
-              {section.buttonText && <button className="container-button">{useTranslate(section.buttonText)}</button>}
+              {section.buttonText && 
+                <Link 
+                  className="container-button" 
+                  href={`#${targetAnchorId}`}
+                  onClick={(e) => {
+                      e.preventDefault();
+                      scrollToAnchor(targetAnchorId);
+                  }}
+                >
+                  {useTranslate(section.buttonText)}
+                </Link>
+              }
             </div>
           </StyledHeroSection>
         );
@@ -304,6 +329,12 @@ export default function DynamicPost({ postData }) {
         );
 
       case 'authorSection':
+        const authorButtonRef = useRef(null);
+
+        const handleAuthorClick = (e) => {
+            handleOpenPopup(e, authorButtonRef.current);
+        };
+        
         return (
           <div key={index} id={blockId} className="about-person">
             <div className="person-container">
@@ -315,9 +346,14 @@ export default function DynamicPost({ postData }) {
                   height={100}
                 />
               )}
-              <Link className="write-button" href="/contacts">
+              <button 
+                ref={authorButtonRef}
+                className="write-button" 
+                onClick={handleAuthorClick}
+                type="button"
+              >
                 {writeButtonText}
-              </Link>
+              </button>
             </div>
             <h3 className="person-name">{useTranslate(section.authorName)}</h3>
             <p className="person-role">{useTranslate(section.authorRole)}</p>
@@ -334,6 +370,8 @@ export default function DynamicPost({ postData }) {
 
   return (
     <StyledCase1> 
+      <GlobalPopupStyles /> 
+
       <div className="link-container">
         <Link className="cases-link" href="/">DoubleSystems &nbsp;</Link>
         <Link className="cases-link" href="/blog">\&nbsp;{blogLink}&nbsp;</Link> 
@@ -346,6 +384,12 @@ export default function DynamicPost({ postData }) {
         
       </div>
       
+      <ContactPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          targetElement={popupTargetElement}
+      />
+
       {postData.showPortfolio && <Portfolio className="case-portfolio" />} 
     </StyledCase1>
   );

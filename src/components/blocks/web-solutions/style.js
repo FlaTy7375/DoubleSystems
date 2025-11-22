@@ -280,7 +280,7 @@ export const StyledWebSolutions = styled.section`
         .case-container {
             min-height: 360px;
             border: none;
-            padding: 20px 10px 52px 12px;
+            padding: 20px 10px 72px 12px;
             position: relative;
             overflow: hidden;
             width: 100%;

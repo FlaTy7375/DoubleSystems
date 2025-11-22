@@ -5,8 +5,28 @@ import { StyledAboutUs } from './style';
 import Link from 'next/link';
 import Person from "@/assets/images/Alex.png"
 import { useTranslate } from '@/components/translate/useTranslation';
+import { useState, useRef } from 'react'; // Добавлен useRef
+import { usePopup } from '../case1/blocks/popup/usePopup';
+import ContactPopup from '../case1/blocks/popup/ContactPopup';
+import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
 
 export default function AboutUs({ content = '', person = {} }) {
+  // --- ЛОГИКА POP-UP ---
+  const { 
+      isPopupOpen, 
+      popupTargetElement, 
+      handleOpenPopup, 
+      handleClosePopup 
+  } = usePopup();
+  
+  const authorButtonRef = useRef(null); 
+
+  const handleAuthorClick = (e) => {
+      e.preventDefault(); 
+      handleOpenPopup(e, authorButtonRef.current); 
+  };
+  // ----------------------
+  
   // Данные по умолчанию, если пропсы пустые
   const {
     name = 'Егошин Алексей Валерьевич',
@@ -50,13 +70,24 @@ export default function AboutUs({ content = '', person = {} }) {
 
   return (
     <StyledAboutUs>
+      <GlobalPopupStyles /> {/* Добавляем глобальные стили для Pop-up */}
+      
       <h2 className="about-title">{aboutTitle}</h2>
       <div className="about-person">
         <div className="person-container">
           <Image src={imageUrl} alt={translatedImageAlt} width={100} height={100} />
-          <Link className="write-button" href="/contacts">
+          
+          {/* Кнопка для вызова Pop-up */}
+          <button 
+            ref={authorButtonRef}
+            className="write-button" 
+            onClick={handleAuthorClick}
+            type="button" 
+          >
             {writeButton}
-          </Link>
+          </button>
+          {/* Было: <Link className="write-button" href="/contacts">{writeButton}</Link> */}
+          
         </div>
         <h3 className="person-name">{translatedName}</h3>
         <p className="person-role">{translatedRole}</p>
@@ -80,6 +111,14 @@ export default function AboutUs({ content = '', person = {} }) {
           <p className="about-description">{noContentText}</p>
         )}
       </div>
+
+      {/* КОМПОНЕНТ POP-UP */}
+      <ContactPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          targetElement={popupTargetElement}
+      />
+      {/* КОНЕЦ КОМПОНЕНТА POP-UP */}
     </StyledAboutUs>
   );
 }
