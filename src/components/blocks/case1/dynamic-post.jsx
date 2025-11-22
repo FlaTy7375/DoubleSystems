@@ -6,10 +6,9 @@ import Image from "next/image";
 import Card from "@/components/ui/card/card";
 import { useState, useEffect, useRef } from "react";
 import { useTranslate } from "@/components/translate/useTranslation";
-// Импортируем хук и компоненты Pop-up
-import { usePopup } from '@/hooks/usePopup';
-import ContactPopup from '@/components/ui/popup/ContactPopup';
-import { GlobalPopupStyles } from '@/styles/GlobalPopupStyles';
+import { usePopup } from '../case1/blocks/popup/usePopup';
+import ContactPopup from '../case1/blocks/popup/ContactPopup';
+import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
 
 import { StyledCase1, StyledHeroSection } from "./style";
 import { StyledCaseAbout } from "./blocks/about/style";
