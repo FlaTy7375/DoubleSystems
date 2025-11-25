@@ -75,7 +75,6 @@ export const StyledPortfolio = styled.section`
     }
 
     @media (max-width: 756px) {
-        display: none;
 
         &.case-portfolio {
             display: flex;

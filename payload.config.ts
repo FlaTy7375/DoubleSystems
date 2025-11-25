@@ -421,70 +421,139 @@ export default buildConfig({
             ],
         },
         {
-            slug: 'header',
-            label: 'Шапка сайта (Header)',
+    slug: 'header',
+    label: 'Шапка сайта (Header)',
+    fields: [
+        // =======================================================
+        // НОВОЕ ПОЛЕ: Дефолтная структура выпадающего меню (Услуги/Сервисы)
+        // Использует ту же структуру, что и linkList, для рендеринга.
+        // =======================================================
+        {
+            name: 'defaultDropdownContent',
+            label: 'Дефолтное выпадающее меню (Услуги)',
+            type: 'array',
+            localized: true,
+            admin: {
+                description: 'Содержимое, которое отображается при открытии меню, или при наведении на "Услуги" (если у этого пункта нет собственного переопределения).',
+            },
             fields: [
                 {
-                    name: 'nav',
-                    label: 'Пункты меню',
+                    name: 'title',
+                    label: 'Заголовок списка (например, Сервисы:, Сайты и порталы:)',
+                    type: 'text',
+                    required: true,
+                    localized: true,
+                },
+                {
+                    name: 'links',
+                    label: 'Ссылки',
                     type: 'array',
                     minRows: 1,
-                    defaultValue: [
-                        { title: 'Цены', href: '/prices' },
-                        { title: 'О нас', href: '/about-us' },
-                        { title: 'Портфолио', href: '/portfolio' },
-                        { title: 'Услуги', href: '/services' },
-                        { title: 'Блог', href: '/blog' },
-                        { title: 'Связаться', href: '/contacts' },
-                        { title: 'Что мы делаем', href: '/what-we-do' },
-                    ],
                     fields: [
-                        {
-                            name: 'title',
-                            label: 'Текст пункта меню',
-                            type: 'text',
-                            required: true,
-                            localized: true,
-                        },
-                        {
-                            name: 'href',
-                            label: 'URL/Ссылка',
-                            type: 'text',
-                            required: true,
-                            admin: { description: 'Например: /about-us, /portfolio, https://external.link' },
-                        },
+                        { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
+                        { name: 'url', label: 'URL', type: 'text', required: true },
                     ],
-                },
-                {
-                    name: 'phoneNumber',
-                    label: 'Номер телефона',
-                    type: 'text',
-                    defaultValue: '8 800 543 22 44',
-                },
-                {
-                    name: 'whatsappLink',
-                    label: 'Ссылка на WhatsApp',
-                    type: 'text',
-                    required: true,
-                    defaultValue: '#whatsapp', 
-                    admin: { description: 'Полный URL (например, https://wa.me/79001234567)' },
-                },
-                {
-                    name: 'telegramLink',
-                    label: 'Ссылка на Telegram',
-                    type: 'text',
-                    required: true,
-                    defaultValue: '#telegram', 
-                    admin: { description: 'Полный URL (например, https://t.me/yourusername)' },
-                },
-                {
-                    name: 'ctaText',
-                    label: 'Текст кнопки "Напишите нам!"',
-                    type: 'text',
-                    defaultValue: 'Напишите нам!',
-                    localized: true,
                 },
             ],
         },
+        
+        {
+            name: 'nav',
+            label: 'Пункты меню',
+            type: 'array',
+            minRows: 1,
+            defaultValue: [
+                { title: 'Цены', href: '/prices' },
+                { title: 'О нас', href: '/about-us' },
+                { title: 'Портфолио', href: '/portfolio' },
+                { title: 'Услуги', href: '/services' },
+                { title: 'Блог', href: '/blog' },
+                { title: 'Связаться', href: '/contacts' },
+                { title: 'Что мы делаем', href: '/what-we-do' },
+            ],
+            fields: [
+                {
+                    name: 'title',
+                    label: 'Текст пункта меню',
+                    type: 'text',
+                    required: true,
+                    localized: true,
+                },
+                {
+                    name: 'href',
+                    label: 'URL/Ссылка',
+                    type: 'text',
+                    required: true,
+                    admin: { description: 'Например: /about-us, /portfolio, https://external.link' },
+                },
+                {
+                    // Поле, которое может переопределить defaultDropdownContent
+                    name: 'dropdownContent',
+                    label: 'Содержимое выпадающего меню (для переопределения)',
+                    type: 'blocks',
+                    localized: true,
+                    blocks: [
+                        {
+                            slug: 'linkList',
+                            labels: {
+                                singular: 'Список ссылок',
+                                plural: 'Списки ссылок',
+                            },
+                            fields: [
+                                {
+                                    name: 'title',
+                                    label: 'Заголовок списка',
+                                    type: 'text',
+                                    localized: true,
+                                },
+                                {
+                                    name: 'links',
+                                    label: 'Ссылки',
+                                    type: 'array',
+                                    fields: [
+                                        { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
+                                        { name: 'url', label: 'URL', type: 'text' },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                    admin: {
+                        description: 'Оставьте пустым, чтобы использовать "Дефолтное выпадающее меню". Если заполнить, это переопределит дефолт.',
+                    },
+                },
+            ],
+        },
+        {
+            name: 'phoneNumber',
+            label: 'Номер телефона',
+            type: 'text',
+            defaultValue: '8 800 543 22 44',
+        },
+        {
+            name: 'whatsappLink',
+            label: 'Ссылка на WhatsApp',
+            type: 'text',
+            required: true,
+            defaultValue: '#whatsapp', 
+            admin: { description: 'Полный URL (например, https://wa.me/79001234567)' },
+        },
+        {
+            name: 'telegramLink',
+            label: 'Ссылка на Telegram',
+            type: 'text',
+            required: true,
+            defaultValue: '#telegram', 
+            admin: { description: 'Полный URL (например, https://t.me/yourusername)' },
+        },
+        {
+            name: 'ctaText',
+            label: 'Текст кнопки "Напишите нам!"',
+            type: 'text',
+            defaultValue: 'Напишите нам!',
+            localized: true,
+        },
+    ],
+}
     ],
 });

@@ -1635,6 +1635,22 @@ export interface Blog {
  */
 export interface Header {
   id: number;
+  /**
+   * Содержимое, которое отображается при открытии меню, или при наведении на "Услуги" (если у этого пункта нет собственного переопределения).
+   */
+  defaultDropdownContent?:
+    | {
+        title: string;
+        links?:
+          | {
+              text?: string | null;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   nav?:
     | {
         title: string;
@@ -1642,6 +1658,24 @@ export interface Header {
          * Например: /about-us, /portfolio, https://external.link
          */
         href: string;
+        /**
+         * Оставьте пустым, чтобы использовать "Дефолтное выпадающее меню". Если заполнить, это переопределит дефолт.
+         */
+        dropdownContent?:
+          | {
+              title?: string | null;
+              links?:
+                | {
+                    text?: string | null;
+                    url?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+              blockName?: string | null;
+              blockType: 'linkList';
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1777,11 +1811,42 @@ export interface BlogSelect<T extends boolean = true> {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  defaultDropdownContent?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              text?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   nav?:
     | T
     | {
         title?: T;
         href?: T;
+        dropdownContent?:
+          | T
+          | {
+              linkList?:
+                | T
+                | {
+                    title?: T;
+                    links?:
+                      | T
+                      | {
+                          text?: T;
+                          url?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                    blockName?: T;
+                  };
+            };
         id?: T;
       };
   phoneNumber?: T;
