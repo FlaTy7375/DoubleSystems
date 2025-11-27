@@ -12,6 +12,8 @@ import { useLanguage } from '@/components/translate/LanguageContext';
 import { useTranslate } from "@/components/translate/useTranslation"
 import { useLocalizedPath } from '@/components/translate/useLocalizedPath';
 import { StyledPortfolio } from '@/components/blocks/portfolio/style';
+import { useDebounce } from '@/components/blocks/search/useDebounce'
+import { SearchResultsList } from '@/components/blocks/search/SearchResultsList';
 
 const STATIC_DEFAULT_DROPDOWN = [
     {
@@ -198,27 +200,189 @@ const NavItemWithDropdown = ({
     );
 };
 
+// Кэш для поисковых запросов
+const searchCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 минут
+
 export default function Header({ 
   headerData
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [activeId, setActiveId] = useState(false);
   
-  // Используется только для управления мобильным меню/кнопкой
   const [isMenuButtonClicked, setIsMenuButtonClicked] = useState(false); 
-  // Управляет контентом выпадающего меню
   const [hoveredItem, setHoveredItem] = useState(null); 
-  // Для мобильных устройств - отслеживаем какой пункт раскрыт
   const [expandedNavItem, setExpandedNavItem] = useState(null);
   
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
   
-  const timerRef = useRef(null); // Референс для таймера задержки на mouseLeave
-  
+  const timerRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
+  const searchControllerRef = useRef(null);
+
   const { language, changeLanguage } = useLanguage();
   const getLocalizedPath = useLocalizedPath();
+
+  // 💡 УЛУЧШЕННЫЙ ПОИСК
+  const [searchResults, setSearchResults] = useState([]); 
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+
+  // 💡 ОЧИСТКА КЭША ПРИ ИЗМЕНЕНИИ ЯЗЫКА
+  useEffect(() => {
+    searchCache.clear();
+  }, [language]);
+
+  // 💡 УЛУЧШЕННАЯ ФУНКЦИЯ ПОИСКА С КЭШИРОВАНИЕМ
+  const performSearch = useCallback(async (query) => {
+    // Не ищем, если запрос короткий
+    if (!query || query.length < 3) {
+        setSearchResults([]);
+        return;
+    }
+
+    // Проверяем кэш
+    const cacheKey = `${language}:${query.toLowerCase().trim()}`;
+    const cached = searchCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        setSearchResults(cached.results);
+        return;
+    }
+
+    setIsSearching(true);
+    
+    // Отменяем предыдущий запрос
+    if (searchControllerRef.current) {
+        searchControllerRef.current.abort();
+    }
+    
+    // Создаем новый AbortController
+    searchControllerRef.current = new AbortController();
+    
+    try {
+        const response = await fetch(
+            `/api/search?q=${encodeURIComponent(query)}&lang=${language}`, 
+            {
+                signal: searchControllerRef.current.signal,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const results = data.results || [];
+        setSearchResults(results);
+        
+        // Сохраняем в кэш
+        if (results.length > 0) {
+            searchCache.set(cacheKey, {
+                results: results,
+                timestamp: Date.now()
+            });
+        }
+        
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            return;
+        }
+        
+        // Показываем тестовые результаты при ошибке в development
+        if (process.env.NODE_ENV === 'development') {
+            setSearchResults([
+                {
+                    id: 'test-1',
+                    title: 'Тестовый результат поиска',
+                    url: '/test',
+                    type: 'Страница'
+                }
+            ]);
+        } else {
+            setSearchResults([]);
+        }
+    } finally {
+        setIsSearching(false);
+        searchControllerRef.current = null;
+    }
+  }, [language]);
+
+  // 💡 useEffect для запуска поиска при изменении debouncedSearchValue
+  useEffect(() => {
+    performSearch(debouncedSearchValue);
+  }, [debouncedSearchValue, performSearch]);
+
+  // 💡 ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
+  useEffect(() => {
+    return () => {
+      if (searchControllerRef.current) {
+        searchControllerRef.current.abort();
+      }
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // 💡 ИСПРАВЛЕННАЯ БЛОКИРОВКА СКРОЛЛА - РАЗРЕШАЕМ СКРОЛЛ В МЕНЮ
+  useEffect(() => {
+    if (isMenuButtonClicked) {
+      // Сохраняем текущую позицию скролла
+      const scrollY = window.scrollY;
+      
+      // Блокируем скролл на body, но разрешаем overflow для меню
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      // Разрешаем скролл для контейнера меню
+      const menuContainer = document.querySelector('.header-nav');
+      if (menuContainer) {
+        menuContainer.style.overflow = 'auto';
+        menuContainer.style.maxHeight = 'calc(100vh - 100px)'; // Оставляем место для шапки
+      }
+    } else {
+      // Восстанавливаем скролл
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      
+      // Восстанавливаем overflow для меню
+      const menuContainer = document.querySelector('.header-nav');
+      if (menuContainer) {
+        menuContainer.style.overflow = '';
+        menuContainer.style.maxHeight = '';
+      }
+      
+      // Восстанавливаем позицию скролла
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+
+    return () => {
+      // Очистка при размонтировании
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      
+      const menuContainer = document.querySelector('.header-nav');
+      if (menuContainer) {
+        menuContainer.style.overflow = '';
+        menuContainer.style.maxHeight = '';
+      }
+    };
+  }, [isMenuButtonClicked]);
 
   const fallbackNav = [
     { title: 'Цены', href: '/prices' },
@@ -237,7 +401,6 @@ export default function Header({
   const telegramLink = headerData?.telegramLink || '#telegram'; 
   const buttonText = headerData?.ctaText || fallbackCtaText; 
 
-  // Ищем дефолтный пункт (Услуги) для мобильной логики
   const defaultItem = navItems.find(item => item.title === 'Услуги' || item.href === '/services');
 
   // 💡 Определяем мобильное/планшетное представление
@@ -320,10 +483,44 @@ export default function Header({
     setHoveredItem(null); 
     setExpandedNavItem(null);
     
+    // 💡 Сброс состояния поиска при закрытии
     if (!nextActiveId) {
       setSearchValue('');
+      setSearchResults([]); 
+    } else {
+      // Фокусируемся на поле ввода при открытии поиска
+      setTimeout(() => {
+        const searchField = document.querySelector('.search-field');
+        if (searchField) searchField.focus();
+      }, 100);
     }
   };
+  
+  // 💡 ОБНОВЛЕННЫЙ handleCloseSearch
+  const handleCloseSearch = () => {
+    setActiveId(false);
+    setSearchValue('');
+    setSearchResults([]); // Сброс результатов
+    
+    // Отменяем текущий поисковый запрос
+    if (searchControllerRef.current) {
+      searchControllerRef.current.abort();
+    }
+  };
+
+  // 💡 Обработчик Escape для закрытия поиска
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && activeId) {
+        handleCloseSearch();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [activeId]);
   
   const toggleLangDropdown = () => setIsLangDropdownOpen(!isLangDropdownOpen);
   const handleLangChange = (lang) => {
@@ -342,11 +539,6 @@ export default function Header({
     };
   }, []);
   
-  const handleCloseSearch = () => {
-    setActiveId(false);
-    setSearchValue('');
-  };
-
   // ЛОГИКА: Определяет, какой контент должен быть показан
   const getDropdownData = () => {
       // Если поиск активен, дропдаун не показываем
@@ -394,7 +586,14 @@ export default function Header({
         `}
     >
       <Link className='logo-link' href={getLocalizedPath("/")}>
-        <Image className='header-logo' src={HeaderLogo} alt="Логотип Double Systems" width="132" height="56" />
+        <Image 
+          className='header-logo' 
+          src={HeaderLogo} 
+          alt="Логотип Double Systems" 
+          width="132" 
+          height="56" 
+          priority
+        />
       </Link>
       
       <a className='header-phone' href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
@@ -404,7 +603,12 @@ export default function Header({
       {/* Кнопка поиска теперь управляет activeId */}
       <ul className={`socials-list ${shouldShowNavigation ? 'active-block' : ''}`}>
         <li className='social-item'>
-          <button className='social-link search' onClick={handleSearchClick}>
+          <button 
+            className='social-link search' 
+            onClick={handleSearchClick}
+            aria-label={activeId ? 'Закрыть поиск' : 'Открыть поиск'}
+            aria-expanded={activeId}
+          >
             <Image src={SearchLogo} alt='Search' />
           </button>
         </li>
@@ -421,7 +625,7 @@ export default function Header({
       </ul>
       
       {/* Динамическое меню (основная навигация) */}
-      <nav className={`header-nav ${shouldShowNavigation ? 'active-block' : ''}`}>
+      <nav className={`header-nav ${shouldShowNavigation ? 'active-block' : ''} ${isMenuButtonClicked ? 'menu-scrollable' : ''}`}>
         {navItems.map((item, index) => (
           <NavItemWithDropdown 
             key={index}
@@ -449,26 +653,104 @@ export default function Header({
       )}
       {/* ---------------------------------- */}
 
-      {/* Поисковый контейнер */}
+      {/* 💡 УЛУЧШЕННЫЙ Поисковый контейнер */}
       <div className={`search-container ${activeId === true ? 'active-block' : ''}`}>
-        <input 
-          name='search' 
-          className='search-field' 
-          placeholder='Поиск по сайту'
-          type='search' 
-          autoComplete='search' 
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <button className='search-button'>
-          <Image src={SearchLogo} alt='Search' />
-        </button>
-        {/* Кнопка закрытия поиска также использует handleCloseSearch, которая сбрасывает activeId */}
-        <button className='clear-button' onClick={handleCloseSearch} /> 
+        <div className="search-input-wrapper">
+          <input 
+            name='search' 
+            className='search-field' 
+            placeholder='Поиск по сайту'
+            type='search' 
+            autoComplete='off' 
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            aria-label="Поиск по сайту"
+          />
+          <button className='search-button' aria-label="Выполнить поиск">
+            <Image src={SearchLogo} alt='Search' />
+          </button>
+        </div>
+        
+        {/* Кнопка закрытия поиска */}
+        <button 
+          className='clear-button' 
+          onClick={handleCloseSearch}
+          aria-label="Закрыть поиск"
+        /> 
+        
+        {/* 💡 УЛУЧШЕННЫЙ БЛОК РЕЗУЛЬТАТОВ ПОИСКА */}
+        {activeId && (
+          <div className='search-results-dropdown'>
+            {/* Индикатор загрузки */}
+            {isSearching && (
+                <div className="search-state-message">
+                  <div className="loading-spinner"></div>
+                  <p className="loading-state">Ищем...</p>
+                </div>
+            )}
+            
+            {/* Результатов нет, запрос введен, поиск завершен */}
+            {!isSearching && searchResults.length === 0 && searchValue.length >= 3 && (
+              <div className="search-state-message">
+                <p className="no-results-state">
+                  По запросу <strong>"{searchValue}"</strong> ничего не найдено
+                </p>
+                <p className="search-tips">
+                  Попробуйте изменить запрос или использовать другие ключевые слова
+                </p>
+              </div>
+            )}
+
+            {/* Показываем результаты если они есть */}
+            {!isSearching && searchResults.length > 0 && (
+              <>
+                <div className="search-results-header">
+                  <span className="results-count">
+                    Найдено: {searchResults.length} {searchResults.length === 1 ? 'результат' : 
+                    searchResults.length > 1 && searchResults.length < 5 ? 'результата' : 'результатов'}
+                  </span>
+                </div>
+                <SearchResultsList 
+                  results={searchResults} 
+                  onCloseSearch={handleCloseSearch} 
+                />
+              </>
+            )}
+            
+            {/* Подсказка, если запрос слишком короткий */}
+            {!isSearching && searchValue.length > 0 && searchValue.length < 3 && (
+              <div className="search-state-message">
+                <p className="hint-state">Введите минимум 3 символа для поиска</p>
+              </div>
+            )}
+
+            {/* Начальное состояние */}
+            {!isSearching && searchValue.length === 0 && (
+              <div className="search-state-message">
+                <p className="initial-state">
+                  Введите поисковый запрос выше
+                </p>
+                <div className="search-examples">
+                  <p>Например:</p>
+                  <ul>
+                    <li>Разработка сайтов</li>
+                    <li>Мобильные приложения</li>
+                    <li>AI проекты</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       
       <div className={`lang-dropdown ${shouldShowNavigation ? 'active-block' : ''}`}>
-        <button className="lang-dropdown-toggle" onClick={toggleLangDropdown}>
+        <button 
+          className="lang-dropdown-toggle" 
+          onClick={toggleLangDropdown}
+          aria-expanded={isLangDropdownOpen}
+          aria-label="Выбор языка"
+        >
           {language}
           <span className={`dropdown-arrow1 ${isLangDropdownOpen ? 'open' : ''}`}>▼</span>
         </button>
@@ -495,7 +777,12 @@ export default function Header({
         {buttonText}
       </Link>
       
-      <button className='menu-button' onClick={handleMenuClick}>
+      <button 
+        className='menu-button' 
+        onClick={handleMenuClick}
+        aria-label={isMenuButtonClicked ? 'Закрыть меню' : 'Открыть меню'}
+        aria-expanded={isMenuButtonClicked}
+      >
         <span className='button-decor'></span>
       </button>
     </StyledHeader>

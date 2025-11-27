@@ -146,6 +146,10 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -171,6 +175,10 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -191,6 +199,10 @@ export interface Media {
 export interface Tag {
   id: number;
   title: string;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -349,6 +361,10 @@ export interface Page {
           }
       )[]
     | null;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   showPortfolio?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -520,6 +536,10 @@ export interface Case {
           }
       )[]
     | null;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   showPortfolio?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -696,6 +716,10 @@ export interface Post {
           }
       )[]
     | null;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -723,6 +747,10 @@ export interface Service {
   };
   slug?: string | null;
   featuredImage: number | Media;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -749,6 +777,10 @@ export interface Faq {
     [k: string]: unknown;
   };
   order?: number | null;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -762,6 +794,10 @@ export interface Application {
   email: string;
   message?: string | null;
   status?: ('Новая' | 'В работе' | 'Закрыта') | null;
+  /**
+   * Автоматически заполняется при сохранении для полнотекстового поиска
+   */
+  sections_content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -873,6 +909,7 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -896,6 +933,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  sections_content?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -915,6 +953,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface TagsSelect<T extends boolean = true> {
   title?: T;
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1070,6 +1109,7 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  sections_content?: T;
   showPortfolio?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1238,6 +1278,7 @@ export interface CasesSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  sections_content?: T;
   showPortfolio?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1408,6 +1449,7 @@ export interface PostsSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1420,6 +1462,7 @@ export interface ServicesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   featuredImage?: T;
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1431,6 +1474,7 @@ export interface FaqsSelect<T extends boolean = true> {
   question?: T;
   answer?: T;
   order?: T;
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1443,6 +1487,7 @@ export interface ApplicationsSelect<T extends boolean = true> {
   email?: T;
   message?: T;
   status?: T;
+  sections_content?: T;
   updatedAt?: T;
   createdAt?: T;
 }

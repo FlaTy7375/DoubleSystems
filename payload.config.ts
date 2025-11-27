@@ -12,6 +12,120 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // -----------------------------------------------------------------------------
+// SEARCH FIELDS (для всех коллекций)
+// -----------------------------------------------------------------------------
+const searchFieldsConfig: Field[] = [
+    {
+        name: 'sections_content', 
+        label: 'Контент для поиска', 
+        type: 'textarea', 
+        admin: { 
+            hidden: true, 
+            readOnly: true,
+            description: 'Автоматически заполняется при сохранении для полнотекстового поиска'
+        }
+    },
+];
+
+// В payload.config.js - только нужные коллекции
+const addUniversalSearchHook = ({ collection }: { collection: any }) => {
+  return {
+    beforeChange: [
+      async ({ data, req, originalDoc }: { data: any; req: any; originalDoc: any }) => {
+        // ТОЛЬКО нужные коллекции
+        if (!data || !['pages', 'cases', 'posts', 'services', 'faqs'].includes(collection.slug)) {
+          return data;
+        }
+
+        console.log(`🎯 Building search content for ${collection.slug}: "${data.title || data.name || 'untitled'}"`);
+        
+        try {
+          let allText = '';
+          
+          const mainFields: { [key: string]: string[] } = {
+            'pages': ['title', 'slug', 'description'],
+            'cases': ['title', 'slug', 'preview_title'], 
+            'posts': ['title', 'slug', 'preview_title', 'preview_description'],
+            'services': ['title', 'slug', 'description'],
+            'faqs': ['question']
+          };
+
+          const fields = mainFields[collection.slug] || ['title', 'name', 'slug'];
+          
+          fields.forEach((field: string) => {
+            if (data[field] && typeof data[field] === 'string' && data[field].trim()) {
+              console.log(`✅ ADD ${field}: "${data[field].substring(0, 50)}..."`);
+              allText += ' ' + data[field].trim();
+            }
+          });
+
+          if (data.sections && Array.isArray(data.sections)) {
+            console.log(`📦 Processing ${data.sections.length} blocks in ${collection.slug}...`);
+            
+            data.sections.forEach((block: any, index: number) => {
+              if (!block || typeof block !== 'object') return;
+              
+              console.log(`   🔍 Block ${index + 1}: ${block.blockType || 'unknown'}`);
+              extractAllTextFromBlock(block);
+            });
+          }
+
+          function extractAllTextFromBlock(obj: any, path = '') {
+            if (!obj || typeof obj !== 'object') return;
+            
+            Object.entries(obj).forEach(([key, value]) => {
+              const currentPath = path ? `${path}.${key}` : key;
+              
+              const skipFields = ['id', '_id', 'blockId', 'blockType', 'createdAt', 'updatedAt', '__v', '_status'];
+              if (skipFields.includes(key)) return;
+              if (key.includes('image') || key.includes('Image') || key.includes('background')) return;
+              
+              if (typeof value === 'string' && value.trim()) {
+                if (!value.match(/^[a-f0-9-]{36}$/i) && 
+                    !value.match(/^#([a-f0-9]{3}){1,2}$/i) &&
+                    value.length > 2) {
+                  console.log(`     ✅ ADDED ${currentPath}: "${value.substring(0, 40)}..."`);
+                  allText += ' ' + value.trim();
+                }
+              } else if (Array.isArray(value)) {
+                value.forEach((item: any, idx: number) => {
+                  if (typeof item === 'string' && item.trim()) {
+                    console.log(`     ✅ ADDED ${currentPath}[${idx}]: "${item}"`);
+                    allText += ' ' + item.trim();
+                  } else if (item && typeof item === 'object') {
+                    extractAllTextFromBlock(item, `${currentPath}[${idx}]`);
+                  }
+                });
+              } else if (value && typeof value === 'object') {
+                extractAllTextFromBlock(value, currentPath);
+              }
+            });
+          }
+
+          if (data.seo && typeof data.seo === 'object') {
+            if (data.seo.title) allText += ' ' + data.seo.title;
+            if (data.seo.description) allText += ' ' + data.seo.description;
+            if (data.seo.keywords) allText += ' ' + data.seo.keywords;
+          }
+
+          data.sections_content = allText
+            .trim()
+            .replace(/\s+/g, ' ')
+            .substring(0, 25000);
+
+          console.log(`🎉 ${collection.slug} search content: ${data.sections_content.length} chars`);
+
+        } catch (error) {
+          console.error(`❌ Search hook error for ${collection.slug}:`, error);
+        }
+        
+        return data;
+      }
+    ]
+  };
+};
+
+// -----------------------------------------------------------------------------
 // BLOCKS AND FIELDS DEFINITIONS
 // -----------------------------------------------------------------------------
 const seoFields: Field[] = [
@@ -170,7 +284,6 @@ export default buildConfig({
     db: postgresAdapter({
         pool: {
             connectionString: process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/postgres',
-            // Убрана опция SSL в DEV, т.к. она может быть причиной ошибок подключения к локальной БД
             ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
         },
         migrationDir: path.resolve(__dirname, 'migrations'),
@@ -195,7 +308,6 @@ export default buildConfig({
                   s3Storage({
                       collections: {
                           media: {
-                              // Отключаем хранение в локальной файловой системе
                               disableLocalStorage: true, 
                               prefix: 'media',
                           },
@@ -203,7 +315,6 @@ export default buildConfig({
                       bucket: process.env.SUPABASE_BUCKET_NAME,
                       config: {
                           endpoint: process.env.SUPABASE_ENDPOINT,
-                          // 👇 ИСПРАВЛЕНИЕ: forcePathStyle: true для совместимости с Supabase/MinIO
                           forcePathStyle: true, 
                           region: process.env.SUPABASE_REGION || 'eu-north-1',
                           credentials: {
@@ -220,38 +331,48 @@ export default buildConfig({
         {
             slug: 'users',
             auth: true,
-            fields: [{ name: 'name', type: 'text', label: 'Имя пользователя', required: true }],
+            hooks: addUniversalSearchHook as any,
+            fields: [
+                { name: 'name', type: 'text', label: 'Имя пользователя', required: true },
+                ...searchFieldsConfig,
+            ],
         },
         {
             slug: 'media',
-            upload: {
-                // 👇 ИСПРАВЛЕНИЕ: Убираем disableLocalStorage и staticDir отсюда, 
-                // т.к. они уже указаны в плагине s3Storage.
-                // Если плагин не активен, Payload будет использовать стандартное локальное хранение.
-                // staticDir: path.resolve(__dirname, '../../public/media'), 
-            },
+            upload: {},
             access: { read: () => true },
-            fields: [{ name: 'alt', label: 'Альтернативный текст', type: 'text', required: true }],
+            hooks: addUniversalSearchHook as any,
+            fields: [
+                { name: 'alt', label: 'Альтернативный текст', type: 'text', required: true },
+                ...searchFieldsConfig,
+            ],
         },
         {
             slug: 'tags',
             labels: { singular: 'Тег', plural: 'Теги' },
-            fields: [{ name: 'title', label: 'Название тега', type: 'text', required: true, unique: true }],
+            hooks: addUniversalSearchHook as any,
+            fields: [
+                { name: 'title', label: 'Название тега', type: 'text', required: true, unique: true },
+                ...searchFieldsConfig,
+            ],
         },
         {
             slug: 'pages',
             labels: { singular: 'Страница', plural: 'Страницы' },
+            hooks: addUniversalSearchHook as any,
             fields: [
                 ...seoFields,
                 { name: 'title', label: 'Название страницы', type: 'text', required: true },
                 { name: 'slug', label: 'URL слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar', description: 'Должен совпадать с названием папки в app/(site) (например: about-us, prices, portfolio, services/web-dev и т.д.)' } },
                 { name: 'sections', label: 'Секции страницы', type: 'blocks', blocks: caseBlocks },
+                ...searchFieldsConfig,
                 { name: 'showPortfolio', label: 'Показывать секцию портфолио в конце', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
             ],
         },
         {
             slug: 'cases',
             labels: { singular: 'Кейс', plural: 'Портфолио (кейсы)' },
+            hooks: addUniversalSearchHook as any,
             access: {
               read: () => true,
             },
@@ -269,12 +390,14 @@ export default buildConfig({
                 { name: 'slug', label: 'Слаг', type: 'text', unique: true, required: true, admin: { position: 'sidebar' } },
                 { name: 'tags', label: 'Теги', type: 'relationship', relationTo: 'tags', hasMany: true, admin: { position: 'sidebar' } },
                 { name: 'sections', label: 'Секции кейса', type: 'blocks', blocks: caseBlocks },
+                ...searchFieldsConfig,
                 { name: 'showPortfolio', label: 'Показывать секцию портфолио', type: 'checkbox', defaultValue: true, admin: { position: 'sidebar' } },
             ],
         },
         {
             slug: 'posts',
             labels: { singular: 'Запись блога', plural: 'Блог' },
+            hooks: addUniversalSearchHook as any,
             fields: [
                 ...seoFields,
                 { name: 'title', label: 'Название (внутри)', type: 'text', required: true },
@@ -289,30 +412,36 @@ export default buildConfig({
                 { name: 'date', label: 'Дата публикации (внутри)', type: 'date', required: true, admin: { position: 'sidebar', date: { pickerAppearance: 'dayAndTime' } } },
                 { name: 'author', label: 'Автор (опционально)', type: 'relationship', relationTo: 'users', admin: { position: 'sidebar' } },
                 { name: 'sections', label: 'Секции блога', type: 'blocks', blocks: caseBlocks },
+                ...searchFieldsConfig,
             ],
         },
         {
             slug: 'services',
-            labels: { singular: 'Услуга', plural: 'Услуги (Deprecated)' },
+            labels: { singular: 'Услуга', plural: 'Услуги' },
+            hooks: addUniversalSearchHook as any,
             fields: [
                 { name: 'title', label: 'Название услуги', type: 'text', required: true },
                 { name: 'description', label: 'Описание', type: 'richText', required: true, editor: lexicalEditor() },
                 { name: 'slug', label: 'URL-слаг', type: 'text', unique: true, admin: { position: 'sidebar' } },
                 { name: 'featuredImage', label: 'Главное изображение', type: 'upload', relationTo: 'media', required: true },
+                ...searchFieldsConfig,
             ],
         },
         {
             slug: 'faqs',
             labels: { singular: 'Вопрос-Ответ', plural: 'FAQ' },
+            hooks: addUniversalSearchHook as any,
             fields: [
                 { name: 'question', label: 'Вопрос', type: 'text', required: true },
                 { name: 'answer', label: 'Ответ', type: 'richText', required: true, editor: lexicalEditor() },
                 { name: 'order', label: 'Порядок вывода', type: 'number', admin: { position: 'sidebar' } },
+                ...searchFieldsConfig,
             ],
         },
         {
             slug: 'applications',
             labels: { singular: 'Заявка', plural: 'Заявки с сайта' },
+            hooks: addUniversalSearchHook as any,
             admin: { defaultColumns: ['name', 'email', 'createdAt', 'status'] },
             access: { create: () => true, read: ({ req }) => !!req.user },
             fields: [
@@ -320,6 +449,7 @@ export default buildConfig({
                 { name: 'email', label: 'Email', type: 'email', required: true },
                 { name: 'message', label: 'Сообщение', type: 'textarea' },
                 { name: 'status', label: 'Статус заявки', type: 'select', options: ['Новая', 'В работе', 'Закрыта'], defaultValue: 'Новая' },
+                ...searchFieldsConfig,
             ],
         },
     ],
@@ -328,6 +458,41 @@ export default buildConfig({
         {
             slug: 'home',
             label: 'Главная страница',
+            hooks: {
+                beforeChange: [
+                    async ({ data, req }: { data: any; req: any }) => {
+                        try {
+                            let allText = '';
+                            
+                            // Собираем текст из всех полей глобала
+                            Object.entries(data).forEach(([key, value]) => {
+                                if (typeof value === 'string' && value.trim().length > 1) {
+                                    allText += ' ' + value;
+                                } else if (Array.isArray(value)) {
+                                    value.forEach((item: any) => {
+                                        if (typeof item === 'string') {
+                                            allText += ' ' + item;
+                                        } else if (item && typeof item === 'object') {
+                                            Object.values(item).forEach((subValue: any) => {
+                                                if (typeof subValue === 'string' && subValue.trim().length > 1) {
+                                                    allText += ' ' + subValue;
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                            
+                            // Сохраняем для поиска
+                            data._search_content = allText.trim().replace(/\s+/g, ' ');
+                            
+                        } catch (error) {
+                            console.error('Error in home global hook:', error);
+                        }
+                        return data;
+                    }
+                ]
+            },
             fields: [
                 { name: 'title', label: 'Заголовок страницы', type: 'text' },
                 
@@ -401,6 +566,46 @@ export default buildConfig({
         {
             slug: 'faq',
             label: 'Часто задаваемые вопросы',
+            hooks: {
+                beforeChange: [
+                    async ({ data, req }: { data: any; req: any }) => {
+                        try {
+                            let allText = '';
+                            
+                            if (data.title) allText += ' ' + data.title;
+                            if (data.description) allText += ' ' + data.description;
+                            
+                            if (data.items && Array.isArray(data.items)) {
+                                data.items.forEach((item: any) => {
+                                    if (item.question) allText += ' ' + item.question;
+                                    if (item.answer) {
+                                        // Извлекаем текст из richText
+                                        try {
+                                            if (typeof item.answer === 'object') {
+                                                const extractText = (node: any) => {
+                                                    if (!node) return '';
+                                                    if (node.text) return node.text;
+                                                    if (node.children) {
+                                                        return node.children.map(extractText).join(' ');
+                                                    }
+                                                    return '';
+                                                };
+                                                allText += ' ' + extractText(item.answer.root);
+                                            }
+                                        } catch (e) {}
+                                    }
+                                });
+                            }
+                            
+                            data._search_content = allText.trim().replace(/\s+/g, ' ');
+                            
+                        } catch (error) {
+                            console.error('Error in faq global hook:', error);
+                        }
+                        return data;
+                    }
+                ]
+            },
             fields: [
                 { name: 'title', label: 'Заголовок секции', type: 'text' },
                 { name: 'description', label: 'Описание секции', type: 'textarea' },
@@ -413,6 +618,28 @@ export default buildConfig({
         {
             slug: 'blog',
             label: 'Блог (Общая страница)',
+            hooks: {
+                beforeChange: [
+                    async ({ data, req }: { data: any; req: any }) => {
+                        try {
+                            let allText = '';
+                            
+                            if (data.title) allText += ' ' + data.title;
+                            if (data.themesList && Array.isArray(data.themesList)) {
+                                data.themesList.forEach((theme: any) => {
+                                    if (theme.themeName) allText += ' ' + theme.themeName;
+                                });
+                            }
+                            
+                            data._search_content = allText.trim().replace(/\s+/g, ' ');
+                            
+                        } catch (error) {
+                            console.error('Error in blog global hook:', error);
+                        }
+                        return data;
+                    }
+                ]
+            },
             fields: [
                 { name: 'title', label: 'Главный заголовок страницы', type: 'text', defaultValue: 'Новости компании' },
                 { name: 'themesList', label: 'Список тем для фильтрации', type: 'array', minRows: 1, fields: [{ name: 'themeName', label: 'Название темы', type: 'text', required: true }] },
@@ -421,139 +648,169 @@ export default buildConfig({
             ],
         },
         {
-    slug: 'header',
-    label: 'Шапка сайта (Header)',
-    fields: [
-        // =======================================================
-        // НОВОЕ ПОЛЕ: Дефолтная структура выпадающего меню (Услуги/Сервисы)
-        // Использует ту же структуру, что и linkList, для рендеринга.
-        // =======================================================
-        {
-            name: 'defaultDropdownContent',
-            label: 'Дефолтное выпадающее меню (Услуги)',
-            type: 'array',
-            localized: true,
-            admin: {
-                description: 'Содержимое, которое отображается при открытии меню, или при наведении на "Услуги" (если у этого пункта нет собственного переопределения).',
+            slug: 'header',
+            label: 'Шапка сайта (Header)',
+            hooks: {
+                beforeChange: [
+                    async ({ data, req }: { data: any; req: any }) => {
+                        try {
+                            let allText = '';
+                            
+                            if (data.phoneNumber) allText += ' ' + data.phoneNumber;
+                            if (data.ctaText) allText += ' ' + data.ctaText;
+                            
+                            if (data.nav && Array.isArray(data.nav)) {
+                                data.nav.forEach((item: any) => {
+                                    if (item.title) allText += ' ' + item.title;
+                                });
+                            }
+                            
+                            if (data.defaultDropdownContent && Array.isArray(data.defaultDropdownContent)) {
+                                data.defaultDropdownContent.forEach((item: any) => {
+                                    if (item.title) allText += ' ' + item.title;
+                                    if (item.links && Array.isArray(item.links)) {
+                                        item.links.forEach((link: any) => {
+                                            if (link.text) allText += ' ' + link.text;
+                                        });
+                                    }
+                                });
+                            }
+                            
+                            data._search_content = allText.trim().replace(/\s+/g, ' ');
+                            
+                        } catch (error) {
+                            console.error('Error in header global hook:', error);
+                        }
+                        return data;
+                    }
+                ]
             },
             fields: [
                 {
-                    name: 'title',
-                    label: 'Заголовок списка (например, Сервисы:, Сайты и порталы:)',
-                    type: 'text',
-                    required: true,
-                    localized: true,
-                },
-                {
-                    name: 'links',
-                    label: 'Ссылки',
+                    name: 'defaultDropdownContent',
+                    label: 'Дефолтное выпадающее меню (Услуги)',
                     type: 'array',
-                    minRows: 1,
+                    localized: true,
+                    admin: {
+                        description: 'Содержимое, которое отображается при открытии меню, или при наведении на "Услуги" (если у этого пункта нет собственного переопределения).',
+                    },
                     fields: [
-                        { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
-                        { name: 'url', label: 'URL', type: 'text', required: true },
-                    ],
-                },
-            ],
-        },
-        
-        {
-            name: 'nav',
-            label: 'Пункты меню',
-            type: 'array',
-            minRows: 1,
-            defaultValue: [
-                { title: 'Цены', href: '/prices' },
-                { title: 'О нас', href: '/about-us' },
-                { title: 'Портфолио', href: '/portfolio' },
-                { title: 'Услуги', href: '/services' },
-                { title: 'Блог', href: '/blog' },
-                { title: 'Связаться', href: '/contacts' },
-                { title: 'Что мы делаем', href: '/what-we-do' },
-            ],
-            fields: [
-                {
-                    name: 'title',
-                    label: 'Текст пункта меню',
-                    type: 'text',
-                    required: true,
-                    localized: true,
-                },
-                {
-                    name: 'href',
-                    label: 'URL/Ссылка',
-                    type: 'text',
-                    required: true,
-                    admin: { description: 'Например: /about-us, /portfolio, https://external.link' },
-                },
-                {
-                    // Поле, которое может переопределить defaultDropdownContent
-                    name: 'dropdownContent',
-                    label: 'Содержимое выпадающего меню (для переопределения)',
-                    type: 'blocks',
-                    localized: true,
-                    blocks: [
                         {
-                            slug: 'linkList',
-                            labels: {
-                                singular: 'Список ссылок',
-                                plural: 'Списки ссылок',
-                            },
+                            name: 'title',
+                            label: 'Заголовок списка (например, Сервисы:, Сайты и порталы:)',
+                            type: 'text',
+                            required: true,
+                            localized: true,
+                        },
+                        {
+                            name: 'links',
+                            label: 'Ссылки',
+                            type: 'array',
+                            minRows: 1,
                             fields: [
-                                {
-                                    name: 'title',
-                                    label: 'Заголовок списка',
-                                    type: 'text',
-                                    localized: true,
-                                },
-                                {
-                                    name: 'links',
-                                    label: 'Ссылки',
-                                    type: 'array',
-                                    fields: [
-                                        { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
-                                        { name: 'url', label: 'URL', type: 'text' },
-                                    ],
-                                },
+                                { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
+                                { name: 'url', label: 'URL', type: 'text', required: true },
                             ],
                         },
                     ],
-                    admin: {
-                        description: 'Оставьте пустым, чтобы использовать "Дефолтное выпадающее меню". Если заполнить, это переопределит дефолт.',
-                    },
+                },
+                
+                {
+                    name: 'nav',
+                    label: 'Пункты меню',
+                    type: 'array',
+                    minRows: 1,
+                    defaultValue: [
+                        { title: 'Цены', href: '/prices' },
+                        { title: 'О нас', href: '/about-us' },
+                        { title: 'Портфолио', href: '/portfolio' },
+                        { title: 'Услуги', href: '/services' },
+                        { title: 'Блог', href: '/blog' },
+                        { title: 'Связаться', href: '/contacts' },
+                        { title: 'Что мы делаем', href: '/what-we-do' },
+                    ],
+                    fields: [
+                        {
+                            name: 'title',
+                            label: 'Текст пункта меню',
+                            type: 'text',
+                            required: true,
+                            localized: true,
+                        },
+                        {
+                            name: 'href',
+                            label: 'URL/Ссылка',
+                            type: 'text',
+                            required: true,
+                            admin: { description: 'Например: /about-us, /portfolio, https://external.link' },
+                        },
+                        {
+                            name: 'dropdownContent',
+                            label: 'Содержимое выпадающего меню (для переопределения)',
+                            type: 'blocks',
+                            localized: true,
+                            blocks: [
+                                {
+                                    slug: 'linkList',
+                                    labels: {
+                                        singular: 'Список ссылок',
+                                        plural: 'Списки ссылок',
+                                    },
+                                    fields: [
+                                        {
+                                            name: 'title',
+                                            label: 'Заголовок списка',
+                                            type: 'text',
+                                            localized: true,
+                                        },
+                                        {
+                                            name: 'links',
+                                            label: 'Ссылки',
+                                            type: 'array',
+                                            fields: [
+                                                { name: 'text', label: 'Текст ссылки', type: 'text', localized: true },
+                                                { name: 'url', label: 'URL', type: 'text' },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                            admin: {
+                                description: 'Оставьте пустым, чтобы использовать "Дефолтное выпадающее меню". Если заполнить, это переопределит дефолт.',
+                            },
+                        },
+                    ],
+                },
+                {
+                    name: 'phoneNumber',
+                    label: 'Номер телефона',
+                    type: 'text',
+                    defaultValue: '8 800 543 22 44',
+                },
+                {
+                    name: 'whatsappLink',
+                    label: 'Ссылка на WhatsApp',
+                    type: 'text',
+                    required: true,
+                    defaultValue: '#whatsapp', 
+                    admin: { description: 'Полный URL (например, https://wa.me/79001234567)' },
+                },
+                {
+                    name: 'telegramLink',
+                    label: 'Ссылка на Telegram',
+                    type: 'text',
+                    required: true,
+                    defaultValue: '#telegram', 
+                    admin: { description: 'Полный URL (например, https://t.me/yourusername)' },
+                },
+                {
+                    name: 'ctaText',
+                    label: 'Текст кнопки "Напишите нам!"',
+                    type: 'text',
+                    defaultValue: 'Напишите нам!',
+                    localized: true,
                 },
             ],
-        },
-        {
-            name: 'phoneNumber',
-            label: 'Номер телефона',
-            type: 'text',
-            defaultValue: '8 800 543 22 44',
-        },
-        {
-            name: 'whatsappLink',
-            label: 'Ссылка на WhatsApp',
-            type: 'text',
-            required: true,
-            defaultValue: '#whatsapp', 
-            admin: { description: 'Полный URL (например, https://wa.me/79001234567)' },
-        },
-        {
-            name: 'telegramLink',
-            label: 'Ссылка на Telegram',
-            type: 'text',
-            required: true,
-            defaultValue: '#telegram', 
-            admin: { description: 'Полный URL (например, https://t.me/yourusername)' },
-        },
-        {
-            name: 'ctaText',
-            label: 'Текст кнопки "Напишите нам!"',
-            type: 'text',
-            defaultValue: 'Напишите нам!',
-            localized: true,
-        },
-    ],
-}
+        }
     ],
 });
