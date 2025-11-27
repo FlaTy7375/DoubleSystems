@@ -571,8 +571,6 @@ export const StyledHeader = styled.header`
   background-color: #f0f7ff;
 }
 
-
-
 .item-meta {
   margin-bottom: 6px;
 }
@@ -743,6 +741,14 @@ export const StyledHeader = styled.header`
         @media (max-width: 756px) {
         padding: 0 36px;
 
+        .item-title, .item-link {
+            color: #fff !important; 
+        }
+
+        .item-container::before {
+            background-color: #fff !important;
+        }
+
         &.menu-open {
             height: 108px;
             background-color: rgba(38, 49, 67, 1);
@@ -899,14 +905,6 @@ export const StyledHeader = styled.header`
         .socials-list.active-block {
             margin-right: 0;
             margin-left: 20px;
-        }
-
-        .item-title, .item-link {
-            color: #fff;
-        }
-
-        .item-container::before {
-            background-color: #fff;
         }
 
         .header-dropdown-content {
