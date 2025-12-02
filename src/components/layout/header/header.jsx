@@ -318,21 +318,24 @@ export default function Header({
     performSearch(debouncedSearchValue);
   }, [debouncedSearchValue, performSearch]);
 
-  // 💡 ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
+  // 💡 Определяем мобильное/планшетное представление
   useEffect(() => {
+    const checkViewport = () => {
+      setIsMobileView(window.innerWidth <= 1279);
+    };
+    
+    checkViewport();
+    window.addEventListener('resize', checkViewport);
+    
     return () => {
-      if (searchControllerRef.current) {
-        searchControllerRef.current.abort();
-      }
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      window.removeEventListener('resize', checkViewport);
     };
   }, []);
 
-  // 💡 ИСПРАВЛЕННАЯ БЛОКИРОВКА СКРОЛЛА - РАЗРЕШАЕМ СКРОЛЛ В МЕНЮ
+  // 💡 ИСПРАВЛЕННАЯ БЛОКИРОВКА СКРОЛЛА - ТОЛЬКО ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ И ПЛАНШЕТОВ
   useEffect(() => {
-    if (isMenuButtonClicked) {
+    // Блокируем скролл только на мобильных устройствах и планшетах
+    if (isMenuButtonClicked && isMobileView) {
       // Сохраняем текущую позицию скролла
       const scrollY = window.scrollY;
       
@@ -382,7 +385,19 @@ export default function Header({
         menuContainer.style.maxHeight = '';
       }
     };
-  }, [isMenuButtonClicked]);
+  }, [isMenuButtonClicked, isMobileView]); // Добавляем isMobileView в зависимости
+
+  // 💡 ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
+  useEffect(() => {
+    return () => {
+      if (searchControllerRef.current) {
+        searchControllerRef.current.abort();
+      }
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const fallbackNav = [
     { title: 'Цены', href: '/prices' },
@@ -402,20 +417,6 @@ export default function Header({
   const buttonText = headerData?.ctaText || fallbackCtaText; 
 
   const defaultItem = navItems.find(item => item.title === 'Услуги' || item.href === '/services');
-
-  // 💡 Определяем мобильное/планшетное представление
-  useEffect(() => {
-    const checkViewport = () => {
-      setIsMobileView(window.innerWidth <= 1279);
-    };
-    
-    checkViewport();
-    window.addEventListener('resize', checkViewport);
-    
-    return () => {
-      window.removeEventListener('resize', checkViewport);
-    };
-  }, []);
 
   const handleMenuClick = () => {
     const newMenuState = !isMenuButtonClicked;
