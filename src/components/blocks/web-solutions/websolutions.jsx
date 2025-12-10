@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import Link from 'next/link'; // 👈 Добавляем импорт Link
+import Link from 'next/link';
 import { StyledWebSolutions } from './style';
 import PhoneAndTablet from '@/assets/images/tablet-and-phone.png'; 
 import BreadCrumbs from '@/components/ui/bread-crumbs/bread-crumbs';
@@ -22,7 +22,7 @@ const staticCaseFallback = {
     ],
     tags: ["Web-решения", "Мобильные приложения"], 
     previewImage: { url: null, alt: "Статическое изображение заглушка" },
-    slug: 'healthhub-project' // 👈 Добавлено поле slug для заглушки
+    slug: 'healthhub-project' 
 };
 
 export default function WebSolutions({ cases = [] }) {
@@ -31,8 +31,8 @@ export default function WebSolutions({ cases = [] }) {
   const isDynamicCase = cases.length > 0;
 
   const casesToUse = isDynamicCase 
-    ? cases.slice(0, 5) // Если есть динамические кейсы, берем первые 5
-    : [staticCaseFallback]; // Иначе — один статический
+    ? cases.slice(0, 5)
+    : [staticCaseFallback]; 
 
   const totalCases = casesToUse.length;
 
@@ -120,7 +120,6 @@ export default function WebSolutions({ cases = [] }) {
              <div className="container-image-placeholder" /> 
         )}
 
-        {/* 3. Заменяем кнопку на компонент Link с динамическим href */}
         <Link href={caseUrl} className="container-button">
             {buttonText}
         </Link>
@@ -129,7 +128,6 @@ export default function WebSolutions({ cases = [] }) {
         {canSwitch && <button className="slider-button next" onClick={goToNext}>&gt;</button>}
       </div>
 
-      {/* Передаем корректное общее количество кейсов */}
       <BreadCrumbs currentIndex={currentIndex} total={totalCases} />
     </StyledWebSolutions>
   );

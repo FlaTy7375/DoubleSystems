@@ -12,29 +12,18 @@ export const StyledCaseAbout = styled.section`
     }
 
     .content-container {
-    transition: all 0.3s ease;
-    overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
     }
 
     .content-container.collapsed {
-    max-height: 60px; // Высота только для первого пункта
+        max-height: 0;
+        opacity: 0;
     }
 
     .content-container.expanded {
-    max-height: 1000px; // Достаточно большая высота для показа всех пунктов
-    }
-
-    .content-element {
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    }
-
-    .content-container.collapsed .content-element:not(.first-visible) {
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
+        max-height: 1000px;
+        opacity: 1;
     }
 
     .anchor-link {
@@ -65,7 +54,7 @@ export const StyledCaseAbout = styled.section`
     .content-element {
         margin-bottom: 5px;
         display: flex;
-        align-items: flex-start; /* Выравнивание по верху */
+        align-items: flex-start;
         position: relative;
         counter-increment: list-counter;
     }
@@ -74,7 +63,7 @@ export const StyledCaseAbout = styled.section`
         content: counter(list-counter) ".";
         position: absolute;
         left: -1.5em;
-        top: 5px; /* Цифра всегда вверху */
+        top: 5px;
         font-weight: bold;
         font-size: 18px;
         color: rgba(68, 75, 90, 1);
@@ -167,6 +156,7 @@ export const StyledCaseAbout = styled.section`
         padding: 20px 60px 30px 20px;
         background-color: rgba(255, 255, 255, 0.94);
         box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .about-content.fixed {
@@ -176,13 +166,45 @@ export const StyledCaseAbout = styled.section`
         z-index: 1000;
     }
 
+    .about-content.collapsed-state {
+        padding: 16px 50px 16px 16px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        background: var(--white);
+        border: 1px solid var(--neutral-100);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        
+        .content-title {
+            display: none;
+        }
+        
+        .content-container {
+            padding: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        &.fixed {
+            width: 56px;
+            height: 56px;
+            padding: 0;
+            border-radius: 50%;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
     .content-title {
         font-size: 20px;
         font-weight: 700;
         color: rgba(142, 142, 147, 1);
         letter-spacing: -5%;
         margin-bottom: 4px;
-        margin-left: 40px;
+        margin-left: 20px;
     }
 
     .content-list {
@@ -202,24 +224,73 @@ export const StyledCaseAbout = styled.section`
         font-weight: 700;
     }
 
-    .content-button {
+    .content-toggle-button {
         position: absolute;
-        width: 18px;
-        height: 9px;
-        background-image: url("/images/content-icon.svg");
-        transform: rotate(180deg);
-        background-repeat: no-repeat;
-        background-position: 50%;
-        transition: all 0.3s ease;
+        right: 16px;
+        top: 16px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(240, 242, 245, 1);
         border: none;
-        background-color: transparent;
-        top: 58px;
-        right: 30px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 101;
+        
+        &:hover {
+            background: rgba(220, 222, 225, 1);
+            transform: scale(1.05);
+        }
+        
+        &.expanded {
+            .toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
+        
+        &:not(.expanded) {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            width: 32px;
+            height: 32px;
+            
+            .toggle-icon {
+                transform: rotate(90deg);
+            }
+        }
+        
+        &.fixed-state:not(.expanded) {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            width: 32px;
+            height: 32px;
+            
+            .toggle-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+    
+    .toggle-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        svg {
+            width: 100%;
+            height: 100%;
+            color: rgba(68, 75, 90, 1);
+        }
     }
 
-    .content-button.expanded {
-        transform: rotate(0deg);
+    .content-button {
+        display: none;
     }
 
     .about-client {
@@ -328,11 +399,18 @@ export const StyledCaseAbout = styled.section`
     }
 
     @media (max-width: 1279px) {
-
         .about-content.fixed {
             max-width: none;
             width: 95%;
+            left: 2.5%;
         }
+        
+        .about-content.fixed.collapsed-state {
+            width: 56px;
+            height: 56px;
+            left: 20px;
+        }
+
         .about-wrapper {
             display: flex;
             flex-direction: column;
@@ -356,6 +434,13 @@ export const StyledCaseAbout = styled.section`
 
         .about-content.fixed {
             width: 90%;
+            left: 5%;
+        }
+        
+        .about-content.fixed.collapsed-state {
+            width: 48px;
+            height: 48px;
+            left: 10px;
         }
 
         .about-wrapper {
@@ -394,6 +479,11 @@ export const StyledCaseAbout = styled.section`
         .about-content {
             margin-top: 40px;
             max-width: 100%;
+        }
+        
+        .about-content.collapsed-state {
+            min-height: 48px;
+            padding: 12px 50px 12px 12px;
         }
 
         .content-list {

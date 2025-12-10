@@ -1,5 +1,3 @@
-// ContactPopup.jsx (ОБНОВЛЕННЫЙ с логикой прокрутки и позиционирования)
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';

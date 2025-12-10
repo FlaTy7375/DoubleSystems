@@ -6,14 +6,8 @@ import type { Block, Field } from 'payload';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { fileURLToPath } from 'url';
 
-// -----------------------------------------------------------------------------
-// HELPER FOR ESM
-// -----------------------------------------------------------------------------
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// -----------------------------------------------------------------------------
-// SEARCH FIELDS (для всех коллекций)
-// -----------------------------------------------------------------------------
 const searchFieldsConfig: Field[] = [
     {
         name: 'sections_content', 
@@ -27,12 +21,10 @@ const searchFieldsConfig: Field[] = [
     },
 ];
 
-// В payload.config.js - только нужные коллекции
 const addUniversalSearchHook = ({ collection }: { collection: any }) => {
   return {
     beforeChange: [
       async ({ data, req, originalDoc }: { data: any; req: any; originalDoc: any }) => {
-        // ТОЛЬКО нужные коллекции
         if (!data || !['pages', 'cases', 'posts', 'services', 'faqs'].includes(collection.slug)) {
           return data;
         }
@@ -125,9 +117,6 @@ const addUniversalSearchHook = ({ collection }: { collection: any }) => {
   };
 };
 
-// -----------------------------------------------------------------------------
-// BLOCKS AND FIELDS DEFINITIONS
-// -----------------------------------------------------------------------------
 const seoFields: Field[] = [
     {
         name: 'seo',
@@ -277,9 +266,6 @@ const caseBlocks: Block[] = [
     },
 ];
 
-// -----------------------------------------------------------------------------
-// PAYLOAD CONFIG
-// -----------------------------------------------------------------------------
 export default buildConfig({
     db: postgresAdapter({
         pool: {
@@ -428,17 +414,6 @@ export default buildConfig({
             ],
         },
         {
-            slug: 'faqs',
-            labels: { singular: 'Вопрос-Ответ', plural: 'FAQ' },
-            hooks: addUniversalSearchHook as any,
-            fields: [
-                { name: 'question', label: 'Вопрос', type: 'text', required: true },
-                { name: 'answer', label: 'Ответ', type: 'richText', required: true, editor: lexicalEditor() },
-                { name: 'order', label: 'Порядок вывода', type: 'number', admin: { position: 'sidebar' } },
-                ...searchFieldsConfig,
-            ],
-        },
-        {
             slug: 'applications',
             labels: { singular: 'Заявка', plural: 'Заявки с сайта' },
             hooks: addUniversalSearchHook as any,
@@ -463,8 +438,7 @@ export default buildConfig({
                     async ({ data, req }: { data: any; req: any }) => {
                         try {
                             let allText = '';
-                            
-                            // Собираем текст из всех полей глобала
+
                             Object.entries(data).forEach(([key, value]) => {
                                 if (typeof value === 'string' && value.trim().length > 1) {
                                     allText += ' ' + value;
@@ -483,7 +457,6 @@ export default buildConfig({
                                 }
                             });
                             
-                            // Сохраняем для поиска
                             data._search_content = allText.trim().replace(/\s+/g, ' ');
                             
                         } catch (error) {
@@ -507,7 +480,7 @@ export default buildConfig({
                     name: 'weCreateItems', 
                     label: 'Мы создаём (порядок вывода)', 
                     type: 'array', 
-                    minRows: 1, 
+                    minRows: 1,
                     fields: [
                         { name: 'title', type: 'text', required: true },
                         { name: 'description', type: 'text', required: true },
@@ -579,7 +552,6 @@ export default buildConfig({
                                 data.items.forEach((item: any) => {
                                     if (item.question) allText += ' ' + item.question;
                                     if (item.answer) {
-                                        // Извлекаем текст из richText
                                         try {
                                             if (typeof item.answer === 'object') {
                                                 const extractText = (node: any) => {

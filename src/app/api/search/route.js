@@ -1,4 +1,3 @@
-// src/app/api/search/route.js
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db-search';
 
@@ -191,7 +190,7 @@ export async function GET(request) {
           urlPrefix: '/portfolio', 
           titleField: 'title', 
           slugField: 'slug',
-          joinCondition: 'b._parent_id = c.id' // ИСПРАВЛЕНИЕ ДЛЯ CASES
+          joinCondition: 'b._parent_id = c.id'
         },
         { 
           prefix: 'posts_blocks', 
@@ -200,7 +199,7 @@ export async function GET(request) {
           urlPrefix: '/blog', 
           titleField: 'title', 
           slugField: 'slug',
-          joinCondition: 'b._parent_id = c.id::text' // ДЛЯ POSTS
+          joinCondition: 'b._parent_id = c.id::text'
         }
       ];
 
@@ -299,7 +298,7 @@ export async function GET(request) {
           urlPrefix: '', 
           titleField: 'title', 
           slugField: 'slug',
-          joinCondition: 's._parent_id::integer = p.id' // ИСПРАВЛЕНИЕ ДЛЯ PAGES
+          joinCondition: 's._parent_id::integer = p.id'
         },
         { 
           prefix: 'cases_blocks', 
@@ -308,7 +307,7 @@ export async function GET(request) {
           urlPrefix: '/portfolio', 
           titleField: 'title', 
           slugField: 'slug',
-          joinCondition: 's._parent_id = c.id::text' // ДЛЯ CASES
+          joinCondition: 's._parent_id = c.id::text' 
         },
         { 
           prefix: 'posts_blocks', 
@@ -317,7 +316,7 @@ export async function GET(request) {
           urlPrefix: '/blog', 
           titleField: 'title', 
           slugField: 'slug',
-          joinCondition: 's._parent_id = c.id::text' // ДЛЯ POSTS
+          joinCondition: 's._parent_id = c.id::text'
         }
       ];
 
@@ -325,7 +324,7 @@ export async function GET(request) {
         { table: 'hero_section_stamps', field: 'text', parent: 'hero_section' },
         { table: 'client_section_content_items', field: 'text', parent: 'client_section' },
         { table: 'strategy_section_strategy_items', fields: ['title', 'description'], parent: 'strategy_section' },
-        { table: 'goals_section_goals', fields: ['title', 'description'], parent: 'goals_section' }, // КАРТОЧКИ ЦЕЛЕЙ
+        { table: 'goals_section_goals', fields: ['title', 'description'], parent: 'goals_section' },
         { table: 'business_section_tasks', field: 'text', parent: 'business_section' },
         { table: 'author_section_author_description', field: 'text', parent: 'author_section' }
       ];
@@ -357,7 +356,6 @@ export async function GET(request) {
             const searchFields = fields || [field];
             const conditions = searchFields.map(f => `g.${f} ILIKE $1`).join(' OR ');
 
-            // ИСПРАВЛЕННЫЙ JOIN ДЛЯ ЦЕЛЕЙ И ДРУГИХ ДОЧЕРНИХ ТАБЛИЦ
             const childResults = await query(
               `SELECT DISTINCT
                 p.id::text,

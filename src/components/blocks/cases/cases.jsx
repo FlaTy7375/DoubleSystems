@@ -1,9 +1,7 @@
-// src/components/blocks/cases/Cases.jsx
 "use client"
 
 import { StyledCases } from './style';
 import InfoBlock from '@/components/ui/info-block/info-block';
-// Импорты статических изображений для дефолтного контента
 import Case1 from '@/assets/images/case1.jpg';
 import Case2 from '@/assets/images/case2.png';
 import Case3 from '@/assets/images/case3.png';
@@ -101,9 +99,7 @@ export default function Cases({ autoCases = [], globalSettings = {}, style = {} 
   // 3. Вызовы хуков в цикле (ВНИМАНИЕ: Нарушает правила хуков React!)
   const translatedCases = displayCases.map(caseItem => ({
     ...caseItem,
-    // ⚠️ ХУК В ЦИКЛЕ: ВОЗМОЖНА ОШИБКА
     title: useTranslate(caseItem.title),
-    // ⚠️ ХУК В ЦИКЛЕ: ВОЗМОЖНА ОШИБКА
     themes: caseItem.themes.map(theme => useTranslate(theme)),
     image: {
       ...caseItem.image,
@@ -118,7 +114,6 @@ export default function Cases({ autoCases = [], globalSettings = {}, style = {} 
 
 
   return (
-    // 💡 ПРИМЕНЯЕМ ОПРЕДЕЛЕННЫЙ КЛАСС К КОНТЕЙНЕРУ
     <StyledCases className={wrapperClass} style={style}> 
       <h1 className="cases-title">{translatedAdminTitle}</h1>
       <div className="cases-wrapper">

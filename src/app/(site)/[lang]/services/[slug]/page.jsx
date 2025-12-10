@@ -1,5 +1,3 @@
-// app/services/[slug]/page.jsx
-
 import { getPayload } from 'payload';
 import payloadConfig from '@payload-config';
 import DynamicPage from '@/components/blocks/dynamic-page/dynamic-page';
@@ -10,7 +8,6 @@ import "../../../../../styles.css";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0; 
 
-// --- ГЕНЕРАЦИЯ МЕТАДАННЫХ (SEO) ---
 export async function generateMetadata({ params }) {
     // 1. Формируем полный слаг: 'services/' + params.slug
     const fullSlug = await `services/${params.slug}`; 
@@ -49,7 +46,6 @@ export async function generateMetadata({ params }) {
     };
 }
 
-// --- ОСНОВНОЙ КОМПОНЕНТ СТРАНИЦЫ ---
 export default async function ServicePage({ params }) {
     // 1. Формируем полный слаг: 'services/' + params.slug
     const fullSlug = await `services/${params.slug}`; 

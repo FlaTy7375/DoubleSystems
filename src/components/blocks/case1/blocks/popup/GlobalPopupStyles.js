@@ -1,5 +1,3 @@
-// GlobalPopupStyles.js
-
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalPopupStyles = createGlobalStyle`
@@ -16,17 +14,16 @@ export const GlobalPopupStyles = createGlobalStyle`
 
     /* === СТИЛИ ДЛЯ КОНТЕЙНЕРА POP-UP (ПОЗИЦИОНИРОВАНИЕ И ПРОКРУТКА) === */
     .popup-container {
-        /* Позиционирование и overflow/max-height управляются через inline style в JS */
-        position: fixed; /* Добавлено, чтобы избежать зависимости от JS */
+        position: fixed;
         z-index: 99;
-        background: #252525; /* Темный фон */
+        background: #252525;
         border-radius: 12px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
         min-width: 350px;
         max-width: 90vw;
         pointer-events: auto;
         padding: 0; 
-        box-sizing: border-box; /* Важно для корректного расчета max-height */
+        box-sizing: border-box;
         
         /* Стили прокрутки по умолчанию (если заданы через JS) */
         scrollbar-width: thin; /* Firefox */
@@ -50,8 +47,6 @@ export const GlobalPopupStyles = createGlobalStyle`
     /* === СТИЛИ ДЛЯ ВНУТРЕННЕЙ ФОРМЫ (.form-content-wrapper) === */
     .popup-container .form-content-wrapper {
         padding: 24px;
-        /* Если overflowY: auto применяется к .popup-container, 
-           этот внутренний padding становится частью прокручиваемой области. */
     }
 
     .popup-container .form-title {

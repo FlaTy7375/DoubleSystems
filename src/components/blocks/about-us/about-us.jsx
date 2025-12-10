@@ -5,7 +5,7 @@ import { StyledAboutUs } from './style';
 import Link from 'next/link';
 import Person from "@/assets/images/Alex.png"
 import { useTranslate } from '@/components/translate/useTranslation';
-import { useState, useRef } from 'react'; // Добавлен useRef
+import { useState, useRef } from 'react';
 import { usePopup } from '../case1/blocks/popup/usePopup';
 import ContactPopup from '../case1/blocks/popup/ContactPopup';
 import { GlobalPopupStyles } from '../case1/blocks/popup/GlobalPopupStyles';
@@ -86,7 +86,6 @@ export default function AboutUs({ content = '', person = {} }) {
           >
             {writeButton}
           </button>
-          {/* Было: <Link className="write-button" href="/contacts">{writeButton}</Link> */}
           
         </div>
         <h3 className="person-name">{translatedName}</h3>

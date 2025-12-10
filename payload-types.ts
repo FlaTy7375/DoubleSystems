@@ -74,7 +74,6 @@ export interface Config {
     cases: Case;
     posts: Post;
     services: Service;
-    faqs: Faq;
     applications: Application;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -90,7 +89,6 @@ export interface Config {
     cases: CasesSelect<false> | CasesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
-    faqs: FaqsSelect<false> | FaqsSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -102,7 +100,7 @@ export interface Config {
   };
   globals: {
     home: Home;
-    faq: Faq1;
+    faq: Faq;
     blog: Blog;
     header: Header;
   };
@@ -756,36 +754,6 @@ export interface Service {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs".
- */
-export interface Faq {
-  id: number;
-  question: string;
-  answer: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  order?: number | null;
-  /**
-   * Автоматически заполняется при сохранении для полнотекстового поиска
-   */
-  sections_content?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "applications".
  */
 export interface Application {
@@ -852,10 +820,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'services';
         value: number | Service;
-      } | null)
-    | ({
-        relationTo: 'faqs';
-        value: number | Faq;
       } | null)
     | ({
         relationTo: 'applications';
@@ -1468,18 +1432,6 @@ export interface ServicesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs_select".
- */
-export interface FaqsSelect<T extends boolean = true> {
-  question?: T;
-  answer?: T;
-  order?: T;
-  sections_content?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "applications_select".
  */
 export interface ApplicationsSelect<T extends boolean = true> {
@@ -1622,7 +1574,7 @@ export interface Home {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "faq".
  */
-export interface Faq1 {
+export interface Faq {
   id: number;
   title?: string | null;
   description?: string | null;

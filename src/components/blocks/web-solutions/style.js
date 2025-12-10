@@ -147,7 +147,7 @@ export const StyledWebSolutions = styled.section`
     }
 
     .solutions-container {
-    position: relative; // Для позиционирования кнопок
+    position: relative;
   }
 
   .slider-button {

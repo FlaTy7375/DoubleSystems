@@ -7,7 +7,6 @@ import { useTranslate } from '@/components/translate/useTranslation';
 
 export default function WeCreated({ items = [] }) {
   
-  // Значения по умолчанию (обновлена структура преимуществ)
   const defaultItems = [
     {
       title: 'Web-решения',
@@ -115,7 +114,6 @@ export default function WeCreated({ items = [] }) {
         <h2>{item.title}</h2>
         <p className="card-description">{item.description}</p>
         
-        {/* 💡 Используем <ul> и <li> для вывода преимуществ построчно */}
         <ul className="card-advantages-list">
             {item.advantages.map((adv, advIndex) => (
                 <li key={advIndex}>
@@ -128,7 +126,6 @@ export default function WeCreated({ items = [] }) {
                 </li>
             ))}
         </ul>
-        {/* ----------------------------------------------------------- */}
         
         <p className="card-number">{item.number}</p>
         {item.gradient && <div className={item.gradient}></div>}

@@ -1,5 +1,3 @@
-// LanguageContext.js
-
 "use client";
 
 import { createContext, useContext, useState } from 'react';
@@ -10,11 +8,8 @@ const LanguageContext = createContext();
 export const LanguageProvider = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-  
-  // Инициализация состояния языка должна быть Client-side, 
-  // чтобы избежать конфликтов при рендере на сервере.
+
   const [language, setLanguage] = useState(() => {
-    // Эта функция запускается только один раз при инициализации.
     if (typeof window !== 'undefined') {
       return localStorage.getItem('preferred-language') || 'Ru';
     }

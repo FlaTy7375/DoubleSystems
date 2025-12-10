@@ -179,7 +179,6 @@ export default function News({ posts = [], globalSettings = {} }) {
     const payloadPosts = posts.map((post) => ({
         id: post.id,
         slug: post.slug,
-        // 💡 ИЗМЕНЕНИЕ: Устанавливаем здесь поле description
         title: post.previewTitle || post.title || 'Без названия',
         description: post.previewDescription || post.title || 'Нет описания',
         date: post.previewDate || 'Не указано',

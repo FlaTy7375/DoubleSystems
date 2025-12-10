@@ -9,13 +9,13 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { useTranslate } from "@/components/translate/useTranslation"
 
 export default function CaseAbout({ onAnchorClick }) {
-    const [isContentExpanded, setIsContentExpanded] = useState(false);
+    const [isContentExpanded, setIsContentExpanded] = useState(true); // По умолчанию развернуто
     const [isContentFixed, setIsContentFixed] = useState(false);
     const aboutContentRef = useRef(null);
     const initialTop = useRef(0); 
     const contentHeight = useRef(0);
-    const isUpdating = useRef(false); // Флаг для предотвращения рекурсии
-    const rafId = useRef(null); // Для requestAnimationFrame
+    const isUpdating = useRef(false);
+    const rafId = useRef(null);
 
     // Переводим все тексты
     const aboutProject = useTranslate('О проекте')
@@ -54,11 +54,9 @@ export default function CaseAbout({ onAnchorClick }) {
             isUpdating.current = true;
             
             const rect = aboutContentRef.current.getBoundingClientRect();
-            // Обновляем позицию только если блок не фиксирован
             if (!isContentFixed) {
                 initialTop.current = rect.top + window.scrollY;
             }
-            // Всегда обновляем высоту
             contentHeight.current = rect.height;
             
             setTimeout(() => {
@@ -77,8 +75,7 @@ export default function CaseAbout({ onAnchorClick }) {
                 const scrollY = window.scrollY || document.documentElement.scrollTop;
                 const fixationPoint = initialTop.current - 190; 
                 
-                // Добавляем гистерезис для предотвращения мерцания
-                const scrollBuffer = 10; // пикселей буфера
+                const scrollBuffer = 10;
                 
                 if (scrollY >= fixationPoint + scrollBuffer) {
                     if (!isContentFixed) {
@@ -94,7 +91,6 @@ export default function CaseAbout({ onAnchorClick }) {
     }, [isContentFixed]);
 
     useEffect(() => {
-        // Инициализация размеров с задержкой
         const initTimeout = setTimeout(() => {
             updateDimensions();
         }, 100);
@@ -108,7 +104,6 @@ export default function CaseAbout({ onAnchorClick }) {
             });
         };
 
-        // Упрощенный MutationObserver - только для существенных изменений
         const observer = new MutationObserver((mutations) => {
             let shouldUpdate = false;
             for (const mutation of mutations) {
@@ -151,30 +146,26 @@ export default function CaseAbout({ onAnchorClick }) {
         };
     }, [handleScroll, updateDimensions]);
 
-    // Обновляем высоту при изменении состояния раскрытия с задержкой
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             updateDimensions();
-        }, 150); // Увеличиваем задержку для завершения анимации
+        }, 150);
 
         return () => clearTimeout(timeoutId);
     }, [isContentExpanded, updateDimensions]);
 
-    // Обновляем позицию когда блок возвращается из фиксированного состояния
     useEffect(() => {
         if (!isContentFixed) {
             const timeoutId = setTimeout(() => {
                 updateDimensions();
-            }, 200); // Увеличиваем задержку после возврата
+            }, 200);
 
             return () => clearTimeout(timeoutId);
         }
     }, [isContentFixed, updateDimensions]);
 
-    // Отдельный эффект для предотвращения пульсации при фиксации
     useEffect(() => {
         if (isContentFixed) {
-            // При фиксации временно отключаем обновления размеров
             isUpdating.current = true;
             const timeoutId = setTimeout(() => {
                 isUpdating.current = false;
@@ -211,78 +202,102 @@ export default function CaseAbout({ onAnchorClick }) {
                 
                 <div 
                     ref={aboutContentRef}
-                    className={`about-content ${isContentFixed ? 'fixed' : ''}`}
+                    className={`about-content ${isContentFixed ? 'fixed' : ''} ${isContentExpanded ? '' : 'collapsed-state'}`}
                 >
-                    <h2 className="content-title">{contentTitle}</h2>
+                    {/* Заголовок отображаем только когда развернуто */}
+                    {isContentExpanded && (
+                        <h2 className="content-title">{contentTitle}</h2>
+                    )}
                     
                     <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
-                        <ol className="content-list">
-                            <li className="content-element first-visible">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('hero')}
-                                >
-                                    <span className="decoration">
-                                    {contentTheme1}</span>
-                                </button>
-                            </li>
-                            
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('about-project')}
-                                >
-                                    {contentTheme2}
-                                </button>
-                            </li>
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('client')}
-                                >
-                                    {contentTheme3}
-                                </button>
-                            </li>
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('goals')}
-                                >
-                                    {contentTheme4}
-                                </button>
-                            </li>
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('strategy')}
-                                >
-                                    {contentTheme5}
-                                </button>
-                            </li>
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('business')}
-                                >
-                                    {contentTheme6}
-                                </button>
-                            </li>
-                            <li className="content-element">
-                                <button 
-                                    className="content-theme anchor-link"
-                                    onClick={() => onAnchorClick('conclusion')}
-                                >
-                                    {contentTheme7}
-                                </button>
-                            </li>
-                        </ol>
+                        {isContentExpanded ? (
+                            // РАЗВЕРНУТОЕ состояние - показываем весь список
+                            <ol className="content-list">
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('hero')}
+                                    >
+                                        <span className="decoration">{contentTheme1}</span>
+                                    </button>
+                                </li>
+                                
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('about-project')}
+                                    >
+                                        {contentTheme2}
+                                    </button>
+                                </li>
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('client')}
+                                    >
+                                        {contentTheme3}
+                                    </button>
+                                </li>
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('goals')}
+                                    >
+                                        {contentTheme4}
+                                    </button>
+                                </li>
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('strategy')}
+                                    >
+                                        {contentTheme5}
+                                    </button>
+                                </li>
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('business')}
+                                    >
+                                        {contentTheme6}
+                                    </button>
+                                </li>
+                                <li className="content-element">
+                                    <button 
+                                        className="content-theme anchor-link"
+                                        onClick={() => onAnchorClick('conclusion')}
+                                    >
+                                        {contentTheme7}
+                                    </button>
+                                </li>
+                            </ol>
+                        ) : (
+                            // СВЕРНУТОЕ состояние - только маленькая кнопка
+                            <div className="collapsed-indicator">
+                                {/* В свернутом состоянии ничего не показываем, кроме фоновой кнопки */}
+                            </div>
+                        )}
                     </div>
                     
+                    {/* Кнопка переключения - всегда видима */}
                     <button 
-                        className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
+                        className={`content-toggle-button ${isContentExpanded ? 'expanded' : ''} ${isContentFixed ? 'fixed-state' : ''}`}
                         onClick={toggleContent}
+                        aria-label={isContentExpanded ? 'Свернуть содержание' : 'Развернуть содержание'}
                     >
-                        
+                        <span className="toggle-icon">
+                            {isContentExpanded ? (
+                                // Стрелка вниз когда развернуто
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            ) : (
+                                // Стрелка вправо когда свернуто
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            )}
+                        </span>
                     </button>
                 </div>
                 <div className="about-client" id="client">

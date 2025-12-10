@@ -6,7 +6,7 @@ import Cookie from '@/components/ui/cookie/cookie'
 
 
 export default async function LocalizedSiteLayout({ children, params }) {
-  // params.lang доступен здесь, например: params.lang === 'ru'
+
 
   const payload = await getPayload({ config: payloadConfig });
   const faq = await payload.findGlobal({ slug: 'faq', cache: 'no-store' });
@@ -18,7 +18,6 @@ export default async function LocalizedSiteLayout({ children, params }) {
 
   return (
       <>
-        {/* Ваши компоненты, которые обертывают страницу */}
         <Header headerData={headerData} />
         {children}
         <Footer faq={faq} />

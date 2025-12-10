@@ -12,7 +12,7 @@ export async function generateMetadata() {
     // Загружаем глобальную настройку 'blog'
     const blogGlobal = await payload.findGlobal({ 
         slug: 'blog',
-        depth: 1, // Достаточно минимальной глубины для SEO
+        depth: 1,
     });
 
     const seo = blogGlobal.seo || {};
@@ -20,7 +20,6 @@ export async function generateMetadata() {
     const defaultDescription = 'Читайте свежие новости, статьи и инсайды о веб-разработке, мобильных приложениях и технологиях от команды Double Systems.';
 
     return {
-        // Используем SEO-title, или title из global, или дефолтный title
         title: seo.title || defaultTitle,
         description: seo.description || defaultDescription,
         keywords: seo.keywords || 'блог, новости, статьи, разработка, технологии',

@@ -6,7 +6,6 @@ import "../../../../styles.css";
 
 export const dynamic = 'force-dynamic';
 
-// 💡 1. ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ МЕТАДАННЫХ
 export async function generateMetadata() {
     const payload = await getPayload({ config: payloadConfig });
 
@@ -41,7 +40,6 @@ export async function generateMetadata() {
         keywords: 'портфолио, кейсы, веб-разработка, мобильные приложения',
     };
 }
-// ---------------------------------------------------------------------
 
 
 export default async function Portfolio() {
@@ -74,7 +72,6 @@ export default async function Portfolio() {
     };
   });
 
-  // КЕЙСЫ ДЛЯ WebSolutions — РАБОЧАЯ ВЕРСИЯ БЕЗ ТИПОВ
   let featuredCases = [];
 
   if (home.featuredCases && home.featuredCases.length > 0) {

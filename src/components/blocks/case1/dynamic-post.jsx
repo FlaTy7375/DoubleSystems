@@ -60,7 +60,7 @@ export default function DynamicPost({ postData }) {
   const writeButtonText = useTranslate('Написать');
   const contentTitleText = useTranslate('Содержание:');
 
-  const [isContentExpanded, setIsContentExpanded] = useState(false);
+  const [isContentExpanded, setIsContentExpanded] = useState(true);
   const [isContentFixed, setIsContentFixed] = useState(false);
   const aboutContentRef = useRef(null);
   const initialTop = useRef(0); 
@@ -167,50 +167,84 @@ export default function DynamicPost({ postData }) {
         );
 
       case 'clientSection':
+        const contentTitle = useTranslate('Содержание:');
+        
+        // Создаем массив переведенных элементов содержания
+        const contentItems = section.contentItems?.map(item => useTranslate(item.text)) || [];
+      
         return (
           <StyledCaseAbout key={index} id={blockId}>
             <div className="about-wrapper">
               
               {isContentFixed && (
-                    <div 
-                        className="placeholder" 
-                        style={{ height: contentHeight.current + 'px' }}
-                    ></div>
-                )}
-
+                <div 
+                  className="placeholder" 
+                  style={{ height: `${contentHeight.current}px` }}
+                ></div>
+              )}
+      
               <div 
                 ref={aboutContentRef}
-                className={`about-content ${isContentFixed ? 'fixed' : ''}`}
+                className={`about-content ${isContentFixed ? 'fixed' : ''} ${isContentExpanded ? '' : 'collapsed-state'}`}
               >
-                <h2 className="content-title">{contentTitleText}</h2>
+                {/* Заголовок отображаем только когда развернуто */}
+                {isContentExpanded && (
+                  <h2 className="content-title">{contentTitle}</h2>
+                )}
+                
                 <div className={`content-container ${isContentExpanded ? 'expanded' : 'collapsed'}`}>
-                <ol className="content-list">
-                  {section.contentItems?.map((item, i) => (
-                    i == 0 ? 
-                      <li key={i} className="content-element first-visible">
-                      <button 
-                        className="content-theme anchor-link"
-                        onClick={() => scrollToAnchor(item.anchorId)}
-                      >
-                        <span className="decoration">{useTranslate(item.text)}</span>
-                      </button>
-                    </li> 
-                    :
-                     <li key={i} className="content-element">
-                      <button 
-                        className="content-theme anchor-link"
-                        onClick={() => scrollToAnchor(item.anchorId)}
-                      >
-                      {useTranslate(item.text)}
-                      </button>
-                    </li>
-                  ))}
-                </ol>
+                  {isContentExpanded ? (
+                    // РАЗВЕРНУТОЕ состояние - показываем весь список
+                    <ol className="content-list">
+                      {section.contentItems?.map((item, i) => (
+                        i === 0 ? 
+                          <li key={i} className="content-element">
+                            <button 
+                              className="content-theme anchor-link"
+                              onClick={() => scrollToAnchor(item.anchorId)}
+                            >
+                              <span className="decoration">{contentItems[i]}</span>
+                            </button>
+                          </li> 
+                        :
+                          <li key={i} className="content-element">
+                            <button 
+                              className="content-theme anchor-link"
+                              onClick={() => scrollToAnchor(item.anchorId)}
+                            >
+                              {contentItems[i]}
+                            </button>
+                          </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    // СВЕРНУТОЕ состояние - только маленькая кнопка
+                    <div className="collapsed-indicator">
+                      {/* В свернутом состоянии ничего не показываем, кроме фоновой кнопки */}
+                    </div>
+                  )}
                 </div>
+                
+                {/* Кнопка переключения - всегда видима */}
                 <button 
-                  className={`content-button ${isContentExpanded ? 'expanded' : ''}`}
+                  className={`content-toggle-button ${isContentExpanded ? 'expanded' : ''} ${isContentFixed ? 'fixed-state' : ''}`}
                   onClick={toggleContent}
-                />
+                  aria-label={isContentExpanded ? 'Свернуть содержание' : 'Развернуть содержание'}
+                >
+                  <span className="toggle-icon">
+                    {isContentExpanded ? (
+                      // Стрелка вниз когда развернуто
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ) : (
+                      // Стрелка вправо когда свернуто
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </span>
+                </button>
               </div>
               <div className="about-client">
                 {section.clientImage && (

@@ -37,10 +37,6 @@ export default function MobileApp({ items = [] }) {
     setCurrentIndex((prev) => (prev < displayItems.length - 1 ? prev + 1 : 0));
   };
 
-  const currentItem = displayItems[currentIndex] || {};
-
-  // Переводим все тексты
-  const defaultImageAlt = useTranslate('Изображение мобильного приложения');
   const placeholderImageAlt = useTranslate('Изображение мобильного приложения');
 
   // Переводим displayItems

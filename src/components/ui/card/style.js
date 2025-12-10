@@ -40,13 +40,12 @@ export const StyledCard = styled.div`
         color: rgba(47, 52, 63, 1);
     }
 
-    /* 💡 НОВОЕ ПРАВИЛО: Поднимаем контейнер списка преимуществ */
     .card-advantages-list {
-        list-style: none; /* Убираем стандартные маркеры списка */
+        list-style: none; 
         padding: 0;
         margin: 0;
-        position: relative; /* Создаем новый контекст стекирования */
-        z-index: 10; /* Поднимаем выше, чем градиенты и другие элементы контента */
+        position: relative;
+        z-index: 10;
     }
 
     .card-adv {
@@ -55,7 +54,7 @@ export const StyledCard = styled.div`
         color: rgba(255, 70, 0, 1);
         line-height: 30px;
         z-index: 10;
-        display: block; /* Ссылки внутри <li> уже блочные, но это не повредит */
+        display: block;
     }
 
     .card-number {
@@ -74,7 +73,6 @@ export const StyledCard = styled.div`
         overflow: hidden;
     }
 
-    /* 💡 ИЗМЕНЕННЫЙ Z-INDEX: Градиенты должны быть на самом низком уровне */
     .blue-gradient {
         position: absolute;
         content: "";
@@ -84,7 +82,7 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(0, 217, 255, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0; /* Ставим ниже всех */
+        z-index: 0;
     }
 
     .green-gradient {
@@ -96,7 +94,7 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(111, 255, 0, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0; /* Ставим ниже всех */
+        z-index: 0;
     }
 
     .red-gradient {
@@ -108,10 +106,8 @@ export const StyledCard = styled.div`
         bottom: 30px;
         background: linear-gradient(180deg, rgba(39, 233, 255, 0.19) 0%, rgba(255, 0, 0, 0.45) 100%);
         filter: blur(100px);
-        z-index: 0; /* Ставим ниже всех */
+        z-index: 0;
     }
-    /* ------------------------------------------------------------------ */
-
 
     @media (max-width: 1799px) { 
         width: auto;

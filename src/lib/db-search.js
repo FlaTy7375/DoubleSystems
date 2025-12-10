@@ -1,4 +1,3 @@
-// src/lib/db-search.js
 import { Pool } from 'pg';
 
 const connectionString = process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/postgres';
@@ -8,7 +7,6 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
-// Функция для выполнения запроса
 export async function query(text, params) {
   const client = await pool.connect();
   try {
@@ -29,7 +27,6 @@ export async function query(text, params) {
   }
 }
 
-// Тестовая функция для проверки подключения
 export async function testConnection() {
   try {
     const result = await query('SELECT NOW() as current_time');

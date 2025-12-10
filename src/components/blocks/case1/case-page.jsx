@@ -76,13 +76,12 @@ export default function StaticCase1() {
                     <p className="container-description">{containerDescription}</p>
                     <Image className="container-image" src={TabletAndPhone} alt="Изображение планшета и телефона" width={322} height={231}></Image>
                     
-                    {/* 👈 Заменяем button на Link и добавляем обработчик скролла */}
                     <Link 
                         className="container-button" 
-                        href="#about-project" // Это обеспечит работу ссылки, даже если JS отключен
+                        href="#about-project"
                         onClick={(e) => {
-                            e.preventDefault(); // Отменяем стандартное поведение Link
-                            scrollToSection('about-project'); // Вызываем плавный скролл
+                            e.preventDefault();
+                            scrollToSection('about-project');
                         }}
                     >
                         {containerButton}

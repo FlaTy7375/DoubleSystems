@@ -79,7 +79,6 @@ export const StyledHeader = styled.header`
         color: rgba(255, 70, 0, 1);
     }
 
-    /* Мобильные стили для навигации */
     .mobile-nav-item {
         display: flex;
         align-items: center;
@@ -249,7 +248,6 @@ export const StyledHeader = styled.header`
         background-color: #000;
     }
 
-    /* Состояние активного меню */
     &.menu-open .menu-button::after {
         transform: rotate(45deg) translate(5px, 5px);
         width: 20px;
@@ -627,7 +625,6 @@ export const StyledHeader = styled.header`
     margin-top: 4px;
     margin-bottom: 4px;
     
-    /* Обрезаем длинный текст */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -641,8 +638,6 @@ export const StyledHeader = styled.header`
     color: #6c757d;
     border-radius: 8px;
 }
-
-    /* ======================================= */
 
     @media (max-width: 1799px) {
         padding: 0 36px;
@@ -669,12 +664,10 @@ export const StyledHeader = styled.header`
         .dropdown-menu-wrapper {
             top: 155px;
         }
-        /* Показываем кнопку меню на планшетах */
         .menu-button {
             display: flex;
         }
 
-        /* Скрываем обычную навигацию на планшетах по умолчанию */
         .header-nav.active-block{
             display: none;
         }
@@ -851,7 +844,6 @@ export const StyledHeader = styled.header`
             background-color: rgba(255, 70, 0, 1);
         }
 
-        /* Мобильное меню */
         &.menu-open .header-nav {
             position: absolute;
             top: 85px;
@@ -891,7 +883,6 @@ export const StyledHeader = styled.header`
             color: rgba(255, 70, 0, 1);
         }
 
-        /* Выпадающее меню на мобильном */
         &.menu-open .dropdown-menu-wrapper {
             display: block;
             position: static;

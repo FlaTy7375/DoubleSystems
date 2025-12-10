@@ -200,9 +200,8 @@ const NavItemWithDropdown = ({
     );
 };
 
-// Кэш для поисковых запросов
 const searchCache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 минут
+const CACHE_DURATION = 5 * 60 * 1000;
 
 export default function Header({ 
   headerData
@@ -225,25 +224,20 @@ export default function Header({
   const { language, changeLanguage } = useLanguage();
   const getLocalizedPath = useLocalizedPath();
 
-  // 💡 УЛУЧШЕННЫЙ ПОИСК
   const [searchResults, setSearchResults] = useState([]); 
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
-  // 💡 ОЧИСТКА КЭША ПРИ ИЗМЕНЕНИИ ЯЗЫКА
   useEffect(() => {
     searchCache.clear();
   }, [language]);
 
-  // 💡 УЛУЧШЕННАЯ ФУНКЦИЯ ПОИСКА С КЭШИРОВАНИЕМ
   const performSearch = useCallback(async (query) => {
-    // Не ищем, если запрос короткий
     if (!query || query.length < 3) {
         setSearchResults([]);
         return;
     }
 
-    // Проверяем кэш
     const cacheKey = `${language}:${query.toLowerCase().trim()}`;
     const cached = searchCache.get(cacheKey);
     
@@ -254,12 +248,10 @@ export default function Header({
 
     setIsSearching(true);
     
-    // Отменяем предыдущий запрос
     if (searchControllerRef.current) {
         searchControllerRef.current.abort();
     }
     
-    // Создаем новый AbortController
     searchControllerRef.current = new AbortController();
     
     try {
@@ -281,7 +273,6 @@ export default function Header({
         const results = data.results || [];
         setSearchResults(results);
         
-        // Сохраняем в кэш
         if (results.length > 0) {
             searchCache.set(cacheKey, {
                 results: results,
@@ -294,7 +285,6 @@ export default function Header({
             return;
         }
         
-        // Показываем тестовые результаты при ошибке в development
         if (process.env.NODE_ENV === 'development') {
             setSearchResults([
                 {
@@ -313,12 +303,10 @@ export default function Header({
     }
   }, [language]);
 
-  // 💡 useEffect для запуска поиска при изменении debouncedSearchValue
   useEffect(() => {
     performSearch(debouncedSearchValue);
   }, [debouncedSearchValue, performSearch]);
 
-  // 💡 Определяем мобильное/планшетное представление
   useEffect(() => {
     const checkViewport = () => {
       setIsMobileView(window.innerWidth <= 1279);
@@ -332,48 +320,39 @@ export default function Header({
     };
   }, []);
 
-  // 💡 ИСПРАВЛЕННАЯ БЛОКИРОВКА СКРОЛЛА - ТОЛЬКО ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ И ПЛАНШЕТОВ
   useEffect(() => {
-    // Блокируем скролл только на мобильных устройствах и планшетах
     if (isMenuButtonClicked && isMobileView) {
-      // Сохраняем текущую позицию скролла
       const scrollY = window.scrollY;
       
-      // Блокируем скролл на body, но разрешаем overflow для меню
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
       
-      // Разрешаем скролл для контейнера меню
       const menuContainer = document.querySelector('.header-nav');
       if (menuContainer) {
         menuContainer.style.overflow = 'auto';
-        menuContainer.style.maxHeight = 'calc(100vh - 100px)'; // Оставляем место для шапки
+        menuContainer.style.maxHeight = 'calc(100vh - 100px)';
       }
     } else {
-      // Восстанавливаем скролл
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
       
-      // Восстанавливаем overflow для меню
       const menuContainer = document.querySelector('.header-nav');
       if (menuContainer) {
         menuContainer.style.overflow = '';
         menuContainer.style.maxHeight = '';
       }
       
-      // Восстанавливаем позицию скролла
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
 
     return () => {
-      // Очистка при размонтировании
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
@@ -385,9 +364,8 @@ export default function Header({
         menuContainer.style.maxHeight = '';
       }
     };
-  }, [isMenuButtonClicked, isMobileView]); // Добавляем isMobileView в зависимости
+  }, [isMenuButtonClicked, isMobileView]); 
 
-  // 💡 ОЧИСТКА ПРИ РАЗМОНТИРОВАНИИ
   useEffect(() => {
     return () => {
       if (searchControllerRef.current) {
@@ -421,56 +399,43 @@ export default function Header({
   const handleMenuClick = () => {
     const newMenuState = !isMenuButtonClicked;
     setIsMenuButtonClicked(newMenuState);
-    setActiveId(false); // Убеждаемся, что поиск закрыт
+    setActiveId(false); 
     
     if (newMenuState) {
-        // Открываем: показываем дефолтный контент
         setHoveredItem(defaultItem || navItems[0] || null); 
     } else {
-        // Закрываем: скрываем
         setHoveredItem(null); 
-        setExpandedNavItem(null); // Закрываем все раскрытые пункты
+        setExpandedNavItem(null);
     }
   };
   
-  // 💡 Обработчик переключения подменю для мобильных устройств
   const handleToggleDropdown = (item) => {
     if (expandedNavItem && expandedNavItem.href === item.href) {
-      // Если кликаем на уже раскрытый пункт - закрываем
       setExpandedNavItem(null);
       setHoveredItem(null);
     } else {
-      // Раскрываем новый пункт
       setExpandedNavItem(item);
       setHoveredItem(item);
     }
   };
   
-  // 💡 ИСПРАВЛЕНИЕ: Наведение на пункт навигации ИЛИ дропдаун
   const handleItemMouseEnter = useCallback((item) => {
-    // На мобильных устройствах не используем ховер
     if (isMobileView) return;
     
-    // 1. Убираем таймер закрытия (курсор в активной зоне)
     if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
     }
-    // 2. Устанавливаем новый элемент, на который навели
     setHoveredItem(item);
   }, [isMobileView]);
   
-  // 💡 ИСПРАВЛЕНИЕ: Уход с пункта навигации ИЛИ дропдауна
   const handleItemMouseLeave = useCallback(() => {
-    // На мобильных устройствах не используем ховер
     if (isMobileView) return;
     
-    // Устанавливаем таймер на закрытие (200ms)
-    // Таймер не должен срабатывать, если меню открыто по клику (мобильный режим)
     if (!isMenuButtonClicked) {
         timerRef.current = setTimeout(() => {
              setHoveredItem(null);
-        }, 200); // 200ms - задержка, чтобы курсор мог перейти с шапки на меню
+        }, 200); 
     }
   }, [isMobileView, isMenuButtonClicked]);
   
@@ -479,17 +444,14 @@ export default function Header({
     const nextActiveId = !activeId;
     setActiveId(nextActiveId);
     
-    // Скрываем меню при работе с поиском
     setIsMenuButtonClicked(false); 
     setHoveredItem(null); 
     setExpandedNavItem(null);
     
-    // 💡 Сброс состояния поиска при закрытии
     if (!nextActiveId) {
       setSearchValue('');
       setSearchResults([]); 
     } else {
-      // Фокусируемся на поле ввода при открытии поиска
       setTimeout(() => {
         const searchField = document.querySelector('.search-field');
         if (searchField) searchField.focus();
@@ -497,19 +459,16 @@ export default function Header({
     }
   };
   
-  // 💡 ОБНОВЛЕННЫЙ handleCloseSearch
   const handleCloseSearch = () => {
     setActiveId(false);
     setSearchValue('');
-    setSearchResults([]); // Сброс результатов
+    setSearchResults([]);
     
-    // Отменяем текущий поисковый запрос
     if (searchControllerRef.current) {
       searchControllerRef.current.abort();
     }
   };
 
-  // 💡 Обработчик Escape для закрытия поиска
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && activeId) {
@@ -540,7 +499,6 @@ export default function Header({
     };
   }, []);
   
-  // ЛОГИКА: Определяет, какой контент должен быть показан
   const getDropdownData = () => {
       // Если поиск активен, дропдаун не показываем
       if (activeId) {
@@ -550,13 +508,10 @@ export default function Header({
       const specificContent = hoveredItem?.dropdownContent;
       const defaultContentFromPayload = headerData?.defaultDropdownContent;
       
-      // 1. Если есть уникальный контент для текущего наведенного пункта, используем его.
       if (specificContent && specificContent.length > 0) {
           return specificContent; 
       }
       
-      // 2. Если наведен пункт ИЛИ меню открыто кнопкой (мобильный режим) ИЛИ раскрыт пункт на мобильном, 
-      //    но нет специфичного контента, показываем дефолтный (статику).
       if (hoveredItem || isMenuButtonClicked || expandedNavItem) {
           // Payload данные
           if (defaultContentFromPayload && defaultContentFromPayload.length > 0) {
@@ -566,7 +521,6 @@ export default function Header({
           return STATIC_DEFAULT_DROPDOWN;
       }
       
-      // 3. Если ничего не наведено и не открыто, меню пустое
       return []; 
   };
 
@@ -574,7 +528,6 @@ export default function Header({
   // Меню видимо, если: 1) есть наведенный пункт И есть данные ИЛИ 2) меню открыто кнопкой (мобильная логика) ИЛИ 3) раскрыт пункт на мобильном
   const isDropdownVisible = (hoveredItem && menuData.length > 0) || isMenuButtonClicked || expandedNavItem;
 
-  // 💡 Определяем, показывать ли навигацию в зависимости от устройства и состояния
   const shouldShowNavigation = activeId === false;
 
   return (
@@ -601,7 +554,6 @@ export default function Header({
         {phoneNumber}
       </a>
     
-      {/* Кнопка поиска теперь управляет activeId */}
       <ul className={`socials-list ${shouldShowNavigation ? 'active-block' : ''}`}>
         <li className='social-item'>
           <button 
@@ -625,7 +577,6 @@ export default function Header({
         </li>
       </ul>
       
-      {/* Динамическое меню (основная навигация) */}
       <nav className={`header-nav ${shouldShowNavigation ? 'active-block' : ''} ${isMenuButtonClicked ? 'menu-scrollable' : ''}`}>
         {navItems.map((item, index) => (
           <NavItemWithDropdown 
@@ -642,7 +593,6 @@ export default function Header({
         ))}
       </nav>
       
-      {/* БЛОК: Выпадающее меню для десктопа */}
       {!isMobileView && isDropdownVisible && (
           <div 
             className="dropdown-menu-wrapper"
@@ -652,9 +602,7 @@ export default function Header({
               <DropdownContent data={menuData} />
           </div>
       )}
-      {/* ---------------------------------- */}
 
-      {/* 💡 УЛУЧШЕННЫЙ Поисковый контейнер */}
       <div className={`search-container ${activeId === true ? 'active-block' : ''}`}>
         <div className="search-input-wrapper">
           <input 
@@ -672,17 +620,14 @@ export default function Header({
           </button>
         </div>
         
-        {/* Кнопка закрытия поиска */}
         <button 
           className='clear-button' 
           onClick={handleCloseSearch}
           aria-label="Закрыть поиск"
         /> 
         
-        {/* 💡 УЛУЧШЕННЫЙ БЛОК РЕЗУЛЬТАТОВ ПОИСКА */}
         {activeId && (
           <div className='search-results-dropdown'>
-            {/* Индикатор загрузки */}
             {isSearching && (
                 <div className="search-state-message">
                   <div className="loading-spinner"></div>
@@ -690,7 +635,6 @@ export default function Header({
                 </div>
             )}
             
-            {/* Результатов нет, запрос введен, поиск завершен */}
             {!isSearching && searchResults.length === 0 && searchValue.length >= 3 && (
               <div className="search-state-message">
                 <p className="no-results-state">
@@ -702,7 +646,6 @@ export default function Header({
               </div>
             )}
 
-            {/* Показываем результаты если они есть */}
             {!isSearching && searchResults.length > 0 && (
               <>
                 <div className="search-results-header">
@@ -718,14 +661,12 @@ export default function Header({
               </>
             )}
             
-            {/* Подсказка, если запрос слишком короткий */}
             {!isSearching && searchValue.length > 0 && searchValue.length < 3 && (
               <div className="search-state-message">
                 <p className="hint-state">Введите минимум 3 символа для поиска</p>
               </div>
             )}
 
-            {/* Начальное состояние */}
             {!isSearching && searchValue.length === 0 && (
               <div className="search-state-message">
                 <p className="initial-state">

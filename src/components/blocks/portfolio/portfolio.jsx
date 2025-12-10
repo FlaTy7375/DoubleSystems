@@ -3,7 +3,7 @@
 import { StyledPortfolio } from './style';
 import Themes from './themes';
 import { useTranslate } from '@/components/translate/useTranslation';
-import Link from 'next/link'; // 💡 Импортируем Link для внутренних ссылок
+import Link from 'next/link';
 
 export default function Portfolio({ className, items = [], themes = [] }) {
   
@@ -56,7 +56,6 @@ export default function Portfolio({ className, items = [], themes = [] }) {
   const displayItems = items.length > 0
     ? items.map((item) => ({
         title: item.title || 'Без названия',
-        // 💡 Обрабатываем массив ссылок, ожидая { text, url } из Payload
         links: item.links?.map((link) => ({
             text: link.text || 'Нет названия',
             // Используем URL из Payload. Если URL пустой, создаем #якорь-заглушку.
@@ -93,11 +92,9 @@ export default function Portfolio({ className, items = [], themes = [] }) {
             <h2 className="item-title">{item.title}</h2>
             <div className="item-container">
               {item.links.map((linkItem, linkIndex) => (
-                // 💡 Используем компонент Link из Next.js
                 <Link
                   key={linkIndex}
                   className="item-link"
-                  // Используем url из объекта
                   href={linkItem.url}
                 >
                   {linkItem.text}
